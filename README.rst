@@ -23,7 +23,7 @@ In order to install the plugin, please run
 Be aware, in case the version number is omitted, you will have the source code installed for manual compilation.
 
 ================ ================
-WebSocket Plugin ElasticSearch
+Compound Plugin  ElasticSearch
 ================ ================
 master           0.20.x -> master
 1.0.0            0.20.x           
