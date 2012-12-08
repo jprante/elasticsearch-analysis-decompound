@@ -17,6 +17,7 @@ package org.elasticsearch.plugin.analysis.decompound;
 
 import org.elasticsearch.index.analysis.AnalysisModule;
 import org.elasticsearch.index.analysis.DecompoundTokenFilterFactory;
+import org.elasticsearch.index.analysis.GermanNormalizationFilterFactory;
 import org.elasticsearch.plugins.AbstractPlugin;
 
 public class AnalysisDecompoundPlugin extends AbstractPlugin {
@@ -31,5 +32,6 @@ public class AnalysisDecompoundPlugin extends AbstractPlugin {
 
     public void onModule(AnalysisModule module) {
         module.addTokenFilter("decompound", DecompoundTokenFilterFactory.class);
+        module.addTokenFilter("german_normalize", GermanNormalizationFilterFactory.class);
     }
 }

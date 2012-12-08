@@ -9,7 +9,7 @@ import org.testng.Assert;
 public class DecompounderTests extends Assert {
 
     @Test
-    public void test() throws IOException, ClassNotFoundException {
+    public void testGerman() throws IOException, ClassNotFoundException {
         InputStream forwfile = getClass().getResourceAsStream("/kompVVic.tree");
         InputStream backfile = getClass().getResourceAsStream("/kompVHic.tree");
         InputStream reducfile = getClass().getResourceAsStream("/grfExt.tree");
@@ -36,4 +36,5 @@ public class DecompounderTests extends Assert {
         }
 
     }
+
 }

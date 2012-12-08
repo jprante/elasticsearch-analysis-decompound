@@ -21,6 +21,7 @@ class Node implements Serializable {
     public Node(String content) {
         this.content = content;
         this.classes = new ArrayList();
+        this.children = new ArrayList();
     }
     
     public Node classes(List<String> classes) {

@@ -25,8 +25,9 @@ Be aware, in case the version number is omitted, you will have the source code i
 ================ ================
 Compound Plugin  ElasticSearch
 ================ ================
-master           0.20.x -> master
-1.0.0            0.20.x           
+master           0.19.x -> master
+1.1.0            0.19.x           
+1.0.0            0.19.x           
 ================ ================
 
 
@@ -57,6 +58,28 @@ In the mapping, us a token filter of type "decompound"::
 "Die", "Die", "Jahresfeier", "Jahr", "feier", "der", "der", "Rechtsanwaltskanzleien", "Recht", "anwalt", "kanzlei", "auf", "auf", "dem",  "dem", "Donaudampfschiff", "Donau", "dampf", "schiff", "hat", "hat", "viel", "viel", "Ökosteuer", "Ökosteuer", "gekostet", "gekosten"
 
 It is recommended to add the `Unique token filter <http://www.elasticsearch.org/guide/reference/index-modules/analysis/unique-tokenfilter.html>`_ to skip tokens that occur more than once.
+
+Also the Lucene german normalization token filter is provided.
+
+  {
+    "index":{
+        "analysis":{
+            "filter":{
+                "umlaut":{
+                    "type":"german_normalize"
+                }
+            },
+            "tokenizer" : {
+                "umlaut" : {
+                   "type":"standard",
+                   "filter" : "umlaut"
+                }            
+            }
+        }
+    }
+  }
+
+The input "Ein schöner Tag in Köln im Café an der Straßenecke" will be tokenized into "Ein", "schoner", "Tag", "in", "Koln", "im", "Café", "an", "der", "Strassenecke".
 
 References
 ==========

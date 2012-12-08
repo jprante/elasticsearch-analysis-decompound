@@ -102,7 +102,6 @@ public class DecompoundTokenFilterTests {
             String[] expected) throws IOException {
         stream.reset();
         CharTermAttribute termAttr = stream.getAttribute(CharTermAttribute.class);
-        OffsetAttribute offsetAttr = stream.getAttribute(OffsetAttribute.class);
         Assert.assertNotNull(termAttr);
         int i = 0;
         while (stream.incrementToken()) {

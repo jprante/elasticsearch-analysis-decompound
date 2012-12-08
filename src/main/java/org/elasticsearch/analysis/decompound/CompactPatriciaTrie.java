@@ -81,6 +81,34 @@ public class CompactPatriciaTrie {
         this.ignorecase = ic;
     }
 
+    public void train(String word, String classify) {
+        train(word, classify, 1);
+    }
+
+    public void train(String word, String classify, int nr) {
+        if (root == null) {
+            root = getObjectTree(stringtree);
+        }
+        stringtree = null;
+        if (ignorecase) {
+            word = word.toLowerCase();
+        }
+        if (reverse) {
+            word = reverse(word);
+        }
+        Node k = new Node(word + endOfWordChar);
+        k.classes(new ArrayList());
+        k.classes().add(classify + "=" + nr);
+        insert(k);
+    }
+
+    public String classify(String word) {
+        if (root == null) {
+            return classifyString(word);
+        }
+        return classifyObject(word);
+    }    
+    
     public void setStartChar(int c) {
         if (c < 0) {
             throw new IllegalArgumentException("Character number must be greater than 0");
@@ -364,7 +392,6 @@ public class CompactPatriciaTrie {
             min = w.length();
         }
         for (pos = 0; pos < min; pos++) {
-            // w0-w2
             if (k.content.charAt(pos) != w.charAt(pos)) {
                 break;
             }
@@ -425,34 +452,6 @@ public class CompactPatriciaTrie {
             node.children(temp);
         }
         return node;
-    }
-
-    public void train(String word, String cla) {
-        train(word, cla, 1);
-    }
-
-    public void train(String word, String cla, int nr) {
-        if (root == null) {
-            root = getObjectTree(stringtree);
-        }
-        stringtree = null;
-        if (ignorecase) {
-            word = word.toLowerCase();
-        }
-        if (reverse) {
-            word = reverse(word);
-        }
-        Node k = new Node(word + endOfWordChar);
-        k.classes(new ArrayList());
-        k.classes().add(cla + "=" + nr);
-        insert(k);
-    }
-
-    public String classify(String word) {
-        if (root == null) {
-            return classifyString(word);
-        }
-        return classifyObject(word);
     }
 
     private String classifyString(String word) {
@@ -529,7 +528,7 @@ public class CompactPatriciaTrie {
             if (actclass.equals(cla)) {
                 goalval = actval;
             }
-        } 
+        }
         if (valsum > 0) {
             ret = goalval / valsum;
         }
@@ -546,15 +545,15 @@ public class CompactPatriciaTrie {
         StringBuilder currentLabel;
         String exlabel = "";
         List currentClasses;
-        while (stringtree[i] != attentionNode) { 
+        while (stringtree[i] != attentionNode) {
             exlabel += stringtree[i];
             i++;
         }
         while (true) {
             currentClasses = new ArrayList();
             currentLabel = new StringBuilder();
-            i++; 
-            i++; 
+            i++;
+            i++;
             while (stringtree[i] != ']') {
                 StringBuilder currentClass = new StringBuilder();
                 while ((stringtree[i] != ';')
@@ -577,19 +576,19 @@ public class CompactPatriciaTrie {
                 }
                 break;
             }
-            i++; 
+            i++;
             while (stringtree[i] != currentWord.charAt(0)) {
-                if (stringtree[i] == attentionNode) { 
+                if (stringtree[i] == attentionNode) {
                     if (mode == EXACT) {
                         exlabel = null;
                         currentClasses = null;
                     }
                     break;
                 }
-                while (stringtree[i] != attentionNumber) { 
+                while (stringtree[i] != attentionNumber) {
                     i++;
                 }
-                i++; 
+                i++;
                 i += offset;
             }
             if (stringtree[i] == attentionNode) {
@@ -640,8 +639,8 @@ public class CompactPatriciaTrie {
     private List getClassesAt(int pos) {
         int i = pos;
         ArrayList retClasses = new ArrayList();
-        i++; 
-        i++; 
+        i++;
+        i++;
         while (stringtree[i] != ']') {
             StringBuilder sb = new StringBuilder();
             while ((stringtree[i] != ';') && (stringtree[i] != ']')) {
@@ -697,8 +696,8 @@ public class CompactPatriciaTrie {
     private void addStringToMap(Map m, char[] treestring, int pos,
             StringBuilder content) {
         int i = pos;
-        i++; 
-        i++; 
+        i++;
+        i++;
         StringBuilder sb = new StringBuilder();
         sb.append('[');
         while (treestring[i] != ']') {
@@ -716,7 +715,7 @@ public class CompactPatriciaTrie {
                     childContent.append(treestring[i]);
                     i++;
                 }
-                i++; // achtungZahl hintersichlassen
+                i++;
                 for (int j = 0; j < this.offset; j++) {
                     childOffset.append(treestring[i]);
                     i++;
@@ -747,7 +746,7 @@ public class CompactPatriciaTrie {
     private void addStringToKeySet(Set s, char[] treestring, int pos,
             StringBuilder currentContent) {
         int i = pos;
-        i++; 
+        i++;
         i++;
         while (treestring[i] != ']') {
             i++;
@@ -797,7 +796,7 @@ public class CompactPatriciaTrie {
     private void addStringNodesEntriesString(StringBuilder s, char[] treestring,
             int pos, StringBuilder content) {
         int i = pos;
-        i++; 
+        i++;
         i++;
         s.append(content);
         s.append(TAB);
@@ -810,7 +809,7 @@ public class CompactPatriciaTrie {
         i++;
         s.append(NL);
         if (i < treestring.length) {
-            while (treestring[i] != this.attentionNode) { 
+            while (treestring[i] != this.attentionNode) {
                 StringBuilder aktKindInhalt = new StringBuilder(content);
                 StringBuilder aktKindOffset = new StringBuilder();
                 while (treestring[i] != this.attentionNumber) {
@@ -910,7 +909,7 @@ public class CompactPatriciaTrie {
         }
         w.classes(aktclasses);
         w.children(new ArrayList());
-        i++; 
+        i++;
         if (i >= treestring.length) {
             return w;
         }
@@ -958,8 +957,8 @@ public class CompactPatriciaTrie {
         oos2.writeObject(this.ignorecase);
         oos2.writeObject(this.stringtree);
         oos2.close();
-    } 
-    
+    }
+
     private StringBuilder tree2string(Node aktKnoten, int startPos) {
 
         StringBuilder ret = new StringBuilder();
