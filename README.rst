@@ -14,22 +14,22 @@ Lucene comes with two coumpound word token filters, a dictionary- and a hyphenat
 Installation
 ------------
 
-The current version of the plugin is **1.0.0**
+The current version of the plugin is **1.2.0**
 
 In order to install the plugin, please run
 
-``bin/plugin -install jprante/elasticsearch-analysis-decompound/1.0.0``.
+``bin/plugin --install http://bit.ly/1bJCygc``.
 
 Be aware, in case the version number is omitted, you will have the source code installed for manual compilation.
 
 ================ ================
 Compound Plugin  ElasticSearch
 ================ ================
-master           0.19.x -> master
-1.1.0            0.19.x           
+master           0.90.2 -> master
+1.2.0            0.90.2
+1.1.0            0.19.x
 1.0.0            0.19.x           
 ================ ================
-
 
 Example
 =======
