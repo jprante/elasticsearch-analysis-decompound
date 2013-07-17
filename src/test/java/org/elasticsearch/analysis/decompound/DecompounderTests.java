@@ -1,12 +1,16 @@
 package org.elasticsearch.analysis.decompound;
 
-import org.elasticsearch.analysis.decompound.Decompounder;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.elasticsearch.common.logging.ESLogger;
+import org.elasticsearch.common.logging.Loggers;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
 public class DecompounderTests extends Assert {
+
+    private final ESLogger logger = Loggers.getLogger(DecompounderTests.class.getName());
 
     @Test
     public void testGerman() throws IOException, ClassNotFoundException {
@@ -31,7 +35,7 @@ public class DecompounderTests extends Assert {
         };
     
         for (int i = 0; i < word.length; i++) {
-            System.err.println(word[i] +" => " + d.decompound(word[i]));
+            logger.info(word[i] +" => " + d.decompound(word[i]));
             assertEquals(d.decompound(word[i]).toString(), decomp[i].toString());
         }
 

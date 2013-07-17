@@ -59,7 +59,7 @@ In the mapping, us a token filter of type "decompound"::
 
 It is recommended to add the `Unique token filter <http://www.elasticsearch.org/guide/reference/index-modules/analysis/unique-tokenfilter.html>`_ to skip tokens that occur more than once.
 
-Also the Lucene german normalization token filter is provided.
+Also the Lucene german normalization token filter is provided.::
 
   {
     "index":{
