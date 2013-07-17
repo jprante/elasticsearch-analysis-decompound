@@ -18,7 +18,7 @@ The current version of the plugin is **1.2.0**
 
 In order to install the plugin, please run
 
-``bin/plugin --install http://bit.ly/1bJCygc``.
+``./bin/plugin --install decompound --url http://bit.ly/1bJCygc``.
 
 Be aware, in case the version number is omitted, you will have the source code installed for manual compilation.
 
