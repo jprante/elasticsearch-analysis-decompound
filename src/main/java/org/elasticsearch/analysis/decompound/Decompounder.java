@@ -220,11 +220,13 @@ public class Decompounder {
                     suffix.append(c);
                 }
             }
-            int cutpos = Integer.parseInt(numStr.toString());
-            if (cutpos > result.length()) {
-                cutpos = result.length();
+            if (!numStr.toString().isEmpty()) {
+                int cutpos = Integer.parseInt(numStr.toString());
+                if (cutpos > result.length()) {
+                    cutpos = result.length();
+                }
+                result = result.substring(0, result.length() - cutpos) + suffix;
             }
-            result = result.substring(0, result.length() - cutpos) + suffix;
         }
         return result;
     }
