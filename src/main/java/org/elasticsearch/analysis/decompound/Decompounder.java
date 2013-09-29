@@ -26,7 +26,6 @@ public class Decompounder {
     private CompactPatriciaTrie kompvvTree;
     private CompactPatriciaTrie kompvhTree;
     private CompactPatriciaTrie grfTree;
-    private String baseForm;
 
     public Decompounder(InputStream kompvv, InputStream kompvh, InputStream gfred) throws IOException, ClassNotFoundException {
         kompvvTree = new CompactPatriciaTrie();
@@ -206,7 +205,7 @@ public class Decompounder {
 
     public String reduceToBaseForm(String word) {
         String result = word;
-        baseForm = grfTree.classify(reverse(word));
+        String baseForm = grfTree.classify(reverse(word));
         if (!baseForm.equals("undecided")) {
             StringTokenizer st = new StringTokenizer(baseForm, ",");
             baseForm = st.nextToken();
@@ -220,11 +219,13 @@ public class Decompounder {
                     suffix.append(c);
                 }
             }
-            int cutpos = Integer.parseInt(numStr.toString());
-            if (cutpos > result.length()) {
-                cutpos = result.length();
+            if (numStr.length() > 0) {
+                int cutpos = Integer.parseInt(numStr.toString());
+                if (cutpos > result.length()) {
+                    cutpos = result.length();
+                }
+                result = result.substring(0, result.length() - cutpos) + suffix;
             }
-            result = result.substring(0, result.length() - cutpos) + suffix;
         }
         return result;
     }

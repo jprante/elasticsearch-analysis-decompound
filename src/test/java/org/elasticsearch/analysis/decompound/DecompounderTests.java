@@ -24,14 +24,16 @@ public class DecompounderTests extends Assert {
             "Kinderernährung",
             "Donaudampfschiff",
             "Ökosteuer",
-            "Rechtsanwaltskanzleien"
+            "Rechtsanwaltskanzleien",
+            ""
         };
         String[] decomp = {
             "[Jahr, feier]",
             "[Kind, ernährung]",
             "[Donau, dampf, schiff]",
             "[Ökosteuer]",
-            "[Recht, anwalt, kanzlei]"
+            "[Recht, anwalt, kanzlei]",
+            "[]"
         };
     
         for (int i = 0; i < word.length; i++) {
