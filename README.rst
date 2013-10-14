@@ -11,25 +11,21 @@ This code is a reworked implementation of the `Baseforms Tool <http://wortschatz
 
 Lucene comes with two coumpound word token filters, a dictionary- and a hyphenation-based variant. Both of them have a disadvantage, they require loading a word list in memory before they run. This decompounder does not require word lists, it can process german language text out of the box. The decompounder uses prebuilt *Compact Patricia Tries* for efficient word segmentation provided by the ASV toolbox.
 
+
 Installation
 ------------
 
-The current version of the plugin is **1.2.0**
+Prerequisites::
 
-In order to install the plugin, please run
+  Elasticsearch 0.90+
 
-``./bin/plugin --install decompound --url http://bit.ly/1bJCygc``.
+=============  =========  =================  =============================================================
+ES version     Plugin     Release date       Command
+-------------  ---------  -----------------  -------------------------------------------------------------
+0.90.5         **1.2.1**  Oct 14, 2013       ./bin/plugin --install decompound --url http://bit.ly/1cP4Gkt
+0.90.2         **1.2.0**  Jul 17, 2013       ./bin/plugin --install decompound --url http://bit.ly/1bJCygc
+=============  =========  =================  =============================================================
 
-Be aware, in case the version number is omitted, you will have the source code installed for manual compilation.
-
-================ ================
-Compound Plugin  ElasticSearch
-================ ================
-master           0.90.2 -> master
-1.2.0            0.90.2
-1.1.0            0.19.x
-1.0.0            0.19.x           
-================ ================
 
 Example
 =======
@@ -80,6 +76,37 @@ Also the Lucene german normalization token filter is provided.::
   }
 
 The input "Ein schöner Tag in Köln im Café an der Straßenecke" will be tokenized into "Ein", "schoner", "Tag", "in", "Koln", "im", "Café", "an", "der", "Strassenecke".
+
+Threshold
+---------
+
+The decomposing algorithm knows about a threshold when to assume words as decomposed successfully or not.
+If the threshold is too low, words could silently disappear from being indexed. In this case, you have to adapt the
+threshold so words do no longer disappear.
+
+The default threshold value is 0.51. You can modify it in the settings
+
+  {
+     "index":{
+        "analysis":{
+            "filter":{
+                "decomp":{
+                    "type" : "decompound",
+                    "threshold" : 0.51
+                }
+            },
+            "tokenizer" : {
+                "decomp" : {
+                   "type" : "standard",
+                   "filter" : [ "decomp" ]
+                }
+            }
+        }
+     }
+  }
+
+
+
 
 References
 ==========

@@ -15,6 +15,9 @@
  */
 package org.elasticsearch.analysis.decompound;
 
+import org.elasticsearch.common.logging.ESLogger;
+import org.elasticsearch.common.logging.Loggers;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -259,7 +262,7 @@ public class CompactPatriciaTrie {
             StringTokenizer st = new StringTokenizer(cl, "=");
             actclass = st.nextToken();
             if (st.hasMoreTokens()) {
-                actval = new Integer(st.nextToken()).intValue();
+                actval = new Integer(st.nextToken());
             } else {
                 actval = 0;
             }
@@ -268,7 +271,7 @@ public class CompactPatriciaTrie {
                 maxval = actval;
                 maxclass = actclass;
             }
-            if ((actval == maxval) && !actclass.equals(maxclass)) {
+            if ((actval == maxval) && !actclass.equals(maxclass) && !actclass.isEmpty()) {
                 maxclass += ";" + actclass;
             }
         }
@@ -378,7 +381,6 @@ public class CompactPatriciaTrie {
 
     private Node lookup(Node k, String w) {
         Node node;
-        String w0;
         String w1;
         String w2;
         if (k == null) {
@@ -396,7 +398,6 @@ public class CompactPatriciaTrie {
                 break;
             }
         }
-        w0 = w.substring(0, pos);
         w1 = k.content.substring(pos, k.content.length());
         w2 = w.substring(pos, w.length());
         if (w2.length() != 0) {
@@ -436,7 +437,7 @@ public class CompactPatriciaTrie {
             temp = new ArrayList();
             for (Node akk : node.children()) {
                 if (akk.classes().size() == 1) {
-                    aklass = (String) akk.classes().get(0);
+                    aklass = akk.classes().get(0);
                     st = new StringTokenizer(aklass, "=");
                     aklass = st.nextToken();
                     if (aklass.equals(vklass)) {
@@ -523,7 +524,7 @@ public class CompactPatriciaTrie {
         for (String s : k.classes()) {
             StringTokenizer st = new StringTokenizer(s, "=");
             actclass = st.nextToken();
-            actval = new Integer(st.nextToken()).intValue();
+            actval = Integer.parseInt(st.nextToken());
             valsum += actval;
             if (actclass.equals(cla)) {
                 goalval = actval;
@@ -556,8 +557,7 @@ public class CompactPatriciaTrie {
             i++;
             while (stringtree[i] != ']') {
                 StringBuilder currentClass = new StringBuilder();
-                while ((stringtree[i] != ';')
-                        && (stringtree[i] != ']')) {
+                while ((stringtree[i] != ';') && (stringtree[i] != ']')) {
                     currentClass.append(stringtree[i]);
                     i++;
                 }
@@ -606,7 +606,6 @@ public class CompactPatriciaTrie {
                 } else if (mode == LOWER) {
                     exlabel = currentLabel.toString();
                     currentClasses = getClassesAt(string2int(new String(stringtree, i, offset)));
-                } else if (mode == UPPER) {
                 }
                 break;
             }
@@ -619,14 +618,10 @@ public class CompactPatriciaTrie {
                 } else if (mode == LOWER) {
                     exlabel = currentLabel.toString();
                     currentClasses = getClassesAt(string2int(new String(stringtree, i, offset)));
-                } else if (mode == UPPER) {
                 }
                 break;
             }
-            if (w2.length() == 0) {
-            }
-            int o;
-            o = string2int(new String(stringtree, i, offset));
+            int o = string2int(new String(stringtree, i, offset));
             currentWord = w2;
             i = o;
             exlabel = currentLabel.toString();
@@ -960,7 +955,6 @@ public class CompactPatriciaTrie {
     }
 
     private StringBuilder tree2string(Node aktKnoten, int startPos) {
-
         StringBuilder ret = new StringBuilder();
         ret.append(this.attentionNode);
         int relPos = 1;
@@ -968,11 +962,9 @@ public class CompactPatriciaTrie {
         tmp = formatClasses(aktKnoten);
         relPos += tmp.length();
         ret.append(tmp);
-
         tmp = formatChildrenContents(aktKnoten, relPos);
         relPos += tmp.length();
         ret.append(tmp);
-
         int vorigerTeilbaum = 0;
         for (Node aktKind : aktKnoten.children()) {
             relPos += vorigerTeilbaum;
@@ -1047,13 +1039,13 @@ public class CompactPatriciaTrie {
         String s1 = (String) (ois.readObject());
         String s2 = (String) (ois.readObject());
         String s3 = (String) (ois.readObject());
-        int sc = ((Integer) (ois.readObject())).intValue();
-        int ec = ((Integer) (ois.readObject())).intValue();
-        int az = ((Integer) (ois.readObject())).intValue();
-        int ak = ((Integer) (ois.readObject())).intValue();
-        int eow = ((Integer) (ois.readObject())).intValue();
-        boolean rv = ((Boolean) (ois.readObject())).booleanValue();
-        boolean ic = ((Boolean) (ois.readObject())).booleanValue();
+        int sc = (Integer) (ois.readObject());
+        int ec = ((Integer) (ois.readObject()));
+        int az = ((Integer) (ois.readObject()));
+        int ak = ((Integer) (ois.readObject()));
+        int eow = ((Integer) (ois.readObject()));
+        boolean rv = ((Boolean) (ois.readObject()));
+        boolean ic = ((Boolean) (ois.readObject()));
         char[] st = (char[]) (ois.readObject());
         ois.close();
 

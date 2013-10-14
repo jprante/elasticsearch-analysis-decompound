@@ -48,8 +48,11 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
             String forward = settings.get("forward", "/kompVVic.tree");
             String backward = settings.get("backward", "/kompVHic.tree");
             String reduce = settings.get("reduce", "/grfExt.tree");
+            double threshold = settings.getAsDouble("threshold", 0.51);
             return new Decompounder(env.resolveConfig(forward).openStream(),
-                    env.resolveConfig(backward).openStream(), env.resolveConfig(reduce).openStream());
+                    env.resolveConfig(backward).openStream(),
+                    env.resolveConfig(reduce).openStream(),
+                    threshold);
         } catch (ClassNotFoundException e) {
             throw new ElasticSearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);
         } catch (IOException e) {

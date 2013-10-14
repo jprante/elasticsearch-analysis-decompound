@@ -8,7 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.xbib.elasticsearch</groupId>
     <artifactId>elasticsearch-analysis-decompound</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
 
     <description>ElasticSearch Decompounder Analysis plugin</description>
@@ -38,7 +38,9 @@
     </distributionManagement>
 
     <properties>
-        <elasticsearch.version>0.90.2</elasticsearch.version>
+        <github.global.server>github</github.global.server>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <elasticsearch.version>0.90.5</elasticsearch.version>
     </properties>
 
     <dependencies>

@@ -1,12 +1,10 @@
 package org.elasticsearch.analysis.decompound;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-class Node implements Serializable {
+class Node {
 
-    private static final long serialVersionUID = 2310410212279040954L;
     private List<String> classes;
     public String content;
     private List<Node> children;

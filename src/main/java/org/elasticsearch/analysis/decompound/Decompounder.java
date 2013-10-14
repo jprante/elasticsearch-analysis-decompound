@@ -27,19 +27,20 @@ public class Decompounder {
     private CompactPatriciaTrie kompvhTree;
     private CompactPatriciaTrie grfTree;
 
-    public Decompounder(InputStream kompvv, InputStream kompvh, InputStream gfred) throws IOException, ClassNotFoundException {
+    public Decompounder(InputStream kompvv, InputStream kompvh, InputStream gfred, double threshold)
+            throws IOException, ClassNotFoundException {
         kompvvTree = new CompactPatriciaTrie();
         kompvvTree.load(kompvv);
         kompvvTree.setIgnoreCase(true);
-        kompvvTree.setThreshold(0.51);
+        kompvvTree.setThreshold(threshold);
         kompvhTree = new CompactPatriciaTrie();
         kompvhTree.load(kompvh);
         kompvhTree.setIgnoreCase(true);
-        kompvhTree.setThreshold(0.51);
+        kompvhTree.setThreshold(threshold);
         grfTree = new CompactPatriciaTrie();
         grfTree.load(gfred);
         grfTree.setIgnoreCase(true);
-        grfTree.setThreshold(0.46);        
+        grfTree.setThreshold(threshold); // previous value = 0.46
     }
 
     public Decompounder(CompactPatriciaTrie kompvv, CompactPatriciaTrie kompvh, CompactPatriciaTrie gfred) {
@@ -49,7 +50,7 @@ public class Decompounder {
     }
     
     private String reverse(String torev) {
-        String ret = new String();
+        String ret = "";
         for (int i = torev.length(); i > 0; i--) {
             ret += torev.substring(i - 1, i);
         }
@@ -79,7 +80,6 @@ public class Decompounder {
         if (classvh.equals("undecided")) {
             vhOk = false;
         }
-
         if (vvOk) {
             for (int i = 0; i < classvv.length(); i++) {
                 char c = classvv.charAt(i);
@@ -190,11 +190,9 @@ public class Decompounder {
         List<String> retvec2 = new ArrayList();
         List<String> l;
         if (list.size() > 1) {
-            for (String aktelement : list) {
-                l = decompound(aktelement);
-                for (String string : l) {
-                    retvec2.add(string);
-                }
+            for (String s : list) {
+                l = decompound(s);
+                retvec2.addAll(l);
             }
         }
         else {

@@ -17,7 +17,7 @@ public class DecompounderTests extends Assert {
         InputStream forwfile = getClass().getResourceAsStream("/kompVVic.tree");
         InputStream backfile = getClass().getResourceAsStream("/kompVHic.tree");
         InputStream reducfile = getClass().getResourceAsStream("/grfExt.tree");
-        Decompounder d = new Decompounder(forwfile, backfile, reducfile);
+        Decompounder d = new Decompounder(forwfile, backfile, reducfile, 0.51);
         
         String[] word = {
             "Jahresfeier",
@@ -25,7 +25,8 @@ public class DecompounderTests extends Assert {
             "Donaudampfschiff",
             "Ökosteuer",
             "Rechtsanwaltskanzleien",
-            ""
+            "",
+            "tomaten"
         };
         String[] decomp = {
             "[Jahr, feier]",
@@ -33,7 +34,8 @@ public class DecompounderTests extends Assert {
             "[Donau, dampf, schiff]",
             "[Ökosteuer]",
             "[Recht, anwalt, kanzlei]",
-            "[]"
+            "[]",
+            "[tomaten]"
         };
     
         for (int i = 0; i < word.length; i++) {
