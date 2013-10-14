@@ -55,7 +55,7 @@ In the mapping, us a token filter of type "decompound"::
 
 It is recommended to add the `Unique token filter <http://www.elasticsearch.org/guide/reference/index-modules/analysis/unique-tokenfilter.html>`_ to skip tokens that occur more than once.
 
-Also the Lucene german normalization token filter is provided.::
+Also the Lucene german normalization token filter is provided::
 
   {
     "index":{
@@ -84,7 +84,7 @@ The decomposing algorithm knows about a threshold when to assume words as decomp
 If the threshold is too low, words could silently disappear from being indexed. In this case, you have to adapt the
 threshold so words do no longer disappear.
 
-The default threshold value is 0.51. You can modify it in the settings
+The default threshold value is 0.51. You can modify it in the settings::
 
   {
      "index":{
