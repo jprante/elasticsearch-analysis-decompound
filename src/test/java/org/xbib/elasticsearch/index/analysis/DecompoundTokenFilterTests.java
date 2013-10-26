@@ -1,4 +1,13 @@
-package org.elasticsearch.index.analysis;
+package org.xbib.elasticsearch.index.analysis;
+
+import java.io.IOException;
+import java.io.StringReader;
+
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.util.Version;
 
 import org.elasticsearch.common.inject.Injector;
 import org.elasticsearch.common.inject.ModulesBuilder;
@@ -9,23 +18,18 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.env.EnvironmentModule;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.IndexNameModule;
+import org.elasticsearch.index.analysis.AnalysisModule;
+import org.elasticsearch.index.analysis.AnalysisService;
+import org.elasticsearch.index.analysis.TokenFilterFactory;
 import org.elasticsearch.index.settings.IndexSettingsModule;
 import org.elasticsearch.indices.analysis.IndicesAnalysisModule;
 import org.elasticsearch.indices.analysis.IndicesAnalysisService;
-import org.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
+
+import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-
-import java.io.IOException;
-import java.io.StringReader;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.util.Version;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.testng.Assert;
 
 public class DecompoundTokenFilterTests {
@@ -36,7 +40,7 @@ public class DecompoundTokenFilterTests {
 
 
         TokenFilterFactory tokenFilter = analysisService.tokenFilter("decomp");
-        assertThat(tokenFilter, instanceOf(DecompoundTokenFilterFactory.class));
+        MatcherAssert.assertThat(tokenFilter, Matchers.instanceOf(DecompoundTokenFilterFactory.class));
 
         String source = "Die Jahresfeier der Rechtsanwaltskanzleien auf dem Donaudampfschiff hat viel Ökosteuer gekostet";
 
@@ -77,7 +81,7 @@ public class DecompoundTokenFilterTests {
     }
 
     public AnalysisService createAnalysisService() {
-        Settings settings = ImmutableSettings.settingsBuilder().loadFromClasspath("org/elasticsearch/index/analysis/decompound_analysis.json").build();
+        Settings settings = ImmutableSettings.settingsBuilder().loadFromClasspath("org/xbib/elasticsearch/index/analysis/decompound_analysis.json").build();
 
         Index index = new Index("test");
 

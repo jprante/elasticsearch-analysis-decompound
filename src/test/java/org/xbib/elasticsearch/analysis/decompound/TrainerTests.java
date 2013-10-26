@@ -1,9 +1,7 @@
-package org.elasticsearch.analysis.decompound;
+package org.xbib.elasticsearch.analysis.decompound;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
-import org.testng.annotations.Test;
 
 public class TrainerTests {
 

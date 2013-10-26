@@ -13,11 +13,11 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.elasticsearch.plugin.analysis.decompound;
+package org.xbib.elasticsearch.plugin.analysis.decompound;
 
 import org.elasticsearch.index.analysis.AnalysisModule;
-import org.elasticsearch.index.analysis.DecompoundTokenFilterFactory;
-import org.elasticsearch.index.analysis.GermanNormalizationFilterFactory;
+import org.xbib.elasticsearch.index.analysis.DecompoundTokenFilterFactory;
+import org.xbib.elasticsearch.index.analysis.GermanNormalizationFilterFactory;
 import org.elasticsearch.plugins.AbstractPlugin;
 
 public class AnalysisDecompoundPlugin extends AbstractPlugin {

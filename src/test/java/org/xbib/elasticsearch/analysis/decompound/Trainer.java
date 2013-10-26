@@ -1,21 +1,13 @@
-package org.elasticsearch.analysis.decompound;
+package org.xbib.elasticsearch.analysis.decompound;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URI;
-import java.util.NoSuchElementException;
-import org.elasticsearch.analysis.decompound.CompactPatriciaTrie;
-import org.elasticsearch.tools.opt.OptionParser;
-import org.elasticsearch.tools.opt.OptionSet;
 
 public class Trainer {
 
-    String separator = "\t";
     CompactPatriciaTrie reduce;
     CompactPatriciaTrie forward;
     CompactPatriciaTrie backward;

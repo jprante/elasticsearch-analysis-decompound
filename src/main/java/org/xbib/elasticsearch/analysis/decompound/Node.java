@@ -1,4 +1,4 @@
-package org.elasticsearch.analysis.decompound;
+package org.xbib.elasticsearch.analysis.decompound;
 
 import java.util.ArrayList;
 import java.util.List;

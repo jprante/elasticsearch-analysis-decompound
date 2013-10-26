@@ -1,12 +1,14 @@
-package org.elasticsearch.index.analysis;
+package org.xbib.elasticsearch.index.analysis;
 
 import java.io.IOException;
 import java.io.StringReader;
+
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.Version;
+
 import org.elasticsearch.common.inject.Injector;
 import org.elasticsearch.common.inject.ModulesBuilder;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -16,16 +18,18 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.env.EnvironmentModule;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.IndexNameModule;
+import org.elasticsearch.index.analysis.AnalysisModule;
+import org.elasticsearch.index.analysis.AnalysisService;
+import org.elasticsearch.index.analysis.TokenFilterFactory;
 import org.elasticsearch.index.settings.IndexSettingsModule;
 import org.elasticsearch.indices.analysis.IndicesAnalysisModule;
 import org.elasticsearch.indices.analysis.IndicesAnalysisService;
-import org.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
+
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 
 public class GermanNormalizationTests extends Assert {
 
@@ -34,7 +38,7 @@ public class GermanNormalizationTests extends Assert {
         AnalysisService analysisService = createAnalysisService();
 
         TokenFilterFactory tokenFilter = analysisService.tokenFilter("umlaut");
-        assertThat(tokenFilter, instanceOf(GermanNormalizationFilterFactory.class));
+        MatcherAssert.assertThat(tokenFilter, Matchers.instanceOf(GermanNormalizationFilterFactory.class));
 
         String source = "Ein schöner Tag in Köln im Café an der Straßenecke";
 
@@ -58,7 +62,7 @@ public class GermanNormalizationTests extends Assert {
     }
 
     public AnalysisService createAnalysisService() {
-        Settings settings = ImmutableSettings.settingsBuilder().loadFromClasspath("org/elasticsearch/index/analysis/german_normalization_analysis.json").build();
+        Settings settings = ImmutableSettings.settingsBuilder().loadFromClasspath("org/xbib/elasticsearch/index/analysis/german_normalization_analysis.json").build();
 
         Index index = new Index("test");
 

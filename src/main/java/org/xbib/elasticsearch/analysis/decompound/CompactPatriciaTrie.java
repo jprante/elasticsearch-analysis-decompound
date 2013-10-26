@@ -13,10 +13,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.elasticsearch.analysis.decompound;
-
-import org.elasticsearch.common.logging.ESLogger;
-import org.elasticsearch.common.logging.Loggers;
+package org.xbib.elasticsearch.analysis.decompound;
 
 import java.io.IOException;
 import java.io.InputStream;

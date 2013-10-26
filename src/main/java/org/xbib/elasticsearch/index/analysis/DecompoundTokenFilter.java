@@ -13,7 +13,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.elasticsearch.index.analysis;
+package org.xbib.elasticsearch.index.analysis;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -23,7 +23,7 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.AttributeSource;
-import org.elasticsearch.analysis.decompound.Decompounder;
+import org.xbib.elasticsearch.analysis.decompound.Decompounder;
 
 public class DecompoundTokenFilter extends TokenFilter {
 

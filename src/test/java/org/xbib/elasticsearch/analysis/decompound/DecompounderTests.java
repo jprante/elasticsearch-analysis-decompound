@@ -1,4 +1,4 @@
-package org.elasticsearch.analysis.decompound;
+package org.xbib.elasticsearch.analysis.decompound;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package org.elasticsearch.analysis.decompound;
+package org.xbib.elasticsearch.analysis.decompound;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
-import org.testng.annotations.Test;
 
 public class LemmatizeBuildTests {
 
@@ -31,7 +30,7 @@ public class LemmatizeBuildTests {
             }
         }
         br.close();
-        FileOutputStream f = new FileOutputStream("morpyLemmaForms.tree");
+        FileOutputStream f = new FileOutputStream("target/morphyLemmaForms.tree");
         reduce.save(f);
         f.close();
     }
