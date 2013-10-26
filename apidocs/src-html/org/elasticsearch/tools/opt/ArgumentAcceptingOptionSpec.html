@@ -1,0 +1,387 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>/*<a name="line.1"></a>
+<span class="sourceLineNo">002</span> The MIT License<a name="line.2"></a>
+<span class="sourceLineNo">003</span><a name="line.3"></a>
+<span class="sourceLineNo">004</span> Copyright (c) 2004-2011 Paul R. Holser, Jr.<a name="line.4"></a>
+<span class="sourceLineNo">005</span><a name="line.5"></a>
+<span class="sourceLineNo">006</span> Permission is hereby granted, free of charge, to any person obtaining<a name="line.6"></a>
+<span class="sourceLineNo">007</span> a copy of this software and associated documentation files (the<a name="line.7"></a>
+<span class="sourceLineNo">008</span> "Software"), to deal in the Software without restriction, including<a name="line.8"></a>
+<span class="sourceLineNo">009</span> without limitation the rights to use, copy, modify, merge, publish,<a name="line.9"></a>
+<span class="sourceLineNo">010</span> distribute, sublicense, and/or sell copies of the Software, and to<a name="line.10"></a>
+<span class="sourceLineNo">011</span> permit persons to whom the Software is furnished to do so, subject to<a name="line.11"></a>
+<span class="sourceLineNo">012</span> the following conditions:<a name="line.12"></a>
+<span class="sourceLineNo">013</span><a name="line.13"></a>
+<span class="sourceLineNo">014</span> The above copyright notice and this permission notice shall be<a name="line.14"></a>
+<span class="sourceLineNo">015</span> included in all copies or substantial portions of the Software.<a name="line.15"></a>
+<span class="sourceLineNo">016</span><a name="line.16"></a>
+<span class="sourceLineNo">017</span> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,<a name="line.17"></a>
+<span class="sourceLineNo">018</span> EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF<a name="line.18"></a>
+<span class="sourceLineNo">019</span> MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND<a name="line.19"></a>
+<span class="sourceLineNo">020</span> NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE<a name="line.20"></a>
+<span class="sourceLineNo">021</span> LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION<a name="line.21"></a>
+<span class="sourceLineNo">022</span> OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION<a name="line.22"></a>
+<span class="sourceLineNo">023</span> WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.<a name="line.23"></a>
+<span class="sourceLineNo">024</span>*/<a name="line.24"></a>
+<span class="sourceLineNo">025</span><a name="line.25"></a>
+<span class="sourceLineNo">026</span>package org.elasticsearch.tools.opt;<a name="line.26"></a>
+<span class="sourceLineNo">027</span><a name="line.27"></a>
+<span class="sourceLineNo">028</span>import java.util.ArrayList;<a name="line.28"></a>
+<span class="sourceLineNo">029</span>import java.util.Collection;<a name="line.29"></a>
+<span class="sourceLineNo">030</span>import static java.util.Collections.*;<a name="line.30"></a>
+<span class="sourceLineNo">031</span>import java.util.List;<a name="line.31"></a>
+<span class="sourceLineNo">032</span>import java.util.StringTokenizer;<a name="line.32"></a>
+<span class="sourceLineNo">033</span>import static org.elasticsearch.tools.opt.internal.Objects.*;<a name="line.33"></a>
+<span class="sourceLineNo">034</span>import static org.elasticsearch.tools.opt.internal.Reflection.*;<a name="line.34"></a>
+<span class="sourceLineNo">035</span>import org.elasticsearch.tools.opt.internal.ReflectionException;<a name="line.35"></a>
+<span class="sourceLineNo">036</span>import static org.elasticsearch.tools.opt.internal.Strings.*;<a name="line.36"></a>
+<span class="sourceLineNo">037</span><a name="line.37"></a>
+<span class="sourceLineNo">038</span>/**<a name="line.38"></a>
+<span class="sourceLineNo">039</span> * &lt;p&gt;Specification of an option that accepts an argument.&lt;/p&gt;<a name="line.39"></a>
+<span class="sourceLineNo">040</span> *<a name="line.40"></a>
+<span class="sourceLineNo">041</span> * &lt;p&gt;Instances are returned from {@link OptionSpecBuilder} methods to allow the formation of parser directives as<a name="line.41"></a>
+<span class="sourceLineNo">042</span> * sentences in a "fluent interface" language.  For example:&lt;/p&gt;<a name="line.42"></a>
+<span class="sourceLineNo">043</span> *<a name="line.43"></a>
+<span class="sourceLineNo">044</span> * &lt;pre&gt;<a name="line.44"></a>
+<span class="sourceLineNo">045</span> *   &lt;code&gt;<a name="line.45"></a>
+<span class="sourceLineNo">046</span> *   OptionParser parser = new OptionParser();<a name="line.46"></a>
+<span class="sourceLineNo">047</span> *   parser.accepts( "c" ).withRequiredArg().&lt;strong&gt;ofType( Integer.class )&lt;/strong&gt;;<a name="line.47"></a>
+<span class="sourceLineNo">048</span> *   &lt;/code&gt;<a name="line.48"></a>
+<span class="sourceLineNo">049</span> * &lt;/pre&gt;<a name="line.49"></a>
+<span class="sourceLineNo">050</span> *<a name="line.50"></a>
+<span class="sourceLineNo">051</span> * &lt;p&gt;If no methods are invoked on an instance of this class, then that instance's option will treat its argument as<a name="line.51"></a>
+<span class="sourceLineNo">052</span> * a {@link String}.&lt;/p&gt;<a name="line.52"></a>
+<span class="sourceLineNo">053</span> *<a name="line.53"></a>
+<span class="sourceLineNo">054</span> * @param &lt;V&gt; represents the type of the arguments this option accepts<a name="line.54"></a>
+<span class="sourceLineNo">055</span> * @author &lt;a href="mailto:pholser@alumni.rice.edu"&gt;Paul Holser&lt;/a&gt;<a name="line.55"></a>
+<span class="sourceLineNo">056</span> */<a name="line.56"></a>
+<span class="sourceLineNo">057</span>public abstract class ArgumentAcceptingOptionSpec&lt;V&gt; extends AbstractOptionSpec&lt;V&gt; {<a name="line.57"></a>
+<span class="sourceLineNo">058</span>    private static final char NIL_VALUE_SEPARATOR = '\u0000';<a name="line.58"></a>
+<span class="sourceLineNo">059</span>    <a name="line.59"></a>
+<span class="sourceLineNo">060</span>    private boolean optionRequired;<a name="line.60"></a>
+<span class="sourceLineNo">061</span>    private final boolean argumentRequired;<a name="line.61"></a>
+<span class="sourceLineNo">062</span>    private ValueConverter&lt;V&gt; converter;<a name="line.62"></a>
+<span class="sourceLineNo">063</span>    private String argumentDescription = "";<a name="line.63"></a>
+<span class="sourceLineNo">064</span>    private String valueSeparator = String.valueOf( NIL_VALUE_SEPARATOR );<a name="line.64"></a>
+<span class="sourceLineNo">065</span>    private final List&lt;V&gt; defaultValues = new ArrayList&lt;V&gt;();<a name="line.65"></a>
+<span class="sourceLineNo">066</span><a name="line.66"></a>
+<span class="sourceLineNo">067</span>    ArgumentAcceptingOptionSpec( String option, boolean argumentRequired ) {<a name="line.67"></a>
+<span class="sourceLineNo">068</span>        super( option );<a name="line.68"></a>
+<span class="sourceLineNo">069</span><a name="line.69"></a>
+<span class="sourceLineNo">070</span>        this.argumentRequired = argumentRequired;<a name="line.70"></a>
+<span class="sourceLineNo">071</span>    }<a name="line.71"></a>
+<span class="sourceLineNo">072</span><a name="line.72"></a>
+<span class="sourceLineNo">073</span>    ArgumentAcceptingOptionSpec( Collection&lt;String&gt; options, boolean argumentRequired, String description ) {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>        super( options, description );<a name="line.74"></a>
+<span class="sourceLineNo">075</span><a name="line.75"></a>
+<span class="sourceLineNo">076</span>        this.argumentRequired = argumentRequired;<a name="line.76"></a>
+<span class="sourceLineNo">077</span>    }<a name="line.77"></a>
+<span class="sourceLineNo">078</span><a name="line.78"></a>
+<span class="sourceLineNo">079</span>    /**<a name="line.79"></a>
+<span class="sourceLineNo">080</span>     * &lt;p&gt;Specifies a type to which arguments of this spec's option are to be converted.&lt;/p&gt;<a name="line.80"></a>
+<span class="sourceLineNo">081</span>     *<a name="line.81"></a>
+<span class="sourceLineNo">082</span>     * &lt;p&gt;JOpt Simple accepts types that have either:&lt;/p&gt;<a name="line.82"></a>
+<span class="sourceLineNo">083</span>     *<a name="line.83"></a>
+<span class="sourceLineNo">084</span>     * &lt;ol&gt;<a name="line.84"></a>
+<span class="sourceLineNo">085</span>     *   &lt;li&gt;a public static method called {@code valueOf} which accepts a single argument of type {@link String}<a name="line.85"></a>
+<span class="sourceLineNo">086</span>     *   and whose return type is the same as the class on which the method is declared.  The {@code java.lang}<a name="line.86"></a>
+<span class="sourceLineNo">087</span>     *   primitive wrapper classes have such methods.&lt;/li&gt;<a name="line.87"></a>
+<span class="sourceLineNo">088</span>     *<a name="line.88"></a>
+<span class="sourceLineNo">089</span>     *   &lt;li&gt;a public constructor which accepts a single argument of type {@link String}.&lt;/li&gt;<a name="line.89"></a>
+<span class="sourceLineNo">090</span>     * &lt;/ol&gt;<a name="line.90"></a>
+<span class="sourceLineNo">091</span>     *<a name="line.91"></a>
+<span class="sourceLineNo">092</span>     * &lt;p&gt;This class converts arguments using those methods in that order; that is, {@code valueOf} would be invoked<a name="line.92"></a>
+<span class="sourceLineNo">093</span>     * before a one-{@link String}-arg constructor would.&lt;/p&gt;<a name="line.93"></a>
+<span class="sourceLineNo">094</span>     *<a name="line.94"></a>
+<span class="sourceLineNo">095</span>     * &lt;p&gt;Invoking this method will trump any previous calls to this method or to<a name="line.95"></a>
+<span class="sourceLineNo">096</span>     * {@link #withValuesConvertedBy(ValueConverter)}.<a name="line.96"></a>
+<span class="sourceLineNo">097</span>     *<a name="line.97"></a>
+<span class="sourceLineNo">098</span>     * @param &lt;T&gt; represents the runtime class of the desired option argument type<a name="line.98"></a>
+<span class="sourceLineNo">099</span>     * @param argumentType desired type of arguments to this spec's option<a name="line.99"></a>
+<span class="sourceLineNo">100</span>     * @return self, so that the caller can add clauses to the fluent interface sentence<a name="line.100"></a>
+<span class="sourceLineNo">101</span>     * @throws NullPointerException if the type is {@code null}<a name="line.101"></a>
+<span class="sourceLineNo">102</span>     * @throws IllegalArgumentException if the type does not have the standard conversion methods<a name="line.102"></a>
+<span class="sourceLineNo">103</span>     */<a name="line.103"></a>
+<span class="sourceLineNo">104</span>    public final &lt;T&gt; ArgumentAcceptingOptionSpec&lt;T&gt; ofType( Class&lt;T&gt; argumentType ) {<a name="line.104"></a>
+<span class="sourceLineNo">105</span>        return withValuesConvertedBy( findConverter( argumentType ) );<a name="line.105"></a>
+<span class="sourceLineNo">106</span>    }<a name="line.106"></a>
+<span class="sourceLineNo">107</span><a name="line.107"></a>
+<span class="sourceLineNo">108</span>    /**<a name="line.108"></a>
+<span class="sourceLineNo">109</span>     * &lt;p&gt;Specifies a converter to use to translate arguments of this spec's option into Java objects.  This is useful<a name="line.109"></a>
+<span class="sourceLineNo">110</span>     * when converting to types that do not have the requisite factory method or constructor for<a name="line.110"></a>
+<span class="sourceLineNo">111</span>     * {@link #ofType(Class)}.&lt;/p&gt;<a name="line.111"></a>
+<span class="sourceLineNo">112</span>     *<a name="line.112"></a>
+<span class="sourceLineNo">113</span>     * &lt;p&gt;Invoking this method will trump any previous calls to this method or to {@link #ofType(Class)}.<a name="line.113"></a>
+<span class="sourceLineNo">114</span>     *<a name="line.114"></a>
+<span class="sourceLineNo">115</span>     * @param &lt;T&gt; represents the runtime class of the desired option argument type<a name="line.115"></a>
+<span class="sourceLineNo">116</span>     * @param aConverter the converter to use<a name="line.116"></a>
+<span class="sourceLineNo">117</span>     * @return self, so that the caller can add clauses to the fluent interface sentence<a name="line.117"></a>
+<span class="sourceLineNo">118</span>     * @throws NullPointerException if the converter is {@code null}<a name="line.118"></a>
+<span class="sourceLineNo">119</span>     */<a name="line.119"></a>
+<span class="sourceLineNo">120</span>    @SuppressWarnings( "unchecked" )<a name="line.120"></a>
+<span class="sourceLineNo">121</span>    public final &lt;T&gt; ArgumentAcceptingOptionSpec&lt;T&gt; withValuesConvertedBy( ValueConverter&lt;T&gt; aConverter ) {<a name="line.121"></a>
+<span class="sourceLineNo">122</span>        if ( aConverter == null )<a name="line.122"></a>
+<span class="sourceLineNo">123</span>            throw new NullPointerException( "illegal null converter" );<a name="line.123"></a>
+<span class="sourceLineNo">124</span><a name="line.124"></a>
+<span class="sourceLineNo">125</span>        converter = (ValueConverter&lt;V&gt;) aConverter;<a name="line.125"></a>
+<span class="sourceLineNo">126</span>        return (ArgumentAcceptingOptionSpec&lt;T&gt;) this;<a name="line.126"></a>
+<span class="sourceLineNo">127</span>    }<a name="line.127"></a>
+<span class="sourceLineNo">128</span><a name="line.128"></a>
+<span class="sourceLineNo">129</span>    /**<a name="line.129"></a>
+<span class="sourceLineNo">130</span>     * &lt;p&gt;Specifies a description for the argument of the option that this spec represents.  This description is used<a name="line.130"></a>
+<span class="sourceLineNo">131</span>     * when generating help information about the parser.&lt;/p&gt;<a name="line.131"></a>
+<span class="sourceLineNo">132</span>     *<a name="line.132"></a>
+<span class="sourceLineNo">133</span>     * @param description describes the nature of the argument of this spec's option<a name="line.133"></a>
+<span class="sourceLineNo">134</span>     * @return self, so that the caller can add clauses to the fluent interface sentence<a name="line.134"></a>
+<span class="sourceLineNo">135</span>     */<a name="line.135"></a>
+<span class="sourceLineNo">136</span>    public final ArgumentAcceptingOptionSpec&lt;V&gt; describedAs( String description ) {<a name="line.136"></a>
+<span class="sourceLineNo">137</span>        argumentDescription = description;<a name="line.137"></a>
+<span class="sourceLineNo">138</span>        return this;<a name="line.138"></a>
+<span class="sourceLineNo">139</span>    }<a name="line.139"></a>
+<span class="sourceLineNo">140</span><a name="line.140"></a>
+<span class="sourceLineNo">141</span>    /**<a name="line.141"></a>
+<span class="sourceLineNo">142</span>     * &lt;p&gt;Specifies a value separator for the argument of the option that this spec represents.  This allows a single<a name="line.142"></a>
+<span class="sourceLineNo">143</span>     * option argument to represent multiple values for the option.  For example:&lt;/p&gt;<a name="line.143"></a>
+<span class="sourceLineNo">144</span>     *<a name="line.144"></a>
+<span class="sourceLineNo">145</span>     * &lt;pre&gt;<a name="line.145"></a>
+<span class="sourceLineNo">146</span>     *   &lt;code&gt;<a name="line.146"></a>
+<span class="sourceLineNo">147</span>     *   parser.accepts( "z" ).withRequiredArg()<a name="line.147"></a>
+<span class="sourceLineNo">148</span>     *       .&lt;strong&gt;withValuesSeparatedBy( ',' )&lt;/strong&gt;;<a name="line.148"></a>
+<span class="sourceLineNo">149</span>     *   OptionSet options = parser.parse( new String[] { "-z", "foo,bar,baz", "-z",<a name="line.149"></a>
+<span class="sourceLineNo">150</span>     *       "fizz", "-z", "buzz" } );<a name="line.150"></a>
+<span class="sourceLineNo">151</span>     *   &lt;/code&gt;<a name="line.151"></a>
+<span class="sourceLineNo">152</span>     * &lt;/pre&gt;<a name="line.152"></a>
+<span class="sourceLineNo">153</span>     *<a name="line.153"></a>
+<span class="sourceLineNo">154</span>     * &lt;p&gt;Then {@code options.valuesOf( "z" )} would yield the list {@code [foo, bar, baz, fizz, buzz]}.&lt;/p&gt;<a name="line.154"></a>
+<span class="sourceLineNo">155</span>     *<a name="line.155"></a>
+<span class="sourceLineNo">156</span>     * &lt;p&gt;You cannot use Unicode U+0000 as the separator.&lt;/p&gt;<a name="line.156"></a>
+<span class="sourceLineNo">157</span>     *<a name="line.157"></a>
+<span class="sourceLineNo">158</span>     * @param separator a character separator<a name="line.158"></a>
+<span class="sourceLineNo">159</span>     * @return self, so that the caller can add clauses to the fluent interface sentence<a name="line.159"></a>
+<span class="sourceLineNo">160</span>     * @throws IllegalArgumentException if the separator is Unicode U+0000<a name="line.160"></a>
+<span class="sourceLineNo">161</span>     */<a name="line.161"></a>
+<span class="sourceLineNo">162</span>    public final ArgumentAcceptingOptionSpec&lt;V&gt; withValuesSeparatedBy( char separator ) {<a name="line.162"></a>
+<span class="sourceLineNo">163</span>        if ( separator == NIL_VALUE_SEPARATOR )<a name="line.163"></a>
+<span class="sourceLineNo">164</span>            throw new IllegalArgumentException( "cannot use U+0000 as separator" );<a name="line.164"></a>
+<span class="sourceLineNo">165</span><a name="line.165"></a>
+<span class="sourceLineNo">166</span>        valueSeparator = String.valueOf( separator );<a name="line.166"></a>
+<span class="sourceLineNo">167</span>        return this;<a name="line.167"></a>
+<span class="sourceLineNo">168</span>    }<a name="line.168"></a>
+<span class="sourceLineNo">169</span><a name="line.169"></a>
+<span class="sourceLineNo">170</span>    /**<a name="line.170"></a>
+<span class="sourceLineNo">171</span>     * Specifies a set of default values for the argument of the option that this spec represents.<a name="line.171"></a>
+<span class="sourceLineNo">172</span>     *<a name="line.172"></a>
+<span class="sourceLineNo">173</span>     * @param value the first in the set of default argument values for this spec's option<a name="line.173"></a>
+<span class="sourceLineNo">174</span>     * @param values the (optional) remainder of the set of default argument values for this spec's option<a name="line.174"></a>
+<span class="sourceLineNo">175</span>     * @return self, so that the caller can add clauses to the fluent interface sentence<a name="line.175"></a>
+<span class="sourceLineNo">176</span>     * @throws NullPointerException if {@code value}, {@code values}, or any elements of {@code values} are<a name="line.176"></a>
+<span class="sourceLineNo">177</span>     * {@code null}<a name="line.177"></a>
+<span class="sourceLineNo">178</span>     */<a name="line.178"></a>
+<span class="sourceLineNo">179</span>    public ArgumentAcceptingOptionSpec&lt;V&gt; defaultsTo( V value, V... values ) {<a name="line.179"></a>
+<span class="sourceLineNo">180</span>        addDefaultValue( value );<a name="line.180"></a>
+<span class="sourceLineNo">181</span>        defaultsTo( values );<a name="line.181"></a>
+<span class="sourceLineNo">182</span><a name="line.182"></a>
+<span class="sourceLineNo">183</span>        return this;<a name="line.183"></a>
+<span class="sourceLineNo">184</span>    }<a name="line.184"></a>
+<span class="sourceLineNo">185</span><a name="line.185"></a>
+<span class="sourceLineNo">186</span>    /**<a name="line.186"></a>
+<span class="sourceLineNo">187</span>     * Specifies a set of default values for the argument of the option that this spec represents.<a name="line.187"></a>
+<span class="sourceLineNo">188</span>     *<a name="line.188"></a>
+<span class="sourceLineNo">189</span>     * @param values the set of default argument values for this spec's option<a name="line.189"></a>
+<span class="sourceLineNo">190</span>     * @return self, so that the caller can add clauses to the fluent interface sentence<a name="line.190"></a>
+<span class="sourceLineNo">191</span>     * @throws NullPointerException if {@code values} or any elements of {@code values} are {@code null}<a name="line.191"></a>
+<span class="sourceLineNo">192</span>     */<a name="line.192"></a>
+<span class="sourceLineNo">193</span>    public ArgumentAcceptingOptionSpec&lt;V&gt; defaultsTo( V[] values ) {<a name="line.193"></a>
+<span class="sourceLineNo">194</span>        for ( V each : values )<a name="line.194"></a>
+<span class="sourceLineNo">195</span>            addDefaultValue( each );<a name="line.195"></a>
+<span class="sourceLineNo">196</span><a name="line.196"></a>
+<span class="sourceLineNo">197</span>        return this;<a name="line.197"></a>
+<span class="sourceLineNo">198</span>    }<a name="line.198"></a>
+<span class="sourceLineNo">199</span><a name="line.199"></a>
+<span class="sourceLineNo">200</span>    /**<a name="line.200"></a>
+<span class="sourceLineNo">201</span>     * Marks this option as required. An {@link OptionException} will be thrown when<a name="line.201"></a>
+<span class="sourceLineNo">202</span>     * {@link OptionParser#parse(java.lang.String...)} is called, if an option is marked as required and not specified<a name="line.202"></a>
+<span class="sourceLineNo">203</span>     * on the command line.<a name="line.203"></a>
+<span class="sourceLineNo">204</span>     * <a name="line.204"></a>
+<span class="sourceLineNo">205</span>     * @return self, so that the caller can add clauses to the fluent interface sentence<a name="line.205"></a>
+<span class="sourceLineNo">206</span>     */ <a name="line.206"></a>
+<span class="sourceLineNo">207</span>    public ArgumentAcceptingOptionSpec&lt;V&gt; required() {<a name="line.207"></a>
+<span class="sourceLineNo">208</span>        optionRequired = true;<a name="line.208"></a>
+<span class="sourceLineNo">209</span>        return this;<a name="line.209"></a>
+<span class="sourceLineNo">210</span>    }<a name="line.210"></a>
+<span class="sourceLineNo">211</span>    <a name="line.211"></a>
+<span class="sourceLineNo">212</span>    public boolean isRequired() {<a name="line.212"></a>
+<span class="sourceLineNo">213</span>        return optionRequired;<a name="line.213"></a>
+<span class="sourceLineNo">214</span>    }<a name="line.214"></a>
+<span class="sourceLineNo">215</span><a name="line.215"></a>
+<span class="sourceLineNo">216</span>    private void addDefaultValue( V value ) {<a name="line.216"></a>
+<span class="sourceLineNo">217</span>        ensureNotNull( value );<a name="line.217"></a>
+<span class="sourceLineNo">218</span>        defaultValues.add( value );<a name="line.218"></a>
+<span class="sourceLineNo">219</span>    }<a name="line.219"></a>
+<span class="sourceLineNo">220</span><a name="line.220"></a>
+<span class="sourceLineNo">221</span>    @Override<a name="line.221"></a>
+<span class="sourceLineNo">222</span>    final void handleOption( OptionParser parser, ArgumentList arguments, OptionSet detectedOptions,<a name="line.222"></a>
+<span class="sourceLineNo">223</span>        String detectedArgument ) {<a name="line.223"></a>
+<span class="sourceLineNo">224</span><a name="line.224"></a>
+<span class="sourceLineNo">225</span>        if ( isNullOrEmpty( detectedArgument ) )<a name="line.225"></a>
+<span class="sourceLineNo">226</span>            detectOptionArgument( parser, arguments, detectedOptions );<a name="line.226"></a>
+<span class="sourceLineNo">227</span>        else<a name="line.227"></a>
+<span class="sourceLineNo">228</span>            addArguments( detectedOptions, detectedArgument );<a name="line.228"></a>
+<span class="sourceLineNo">229</span>    }<a name="line.229"></a>
+<span class="sourceLineNo">230</span><a name="line.230"></a>
+<span class="sourceLineNo">231</span>    protected void addArguments( OptionSet detectedOptions, String detectedArgument ) {<a name="line.231"></a>
+<span class="sourceLineNo">232</span>        StringTokenizer lexer = new StringTokenizer( detectedArgument, valueSeparator );<a name="line.232"></a>
+<span class="sourceLineNo">233</span>        if ( !lexer.hasMoreTokens() )<a name="line.233"></a>
+<span class="sourceLineNo">234</span>            detectedOptions.addWithArgument( this, detectedArgument );<a name="line.234"></a>
+<span class="sourceLineNo">235</span>        else {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>            while ( lexer.hasMoreTokens() )<a name="line.236"></a>
+<span class="sourceLineNo">237</span>                detectedOptions.addWithArgument( this, lexer.nextToken() );<a name="line.237"></a>
+<span class="sourceLineNo">238</span>        }<a name="line.238"></a>
+<span class="sourceLineNo">239</span>    }<a name="line.239"></a>
+<span class="sourceLineNo">240</span><a name="line.240"></a>
+<span class="sourceLineNo">241</span>    protected abstract void detectOptionArgument( OptionParser parser, ArgumentList arguments,<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        OptionSet detectedOptions );<a name="line.242"></a>
+<span class="sourceLineNo">243</span><a name="line.243"></a>
+<span class="sourceLineNo">244</span>    @SuppressWarnings( "unchecked" )<a name="line.244"></a>
+<span class="sourceLineNo">245</span>    @Override<a name="line.245"></a>
+<span class="sourceLineNo">246</span>    protected final V convert( String argument ) {<a name="line.246"></a>
+<span class="sourceLineNo">247</span>        if ( converter == null )<a name="line.247"></a>
+<span class="sourceLineNo">248</span>            return (V) argument;<a name="line.248"></a>
+<span class="sourceLineNo">249</span><a name="line.249"></a>
+<span class="sourceLineNo">250</span>        try {<a name="line.250"></a>
+<span class="sourceLineNo">251</span>            return converter.convert( argument );<a name="line.251"></a>
+<span class="sourceLineNo">252</span>        }<a name="line.252"></a>
+<span class="sourceLineNo">253</span>        catch ( ReflectionException ex ) {<a name="line.253"></a>
+<span class="sourceLineNo">254</span>            throw new OptionArgumentConversionException( options(), argument, converter.valueType(), ex );<a name="line.254"></a>
+<span class="sourceLineNo">255</span>        }<a name="line.255"></a>
+<span class="sourceLineNo">256</span>        catch ( ValueConversionException ex ) {<a name="line.256"></a>
+<span class="sourceLineNo">257</span>            throw new OptionArgumentConversionException( options(), argument, converter.valueType(), ex );<a name="line.257"></a>
+<span class="sourceLineNo">258</span>        }<a name="line.258"></a>
+<span class="sourceLineNo">259</span>    }<a name="line.259"></a>
+<span class="sourceLineNo">260</span><a name="line.260"></a>
+<span class="sourceLineNo">261</span>    protected boolean canConvertArgument( String argument ) {<a name="line.261"></a>
+<span class="sourceLineNo">262</span>        StringTokenizer lexer = new StringTokenizer( argument, valueSeparator );<a name="line.262"></a>
+<span class="sourceLineNo">263</span><a name="line.263"></a>
+<span class="sourceLineNo">264</span>        try {<a name="line.264"></a>
+<span class="sourceLineNo">265</span>            while ( lexer.hasMoreTokens() )<a name="line.265"></a>
+<span class="sourceLineNo">266</span>                convert( lexer.nextToken() );<a name="line.266"></a>
+<span class="sourceLineNo">267</span>            return true;<a name="line.267"></a>
+<span class="sourceLineNo">268</span>        }<a name="line.268"></a>
+<span class="sourceLineNo">269</span>        catch ( OptionException ignored ) {<a name="line.269"></a>
+<span class="sourceLineNo">270</span>            return false;<a name="line.270"></a>
+<span class="sourceLineNo">271</span>        }<a name="line.271"></a>
+<span class="sourceLineNo">272</span>    }<a name="line.272"></a>
+<span class="sourceLineNo">273</span><a name="line.273"></a>
+<span class="sourceLineNo">274</span>    protected boolean isArgumentOfNumberType() {<a name="line.274"></a>
+<span class="sourceLineNo">275</span>        return converter != null &amp;&amp; Number.class.isAssignableFrom( converter.valueType() );<a name="line.275"></a>
+<span class="sourceLineNo">276</span>    }<a name="line.276"></a>
+<span class="sourceLineNo">277</span><a name="line.277"></a>
+<span class="sourceLineNo">278</span>    public boolean acceptsArguments() {<a name="line.278"></a>
+<span class="sourceLineNo">279</span>        return true;<a name="line.279"></a>
+<span class="sourceLineNo">280</span>    }<a name="line.280"></a>
+<span class="sourceLineNo">281</span><a name="line.281"></a>
+<span class="sourceLineNo">282</span>    public boolean requiresArgument() {<a name="line.282"></a>
+<span class="sourceLineNo">283</span>        return argumentRequired;<a name="line.283"></a>
+<span class="sourceLineNo">284</span>    }<a name="line.284"></a>
+<span class="sourceLineNo">285</span><a name="line.285"></a>
+<span class="sourceLineNo">286</span>    public String argumentDescription() {<a name="line.286"></a>
+<span class="sourceLineNo">287</span>        return argumentDescription;<a name="line.287"></a>
+<span class="sourceLineNo">288</span>    }<a name="line.288"></a>
+<span class="sourceLineNo">289</span><a name="line.289"></a>
+<span class="sourceLineNo">290</span>    public String argumentTypeIndicator() {<a name="line.290"></a>
+<span class="sourceLineNo">291</span>        if ( converter == null )<a name="line.291"></a>
+<span class="sourceLineNo">292</span>            return null;<a name="line.292"></a>
+<span class="sourceLineNo">293</span><a name="line.293"></a>
+<span class="sourceLineNo">294</span>        String pattern = converter.valuePattern();<a name="line.294"></a>
+<span class="sourceLineNo">295</span>        return pattern == null ? converter.valueType().getName() : pattern;<a name="line.295"></a>
+<span class="sourceLineNo">296</span>    }<a name="line.296"></a>
+<span class="sourceLineNo">297</span><a name="line.297"></a>
+<span class="sourceLineNo">298</span>    public List&lt;V&gt; defaultValues() {<a name="line.298"></a>
+<span class="sourceLineNo">299</span>        return unmodifiableList( defaultValues );<a name="line.299"></a>
+<span class="sourceLineNo">300</span>    }<a name="line.300"></a>
+<span class="sourceLineNo">301</span><a name="line.301"></a>
+<span class="sourceLineNo">302</span>    @Override<a name="line.302"></a>
+<span class="sourceLineNo">303</span>    public boolean equals( Object that ) {<a name="line.303"></a>
+<span class="sourceLineNo">304</span>        if ( !super.equals( that ) )<a name="line.304"></a>
+<span class="sourceLineNo">305</span>            return false;<a name="line.305"></a>
+<span class="sourceLineNo">306</span><a name="line.306"></a>
+<span class="sourceLineNo">307</span>        ArgumentAcceptingOptionSpec&lt;?&gt; other = (ArgumentAcceptingOptionSpec&lt;?&gt;) that;<a name="line.307"></a>
+<span class="sourceLineNo">308</span>        return requiresArgument() == other.requiresArgument();<a name="line.308"></a>
+<span class="sourceLineNo">309</span>    }<a name="line.309"></a>
+<span class="sourceLineNo">310</span><a name="line.310"></a>
+<span class="sourceLineNo">311</span>    @Override<a name="line.311"></a>
+<span class="sourceLineNo">312</span>    public int hashCode() {<a name="line.312"></a>
+<span class="sourceLineNo">313</span>        return super.hashCode() ^ ( argumentRequired ? 0 : 1 );<a name="line.313"></a>
+<span class="sourceLineNo">314</span>    }<a name="line.314"></a>
+<span class="sourceLineNo">315</span>}<a name="line.315"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>

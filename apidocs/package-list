@@ -1,0 +1,6 @@
+org.elasticsearch.analysis.decompound
+org.elasticsearch.index.analysis
+org.elasticsearch.plugin.analysis.decompound
+org.elasticsearch.tools.opt
+org.elasticsearch.tools.opt.internal
+org.elasticsearch.tools.opt.util
