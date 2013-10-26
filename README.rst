@@ -29,6 +29,15 @@ ES version     Plugin     Release date       Command
 0.90.5         **1.3.0**  Oct 26, 2013       ./bin/plugin --install decompound --url http://bit.ly/1dbOs2u
 =============  =========  =================  =============================================================
 
+Project docs
+------------
+
+The Maven project site is available at `Github <http://jprante.github.io/elasticsearch-analysis-decompound>`_
+
+Binaries
+--------
+
+Binaries are available at `Bintray <https://bintray.com/pkg/show/general/jprante/elasticsearch-plugins/elasticsearch-analysis-decompound>`_
 
 Example
 =======
