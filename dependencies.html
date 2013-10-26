@@ -82,7 +82,7 @@
                 
                     
                   <li id="publishDate">Last Published: 2013-10-26</li>
-                  <li class="divider">|</li> <li id="projectVersion">Version: 1.2.1</li>
+                  <li class="divider">|</li> <li id="projectVersion">Version: 1.3.0</li>
                       
                 
                     
@@ -219,7 +219,7 @@
 <tr class="a">
 <td>org.testng</td>
 <td><a class="externalLink" href="http://testng.org">testng</a></td>
-<td>6.8.5</td>
+<td>6.8.7</td>
 <td>jar</td>
 <td><a class="externalLink" href="http://apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></td></tr></table></div></div><a name="Project_Transitive_Dependencies"></a>
 <div class="section">
@@ -336,15 +336,27 @@
 <td>jar</td>
 <td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td></tr>
 <tr class="a">
+<td>junit</td>
+<td><a class="externalLink" href="http://junit.org">junit</a></td>
+<td>4.10</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.opensource.org/licenses/cpl1.0.txt">Common Public License Version 1.0</a></td></tr>
+<tr class="b">
 <td>org.beanshell</td>
 <td>bsh</td>
 <td>2.0b4</td>
 <td>jar</td>
 <td><a class="externalLink" href="http://www.gnu.org/licenses/lgpl.txt">GNU LESSER GENERAL PUBLIC LICENSE</a></td></tr>
+<tr class="a">
+<td>org.hamcrest</td>
+<td>hamcrest-core</td>
+<td>1.1</td>
+<td>jar</td>
+<td><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">BSD style</a></td></tr>
 <tr class="b">
 <td>org.yaml</td>
-<td><a class="externalLink" href="http://code.google.com/p/snakeyaml/">snakeyaml</a></td>
-<td>1.6</td>
+<td><a class="externalLink" href="http://www.snakeyaml.org">snakeyaml</a></td>
+<td>1.12</td>
 <td>jar</td>
 <td>LICENSE.txt</td></tr></table></div></div><a name="Project_Dependency_Graph"></a>
 <div class="section">
@@ -369,7 +381,7 @@
 <div class="section">
 <h3>Dependency Tree<a name="Dependency_Tree"></a></h3>
 <ul>
-<li>org.xbib.elasticsearch:elasticsearch-analysis-decompound:jar:1.2.1 <img id="_img1" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep0', '_img1' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep0" style="display:none">
+<li>org.xbib.elasticsearch:elasticsearch-analysis-decompound:jar:1.3.0 <img id="_img1" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep0', '_img1' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep0" style="display:none">
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>elasticsearch-analysis-decompound</th></tr>
@@ -528,7 +540,7 @@
 <p><b>Description: </b>Apache Log4j 1.2</p>
 <p><b>URL: </b><a class="externalLink" href="http://logging.apache.org/log4j/1.2/">http://logging.apache.org/log4j/1.2/</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
-<li>org.testng:testng:jar:6.8.5 (test) <img id="_img35" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep34', '_img35' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep34" style="display:none">
+<li>org.testng:testng:jar:6.8.7 (test) <img id="_img35" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep34', '_img35' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep34" style="display:none">
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>TestNG</th></tr>
@@ -538,7 +550,26 @@
 <p><b>URL: </b><a class="externalLink" href="http://testng.org">http://testng.org</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a></p></td></tr></table></div>
 <ul>
-<li>org.beanshell:bsh:jar:2.0b4 (test) <img id="_img37" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep36', '_img37' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep36" style="display:none">
+<li>junit:junit:jar:4.10 (test) <img id="_img37" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep36', '_img37' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep36" style="display:none">
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>JUnit</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>JUnit is a regression testing framework written by Erich Gamma and Kent Beck.
+        It is used by the developer who implements unit tests in Java.</p>
+<p><b>URL: </b><a class="externalLink" href="http://junit.org">http://junit.org</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/cpl1.0.txt">Common Public License Version 1.0</a></p></td></tr></table></div>
+<ul>
+<li>org.hamcrest:hamcrest-core:jar:1.1 (test) <img id="_img39" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep38', '_img39' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep38" style="display:none">
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Hamcrest Core</th></tr>
+<tr class="b">
+<td>
+<p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">BSD style</a></p></td></tr></table></div></li></ul></li>
+<li>org.beanshell:bsh:jar:2.0b4 (test) <img id="_img41" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep40', '_img41' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep40" style="display:none">
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>BeanShell</th></tr>
@@ -546,7 +577,7 @@
 <td>
 <p><b>Description: </b>BeanShell</p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.gnu.org/licenses/lgpl.txt">GNU LESSER GENERAL PUBLIC LICENSE</a></p></td></tr></table></div></li>
-<li>com.beust:jcommander:jar:1.27 (test) <img id="_img39" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep38', '_img39' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep38" style="display:none">
+<li>com.beust:jcommander:jar:1.27 (test) <img id="_img43" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep42', '_img43' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep42" style="display:none">
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>JCommander</th></tr>
@@ -555,16 +586,16 @@
 <p><b>Description: </b>A Java framework to parse command line options with annotations.</p>
 <p><b>URL: </b><a class="externalLink" href="http://beust.com/jcommander">http://beust.com/jcommander</a></p>
 <p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
-<li>org.yaml:snakeyaml:jar:1.6 (test) <img id="_img41" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep40', '_img41' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep40" style="display:none">
+<li>org.yaml:snakeyaml:jar:1.12 (test) <img id="_img45" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep44', '_img45' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep44" style="display:none">
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>SnakeYAML</th></tr>
 <tr class="b">
 <td>
 <p><b>Description: </b>YAML 1.1 parser and emitter for Java</p>
-<p><b>URL: </b><a class="externalLink" href="http://code.google.com/p/snakeyaml/">http://code.google.com/p/snakeyaml/</a></p>
+<p><b>URL: </b><a class="externalLink" href="http://www.snakeyaml.org">http://www.snakeyaml.org</a></p>
 <p><b>Project License: </b><a href="LICENSE.txt">Apache License Version 2.0</a></p></td></tr></table></div></li></ul></li>
-<li>org.hamcrest:hamcrest-all:jar:1.3 (test) <img id="_img43" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep42', '_img43' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep42" style="display:none">
+<li>org.hamcrest:hamcrest-all:jar:1.3 (test) <img id="_img47" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_dep46', '_img47' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_dep46" style="display:none">
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>Hamcrest All</th></tr>
@@ -575,11 +606,13 @@
 <p><b>Project License: </b><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">New BSD License</a></p></td></tr></table></div></li></ul></li></ul></div></div><a name="Licenses"></a>
 <div class="section">
 <h2>Licenses<a name="Licenses"></a></h2>
+<p><b>BSD style: </b>Hamcrest Core</p>
 <p><b>New BSD License: </b>Hamcrest All</p>
 <p><b>GNU LESSER GENERAL PUBLIC LICENSE: </b>BeanShell</p>
 <p><b>Apache 2: </b>Lucene Common Analyzers, Lucene Core, Lucene Grouping, Lucene Highlighter, Lucene Join, Lucene Memory, Lucene Miscellaneous, Lucene Queries, Lucene QueryParsers, Lucene Sandbox, Lucene Spatial, Lucene Suggest, Lucene codecs</p>
 <p><b>Apache License, Version 2.0: </b>TestNG</p>
 <p><b>GNU General Public License Version 2: </b>elasticsearch-analysis-decompound</p>
+<p><b>Common Public License Version 1.0: </b>JUnit</p>
 <p><b>The Apache Software License, Version 2.0: </b>Apache Log4j, JCommander, Spatial4J, elasticsearch</p>
 <p><b>Apache License Version 2.0: </b>SnakeYAML</p></div><a name="Dependency_File_Details"></a>
 <div class="section">
@@ -610,6 +643,14 @@
 <td>1.6</td>
 <td>debug</td></tr>
 <tr class="b">
+<td>junit-4.10.jar</td>
+<td>247.23 kB</td>
+<td>290</td>
+<td>252</td>
+<td>31</td>
+<td>1.5</td>
+<td>debug</td></tr>
+<tr class="a">
 <td>lucene-analyzers-common-4.4.0.jar</td>
 <td>1.51 MB</td>
 <td>601</td>
@@ -617,7 +658,7 @@
 <td>61</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>lucene-codecs-4.4.0.jar</td>
 <td>293.53 kB</td>
 <td>193</td>
@@ -625,7 +666,7 @@
 <td>9</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="b">
+<tr class="a">
 <td>lucene-core-4.4.0.jar</td>
 <td>2.11 MB</td>
 <td>1,454</td>
@@ -633,7 +674,7 @@
 <td>22</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>lucene-grouping-4.4.0.jar</td>
 <td>105.11 kB</td>
 <td>73</td>
@@ -641,7 +682,7 @@
 <td>3</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="b">
+<tr class="a">
 <td>lucene-highlighter-4.4.0.jar</td>
 <td>120.58 kB</td>
 <td>86</td>
@@ -649,7 +690,7 @@
 <td>3</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>lucene-join-4.4.0.jar</td>
 <td>61.77 kB</td>
 <td>43</td>
@@ -657,7 +698,7 @@
 <td>1</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="b">
+<tr class="a">
 <td>lucene-memory-4.4.0.jar</td>
 <td>34.93 kB</td>
 <td>23</td>
@@ -665,7 +706,7 @@
 <td>1</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>lucene-misc-4.4.0.jar</td>
 <td>90.27 kB</td>
 <td>69</td>
@@ -673,7 +714,7 @@
 <td>6</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="b">
+<tr class="a">
 <td>lucene-queries-4.4.0.jar</td>
 <td>197.77 kB</td>
 <td>166</td>
@@ -681,7 +722,7 @@
 <td>5</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>lucene-queryparser-4.4.0.jar</td>
 <td>375.86 kB</td>
 <td>284</td>
@@ -689,7 +730,7 @@
 <td>25</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="b">
+<tr class="a">
 <td>lucene-sandbox-4.4.0.jar</td>
 <td>44.42 kB</td>
 <td>34</td>
@@ -697,7 +738,7 @@
 <td>2</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>lucene-spatial-4.4.0.jar</td>
 <td>90.96 kB</td>
 <td>66</td>
@@ -705,7 +746,7 @@
 <td>6</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="b">
+<tr class="a">
 <td>lucene-suggest-4.4.0.jar</td>
 <td>150.65 kB</td>
 <td>97</td>
@@ -713,7 +754,7 @@
 <td>6</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>bsh-2.0b4.jar</td>
 <td>275.09 kB</td>
 <td>238</td>
@@ -721,7 +762,7 @@
 <td>8</td>
 <td>1.2</td>
 <td>release</td></tr>
-<tr class="b">
+<tr class="a">
 <td>elasticsearch-0.90.5.jar</td>
 <td>10.15 MB</td>
 <td>7,908</td>
@@ -729,7 +770,7 @@
 <td>490</td>
 <td>1.6</td>
 <td>debug</td></tr>
-<tr class="a">
+<tr class="b">
 <td>hamcrest-all-1.3.jar</td>
 <td>299.39 kB</td>
 <td>249</td>
@@ -737,20 +778,28 @@
 <td>23</td>
 <td>1.5</td>
 <td>debug</td></tr>
+<tr class="a">
+<td>hamcrest-core-1.1.jar</td>
+<td>74.85 kB</td>
+<td>54</td>
+<td>21</td>
+<td>3</td>
+<td>1.5</td>
+<td>debug</td></tr>
 <tr class="b">
-<td>testng-6.8.5.jar</td>
-<td>816.02 kB</td>
+<td>testng-6.8.7.jar</td>
+<td>815.99 kB</td>
 <td>594</td>
 <td>545</td>
 <td>26</td>
 <td>1.5</td>
 <td>debug</td></tr>
 <tr class="a">
-<td>snakeyaml-1.6.jar</td>
-<td>226.68 kB</td>
-<td>208</td>
-<td>183</td>
-<td>16</td>
+<td>snakeyaml-1.12.jar</td>
+<td>264.43 kB</td>
+<td>240</td>
+<td>204</td>
+<td>19</td>
 <td>1.5</td>
 <td>debug</td></tr>
 <tr class="b">
@@ -770,13 +819,13 @@
 <th>JDK Rev</th>
 <th>Debug</th></tr>
 <tr class="b">
-<td>21</td>
-<td>17.47 MB</td>
-<td>12,859</td>
-<td>11,273</td>
-<td>749</td>
+<td>23</td>
+<td>17.82 MB</td>
+<td>13,235</td>
+<td>11,567</td>
+<td>786</td>
 <td>1.6</td>
-<td>20</td></tr>
+<td>22</td></tr>
 <tr class="a">
 <td>compile: 16</td>
 <td>compile: 15.84 MB</td>
@@ -786,13 +835,13 @@
 <td>-</td>
 <td>compile: 16</td></tr>
 <tr class="b">
-<td>test: 5</td>
-<td>test: 1.63 MB</td>
-<td>test: 1,348</td>
-<td>test: 1,135</td>
-<td>test: 78</td>
+<td>test: 7</td>
+<td>test: 1.98 MB</td>
+<td>test: 1,724</td>
+<td>test: 1,429</td>
+<td>test: 115</td>
 <td>-</td>
-<td>test: 4</td></tr></table></div><a name="Dependency_Repository_Locations"></a>
+<td>test: 6</td></tr></table></div><a name="Dependency_Repository_Locations"></a>
 <div class="section">
 <h2>Dependency Repository Locations<a name="Dependency_Repository_Locations"></a></h2>
 <table border="0" class="table table-striped">
@@ -850,130 +899,144 @@
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/com/spatial4j/spatial4j/0.3/spatial4j-0.3.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
 <tr class="b">
+<td>junit:junit:jar:4.10</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td><a class="externalLink" href="http://repo.maven.apache.org/maven2/junit/junit/4.10/junit-4.10.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td>-</td></tr>
+<tr class="a">
 <td>org.apache.lucene:lucene-analyzers-common:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-analyzers-common/4.4.0/lucene-analyzers-common-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.apache.lucene:lucene-codecs:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-codecs/4.4.0/lucene-codecs-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="b">
+<tr class="a">
 <td>org.apache.lucene:lucene-core:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/4.4.0/lucene-core-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.apache.lucene:lucene-grouping:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-grouping/4.4.0/lucene-grouping-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="b">
+<tr class="a">
 <td>org.apache.lucene:lucene-highlighter:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-highlighter/4.4.0/lucene-highlighter-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.apache.lucene:lucene-join:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-join/4.4.0/lucene-join-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="b">
+<tr class="a">
 <td>org.apache.lucene:lucene-memory:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-memory/4.4.0/lucene-memory-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.apache.lucene:lucene-misc:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-misc/4.4.0/lucene-misc-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="b">
+<tr class="a">
 <td>org.apache.lucene:lucene-queries:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queries/4.4.0/lucene-queries-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.apache.lucene:lucene-queryparser:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queryparser/4.4.0/lucene-queryparser-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="b">
+<tr class="a">
 <td>org.apache.lucene:lucene-sandbox:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-sandbox/4.4.0/lucene-sandbox-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.apache.lucene:lucene-spatial:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-spatial/4.4.0/lucene-spatial-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="b">
+<tr class="a">
 <td>org.apache.lucene:lucene-suggest:jar:4.4.0</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/apache/lucene/lucene-suggest/4.4.0/lucene-suggest-4.4.0.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.beanshell:bsh:jar:2.0b4</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="b">
+<tr class="a">
 <td>org.elasticsearch:elasticsearch:jar:0.90.5</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/elasticsearch/elasticsearch/0.90.5/elasticsearch-0.90.5.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
-<tr class="a">
+<tr class="b">
 <td>org.hamcrest:hamcrest-all:jar:1.3</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
 <td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-all/1.3/hamcrest-all-1.3.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
+<tr class="a">
+<td>org.hamcrest:hamcrest-core:jar:1.1</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td>-</td></tr>
 <tr class="b">
-<td>org.testng:testng:jar:6.8.5</td>
+<td>org.testng:testng:jar:6.8.7</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
-<td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/testng/testng/6.8.5/testng-6.8.5.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/testng/testng/6.8.7/testng-6.8.7.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
 <tr class="a">
-<td>org.yaml:snakeyaml:jar:1.6</td>
+<td>org.yaml:snakeyaml:jar:1.12</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
-<td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/yaml/snakeyaml/1.6/snakeyaml-1.6.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td><a class="externalLink" href="http://repo.maven.apache.org/maven2/org/yaml/snakeyaml/1.12/snakeyaml-1.12.jar"><img alt="Found at http://repo.maven.apache.org/maven2" src="images/icon_success_sml.gif" /></a></td>
 <td>-</td></tr>
 <tr class="b">
 <td>log4j:log4j:jar:1.2.17</td>
@@ -990,11 +1053,11 @@
 <th>central</th>
 <th>elasticsearch</th></tr>
 <tr class="b">
-<td>21 (compile: 16, test: 5)</td>
+<td>23 (compile: 16, test: 7)</td>
 <td>0</td>
 <td>0</td>
 <td>0</td>
-<td>21</td>
+<td>23</td>
 <td>0</td></tr></table></div>
                   </div>
             </div>

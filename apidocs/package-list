@@ -1,6 +1,3 @@
-org.elasticsearch.analysis.decompound
-org.elasticsearch.index.analysis
-org.elasticsearch.plugin.analysis.decompound
-org.elasticsearch.tools.opt
-org.elasticsearch.tools.opt.internal
-org.elasticsearch.tools.opt.util
+org.xbib.elasticsearch.analysis.decompound
+org.xbib.elasticsearch.index.analysis
+org.xbib.elasticsearch.plugin.analysis.decompound
