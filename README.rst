@@ -15,6 +15,8 @@ Lucene comes with two coumpound word token filters, a dictionary- and a hyphenat
 Installation
 ------------
 
+The latest version is **1.3.0** (Oct 26, 2013)
+
 Prerequisites::
 
   Elasticsearch 0.90+
@@ -22,8 +24,9 @@ Prerequisites::
 =============  =========  =================  =============================================================
 ES version     Plugin     Release date       Command
 -------------  ---------  -----------------  -------------------------------------------------------------
-0.90.5         **1.2.1**  Oct 14, 2013       ./bin/plugin --install decompound --url http://bit.ly/1cP4Gkt
-0.90.2         **1.2.0**  Jul 17, 2013       ./bin/plugin --install decompound --url http://bit.ly/1bJCygc
+0.90.2         1.2.0      Jul 17, 2013       ./bin/plugin --install decompound --url http://bit.ly/1bJCygc
+0.90.5         1.2.1      Oct 14, 2013       ./bin/plugin --install decompound --url http://bit.ly/1cP4Gkt
+0.90.5         **1.3.0**  Oct 26, 2013       ./bin/plugin --install decompound --url http://bit.ly/1dbOs2u
 =============  =========  =================  =============================================================
 
 
