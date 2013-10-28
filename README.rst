@@ -17,6 +17,8 @@ Installation
 
 The latest version is **1.3.0** (Oct 26, 2013)
 
+.. image:: https://travis-ci.org/jprante/elasticsearch-analysis-decompound.png
+
 Prerequisites::
 
   Elasticsearch 0.90+
