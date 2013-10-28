@@ -29,6 +29,8 @@ ES version     Plugin     Release date       Command
 0.90.5         **1.3.0**  Oct 26, 2013       ./bin/plugin --install decompound --url http://bit.ly/1dbOs2u
 =============  =========  =================  =============================================================
 
+Do not forget to restart the node after installing.
+
 Project docs
 ------------
 

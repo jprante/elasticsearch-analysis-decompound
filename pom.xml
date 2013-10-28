@@ -5,7 +5,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.xbib.elasticsearch</groupId>
+    <groupId>org.xbib.elasticsearch.plugin</groupId>
     <artifactId>elasticsearch-analysis-decompound</artifactId>
     <version>1.3.0</version>
 
@@ -26,11 +26,24 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <id>jprante</id>
+            <name>Jörg Prante</name>
+            <url>https://github.com/jprante</url>
+        </developer>
+    </developers>
+
     <scm>
         <connection>scm:git:git@github.com:jprante/elasticsearch-analysis-decompound.git</connection>
         <developerConnection>scm:git:git@github.com:jprante/elasticsearch-analysis-decompound.git</developerConnection>
         <url>http://github.com/jprante/elasticsearch-analysis-decompound</url>
     </scm>
+
+    <issueManagement>
+        <system>Github Issue Tracker</system>
+        <url>https://github.com/jprante/elasticsearch-analysis-decompund/issues</url>
+    </issueManagement>
 
     <distributionManagement>
         <repository>
@@ -39,6 +52,19 @@
             <url>https://api.bintray.com/maven/jprante/elasticsearch-plugins/elasticsearch-analysis-decompound</url>
         </repository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>bintray-elasticsearch-plugins</id>
+            <url>http://dl.bintray.com/jprante/elasticsearch-plugins</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <properties>
         <github.global.server>github</github.global.server>
@@ -60,6 +86,7 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
+            <type>jar</type>
             <optional>true</optional>
         </dependency>
 
@@ -67,6 +94,7 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.7</version>
+            <type>jar</type>
             <scope>test</scope>
         </dependency>
 
@@ -74,6 +102,7 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.3</version>
+            <type>jar</type>
             <scope>test</scope>
         </dependency>
 
