@@ -17,7 +17,7 @@ package org.xbib.elasticsearch.index.analysis;
 
 import java.io.IOException;
 import org.apache.lucene.analysis.TokenStream;
-import org.elasticsearch.ElasticSearchIllegalArgumentException;
+import org.elasticsearch.ElasticsearchIllegalArgumentException;
 import org.xbib.elasticsearch.analysis.decompound.Decompounder;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.assistedinject.Assisted;
@@ -55,9 +55,9 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
                     env.resolveConfig(reduce).openStream(),
                     threshold);
         } catch (ClassNotFoundException e) {
-            throw new ElasticSearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);
+            throw new ElasticsearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);
         } catch (IOException e) {
-            throw new ElasticSearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);
+            throw new ElasticsearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);
         }
     }
 }
