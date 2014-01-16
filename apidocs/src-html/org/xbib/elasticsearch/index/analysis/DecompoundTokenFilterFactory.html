@@ -1,74 +1,69 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en">
-<head>
-<title>Source code</title>
-<link rel="stylesheet" type="text/css" href="../../../../../../stylesheet.css" title="Style">
-</head>
-<body>
-<div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>/**<a name="line.1"></a>
-<span class="sourceLineNo">002</span> * This program is free software; you can redistribute it and/or modify it under<a name="line.2"></a>
-<span class="sourceLineNo">003</span> * the terms of the GNU General Public License as published by the Free Software<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * Foundation; either version 2 of the License, or (at your option) any later<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * version.<a name="line.5"></a>
-<span class="sourceLineNo">006</span> *<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * This program is distributed in the hope that it will be useful, but WITHOUT<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * details.<a name="line.10"></a>
-<span class="sourceLineNo">011</span> *<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * You should have received a copy of the GNU General Public License along with<a name="line.12"></a>
-<span class="sourceLineNo">013</span> * this program; if not, write to the Free Software Foundation, Inc., 51<a name="line.13"></a>
-<span class="sourceLineNo">014</span> * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.<a name="line.14"></a>
-<span class="sourceLineNo">015</span> */<a name="line.15"></a>
-<span class="sourceLineNo">016</span>package org.xbib.elasticsearch.index.analysis;<a name="line.16"></a>
-<span class="sourceLineNo">017</span><a name="line.17"></a>
-<span class="sourceLineNo">018</span>import java.io.IOException;<a name="line.18"></a>
-<span class="sourceLineNo">019</span>import org.apache.lucene.analysis.TokenStream;<a name="line.19"></a>
-<span class="sourceLineNo">020</span>import org.elasticsearch.ElasticSearchIllegalArgumentException;<a name="line.20"></a>
-<span class="sourceLineNo">021</span>import org.xbib.elasticsearch.analysis.decompound.Decompounder;<a name="line.21"></a>
-<span class="sourceLineNo">022</span>import org.elasticsearch.common.inject.Inject;<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import org.elasticsearch.common.inject.assistedinject.Assisted;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import org.elasticsearch.common.settings.Settings;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import org.elasticsearch.env.Environment;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import org.elasticsearch.index.Index;<a name="line.26"></a>
-<span class="sourceLineNo">027</span>import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;<a name="line.27"></a>
-<span class="sourceLineNo">028</span>import org.elasticsearch.index.settings.IndexSettings;<a name="line.28"></a>
-<span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span>public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {<a name="line.30"></a>
-<span class="sourceLineNo">031</span><a name="line.31"></a>
-<span class="sourceLineNo">032</span>    private final Decompounder decompounder;<a name="line.32"></a>
-<span class="sourceLineNo">033</span><a name="line.33"></a>
-<span class="sourceLineNo">034</span>    @Inject<a name="line.34"></a>
-<span class="sourceLineNo">035</span>    public DecompoundTokenFilterFactory(Index index,<a name="line.35"></a>
-<span class="sourceLineNo">036</span>            @IndexSettings Settings indexSettings, Environment env,<a name="line.36"></a>
-<span class="sourceLineNo">037</span>            @Assisted String name, @Assisted Settings settings) {<a name="line.37"></a>
-<span class="sourceLineNo">038</span>        super(index, indexSettings, name, settings);<a name="line.38"></a>
-<span class="sourceLineNo">039</span>        this.decompounder = createDecompounder(env, settings);<a name="line.39"></a>
-<span class="sourceLineNo">040</span>    }<a name="line.40"></a>
-<span class="sourceLineNo">041</span><a name="line.41"></a>
-<span class="sourceLineNo">042</span>    @Override<a name="line.42"></a>
-<span class="sourceLineNo">043</span>    public TokenStream create(TokenStream tokenStream) {<a name="line.43"></a>
-<span class="sourceLineNo">044</span>        return new DecompoundTokenFilter(tokenStream, decompounder);<a name="line.44"></a>
-<span class="sourceLineNo">045</span>    }<a name="line.45"></a>
-<span class="sourceLineNo">046</span><a name="line.46"></a>
-<span class="sourceLineNo">047</span>    private Decompounder createDecompounder(Environment env, Settings settings) {<a name="line.47"></a>
-<span class="sourceLineNo">048</span>        try {<a name="line.48"></a>
-<span class="sourceLineNo">049</span>            String forward = settings.get("forward", "/kompVVic.tree");<a name="line.49"></a>
-<span class="sourceLineNo">050</span>            String backward = settings.get("backward", "/kompVHic.tree");<a name="line.50"></a>
-<span class="sourceLineNo">051</span>            String reduce = settings.get("reduce", "/grfExt.tree");<a name="line.51"></a>
-<span class="sourceLineNo">052</span>            double threshold = settings.getAsDouble("threshold", 0.51);<a name="line.52"></a>
-<span class="sourceLineNo">053</span>            return new Decompounder(env.resolveConfig(forward).openStream(),<a name="line.53"></a>
-<span class="sourceLineNo">054</span>                    env.resolveConfig(backward).openStream(),<a name="line.54"></a>
-<span class="sourceLineNo">055</span>                    env.resolveConfig(reduce).openStream(),<a name="line.55"></a>
-<span class="sourceLineNo">056</span>                    threshold);<a name="line.56"></a>
-<span class="sourceLineNo">057</span>        } catch (ClassNotFoundException e) {<a name="line.57"></a>
-<span class="sourceLineNo">058</span>            throw new ElasticSearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);<a name="line.58"></a>
-<span class="sourceLineNo">059</span>        } catch (IOException e) {<a name="line.59"></a>
-<span class="sourceLineNo">060</span>            throw new ElasticSearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);<a name="line.60"></a>
-<span class="sourceLineNo">061</span>        }<a name="line.61"></a>
-<span class="sourceLineNo">062</span>    }<a name="line.62"></a>
-<span class="sourceLineNo">063</span>}<a name="line.63"></a>
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    /**<a name="line.1"></a>
+<FONT color="green">002</FONT>     * This program is free software; you can redistribute it and/or modify it under<a name="line.2"></a>
+<FONT color="green">003</FONT>     * the terms of the GNU General Public License as published by the Free Software<a name="line.3"></a>
+<FONT color="green">004</FONT>     * Foundation; either version 2 of the License, or (at your option) any later<a name="line.4"></a>
+<FONT color="green">005</FONT>     * version.<a name="line.5"></a>
+<FONT color="green">006</FONT>     *<a name="line.6"></a>
+<FONT color="green">007</FONT>     * This program is distributed in the hope that it will be useful, but WITHOUT<a name="line.7"></a>
+<FONT color="green">008</FONT>     * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS<a name="line.8"></a>
+<FONT color="green">009</FONT>     * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more<a name="line.9"></a>
+<FONT color="green">010</FONT>     * details.<a name="line.10"></a>
+<FONT color="green">011</FONT>     *<a name="line.11"></a>
+<FONT color="green">012</FONT>     * You should have received a copy of the GNU General Public License along with<a name="line.12"></a>
+<FONT color="green">013</FONT>     * this program; if not, write to the Free Software Foundation, Inc., 51<a name="line.13"></a>
+<FONT color="green">014</FONT>     * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.<a name="line.14"></a>
+<FONT color="green">015</FONT>     */<a name="line.15"></a>
+<FONT color="green">016</FONT>    package org.xbib.elasticsearch.index.analysis;<a name="line.16"></a>
+<FONT color="green">017</FONT>    <a name="line.17"></a>
+<FONT color="green">018</FONT>    import java.io.IOException;<a name="line.18"></a>
+<FONT color="green">019</FONT>    import org.apache.lucene.analysis.TokenStream;<a name="line.19"></a>
+<FONT color="green">020</FONT>    import org.elasticsearch.ElasticsearchIllegalArgumentException;<a name="line.20"></a>
+<FONT color="green">021</FONT>    import org.xbib.elasticsearch.analysis.decompound.Decompounder;<a name="line.21"></a>
+<FONT color="green">022</FONT>    import org.elasticsearch.common.inject.Inject;<a name="line.22"></a>
+<FONT color="green">023</FONT>    import org.elasticsearch.common.inject.assistedinject.Assisted;<a name="line.23"></a>
+<FONT color="green">024</FONT>    import org.elasticsearch.common.settings.Settings;<a name="line.24"></a>
+<FONT color="green">025</FONT>    import org.elasticsearch.env.Environment;<a name="line.25"></a>
+<FONT color="green">026</FONT>    import org.elasticsearch.index.Index;<a name="line.26"></a>
+<FONT color="green">027</FONT>    import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;<a name="line.27"></a>
+<FONT color="green">028</FONT>    import org.elasticsearch.index.settings.IndexSettings;<a name="line.28"></a>
+<FONT color="green">029</FONT>    <a name="line.29"></a>
+<FONT color="green">030</FONT>    public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {<a name="line.30"></a>
+<FONT color="green">031</FONT>    <a name="line.31"></a>
+<FONT color="green">032</FONT>        private final Decompounder decompounder;<a name="line.32"></a>
+<FONT color="green">033</FONT>    <a name="line.33"></a>
+<FONT color="green">034</FONT>        @Inject<a name="line.34"></a>
+<FONT color="green">035</FONT>        public DecompoundTokenFilterFactory(Index index,<a name="line.35"></a>
+<FONT color="green">036</FONT>                @IndexSettings Settings indexSettings, Environment env,<a name="line.36"></a>
+<FONT color="green">037</FONT>                @Assisted String name, @Assisted Settings settings) {<a name="line.37"></a>
+<FONT color="green">038</FONT>            super(index, indexSettings, name, settings);<a name="line.38"></a>
+<FONT color="green">039</FONT>            this.decompounder = createDecompounder(env, settings);<a name="line.39"></a>
+<FONT color="green">040</FONT>        }<a name="line.40"></a>
+<FONT color="green">041</FONT>    <a name="line.41"></a>
+<FONT color="green">042</FONT>        @Override<a name="line.42"></a>
+<FONT color="green">043</FONT>        public TokenStream create(TokenStream tokenStream) {<a name="line.43"></a>
+<FONT color="green">044</FONT>            return new DecompoundTokenFilter(tokenStream, decompounder);<a name="line.44"></a>
+<FONT color="green">045</FONT>        }<a name="line.45"></a>
+<FONT color="green">046</FONT>    <a name="line.46"></a>
+<FONT color="green">047</FONT>        private Decompounder createDecompounder(Environment env, Settings settings) {<a name="line.47"></a>
+<FONT color="green">048</FONT>            try {<a name="line.48"></a>
+<FONT color="green">049</FONT>                String forward = settings.get("forward", "/kompVVic.tree");<a name="line.49"></a>
+<FONT color="green">050</FONT>                String backward = settings.get("backward", "/kompVHic.tree");<a name="line.50"></a>
+<FONT color="green">051</FONT>                String reduce = settings.get("reduce", "/grfExt.tree");<a name="line.51"></a>
+<FONT color="green">052</FONT>                double threshold = settings.getAsDouble("threshold", 0.51);<a name="line.52"></a>
+<FONT color="green">053</FONT>                return new Decompounder(env.resolveConfig(forward).openStream(),<a name="line.53"></a>
+<FONT color="green">054</FONT>                        env.resolveConfig(backward).openStream(),<a name="line.54"></a>
+<FONT color="green">055</FONT>                        env.resolveConfig(reduce).openStream(),<a name="line.55"></a>
+<FONT color="green">056</FONT>                        threshold);<a name="line.56"></a>
+<FONT color="green">057</FONT>            } catch (ClassNotFoundException e) {<a name="line.57"></a>
+<FONT color="green">058</FONT>                throw new ElasticsearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);<a name="line.58"></a>
+<FONT color="green">059</FONT>            } catch (IOException e) {<a name="line.59"></a>
+<FONT color="green">060</FONT>                throw new ElasticsearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);<a name="line.60"></a>
+<FONT color="green">061</FONT>            }<a name="line.61"></a>
+<FONT color="green">062</FONT>        }<a name="line.62"></a>
+<FONT color="green">063</FONT>    }<a name="line.63"></a>
 
 
 
@@ -129,7 +124,6 @@
 
 
 
-</pre>
-</div>
-</body>
-</html>
+</PRE>
+</BODY>
+</HTML>
