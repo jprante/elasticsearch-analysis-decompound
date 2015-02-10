@@ -66,6 +66,7 @@ public class DecompoundTokenFilter extends TokenFilter {
         int start = offsetAtt.startOffset();
         CharSequence term = new String(termAtt.buffer(), 0, termAtt.length());
         for (String s : decomp.decompound(term.toString())) {
+            start = term.toString().indexOf(s, start) + 1;
             int len = s.length();
             tokens.add(new DecompoundToken(s, start, len));
             start += len;
