@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.KeywordAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.AttributeSource;
@@ -31,13 +32,16 @@ public class DecompoundTokenFilter extends TokenFilter {
     protected final Decompounder decomp;
     protected final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
     protected final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
+    private final KeywordAttribute keywordAtt = addAttribute(KeywordAttribute.class);
     private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
     private AttributeSource.State current;
+    private boolean respectKeywords = false;
 
-    protected DecompoundTokenFilter(TokenStream input, Decompounder decomp) {
+    protected DecompoundTokenFilter(TokenStream input, Decompounder decomp, boolean respectKeywords) {
         super(input);
         this.tokens = new LinkedList<DecompoundToken>();
         this.decomp = decomp;
+        this.respectKeywords = respectKeywords;
     }
 
     @Override
@@ -51,15 +55,21 @@ public class DecompoundTokenFilter extends TokenFilter {
             posIncAtt.setPositionIncrement(0);
             return true;
         }
-        if (input.incrementToken()) {
-            decompound();
-            if (!tokens.isEmpty()) {
-                current = captureState();
-            }
-            return true;
-        } else {
+
+        if (!input.incrementToken()) {
             return false;
         }
+
+        if (respectKeywords && keywordAtt.isKeyword()) {
+            return true;
+        }
+
+        decompound();
+        if (!tokens.isEmpty()) {
+            current = captureState();
+        }
+
+        return true;
     }
 
     protected void decompound() {
