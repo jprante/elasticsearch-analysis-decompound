@@ -3,6 +3,7 @@ package org.xbib.elasticsearch.index.analysis;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
@@ -32,12 +33,13 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.Assert;
 
+import static org.testng.AssertJUnit.assertNotNull;
+
 public class DecompoundTokenFilterTests {
 
     @Test
-    public void test() throws IOException {
-        AnalysisService analysisService = createAnalysisService();
-
+    public void testExampleFromReadme() throws IOException {
+        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/decompound_analysis.json");
 
         TokenFilterFactory tokenFilter = analysisService.tokenFilter("decomp");
         MatcherAssert.assertThat(tokenFilter, Matchers.instanceOf(DecompoundTokenFilterFactory.class));
@@ -77,11 +79,51 @@ public class DecompoundTokenFilterTests {
         Tokenizer tokenizer = new StandardTokenizer(Version.LUCENE_36, new StringReader(source));
 
         assertSimpleTSOutput(tokenFilter.create(tokenizer), expected);
-
     }
 
-    public AnalysisService createAnalysisService() {
-        Settings settings = ImmutableSettings.settingsBuilder().loadFromClasspath("org/xbib/elasticsearch/index/analysis/decompound_analysis.json").build();
+    @Test
+    public void ignoreKeywordsByDefault() throws IOException {
+        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/keywords_analysis.json");
+        Analyzer analyzer = analysisService.analyzer("decompounding_default");
+        assertNotNull(analyzer);
+
+        String source = "Schlüsselwort";
+        String[] expected = {
+            "Schlüsselwort",
+            "Schlüssel",
+            "wort"
+        };
+        assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
+    }
+
+    @Test
+    public void testRespectKeywords() throws IOException {
+        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/keywords_analysis.json");
+        Analyzer analyzer = analysisService.analyzer("with_keywords");
+        assertNotNull(analyzer);
+
+        String source = "Schlüsselwort";
+        String[] expected = {source};
+        assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
+    }
+
+    @Test
+    public void testDisablingRespectKeywords() throws IOException {
+        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/keywords_analysis.json");
+        Analyzer analyzer = analysisService.analyzer("with_keywords_disabled");
+        assertNotNull(analyzer);
+
+        String source = "Schlüsselwort";
+        String[] expected = {
+                "Schlüsselwort",
+                "Schlüssel",
+                "wort"
+        };
+        assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
+    }
+
+    private AnalysisService createAnalysisService(String configFilePath) {
+        Settings settings = ImmutableSettings.settingsBuilder().loadFromClasspath(configFilePath).build();
 
         Index index = new Index("test");
 
@@ -102,8 +144,7 @@ public class DecompoundTokenFilterTests {
         return injector.getInstance(AnalysisService.class);
     }
 
-    public static void assertSimpleTSOutput(TokenStream stream,
-            String[] expected) throws IOException {
+    private static void assertSimpleTSOutput(TokenStream stream, String[] expected) throws IOException {
         stream.reset();
         CharTermAttribute termAttr = stream.getAttribute(CharTermAttribute.class);
         Assert.assertNotNull(termAttr);

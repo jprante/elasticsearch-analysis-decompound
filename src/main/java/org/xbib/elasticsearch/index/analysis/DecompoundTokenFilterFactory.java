@@ -30,18 +30,21 @@ import org.elasticsearch.index.settings.IndexSettings;
 public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
     private final Decompounder decompounder;
+    private final Boolean respectKeywords;
 
     @Inject
     public DecompoundTokenFilterFactory(Index index,
             @IndexSettings Settings indexSettings, Environment env,
             @Assisted String name, @Assisted Settings settings) {
         super(index, indexSettings, name, settings);
+
         this.decompounder = createDecompounder(env, settings);
+        this.respectKeywords = settings.getAsBoolean("respect_keywords", false);
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        return new DecompoundTokenFilter(tokenStream, decompounder);
+        return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords);
     }
 
     private Decompounder createDecompounder(Environment env, Settings settings) {
