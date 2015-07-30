@@ -8,7 +8,6 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.util.Version;
 
 import org.elasticsearch.common.inject.Injector;
 import org.elasticsearch.common.inject.ModulesBuilder;
@@ -76,7 +75,7 @@ public class DecompoundTokenFilterTests {
             "gekosten"
         };
 
-        Tokenizer tokenizer = new StandardTokenizer(Version.LUCENE_36, new StringReader(source));
+        Tokenizer tokenizer = new StandardTokenizer(new StringReader(source));
 
         assertSimpleTSOutput(tokenFilter.create(tokenizer), expected);
     }
@@ -127,10 +126,11 @@ public class DecompoundTokenFilterTests {
 
         Index index = new Index("test");
 
-        Injector parentInjector = new ModulesBuilder().add(new SettingsModule(settings),
+        Injector parentInjector = new ModulesBuilder().add(
+                new SettingsModule(settings),
                 new EnvironmentModule(new Environment(settings)),
-                new IndicesAnalysisModule())
-                .createInjector();
+                new IndicesAnalysisModule()
+        ).createInjector();
 
         AnalysisModule analysisModule = new AnalysisModule(settings, parentInjector.getInstance(IndicesAnalysisService.class));
         new AnalysisDecompoundPlugin().onModule(analysisModule);
@@ -138,8 +138,8 @@ public class DecompoundTokenFilterTests {
         Injector injector = new ModulesBuilder().add(
                 new IndexSettingsModule(index, settings),
                 new IndexNameModule(index),
-                analysisModule)
-                .createChildInjector(parentInjector);
+                analysisModule
+        ).createChildInjector(parentInjector);
 
         return injector.getInstance(AnalysisService.class);
     }
