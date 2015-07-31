@@ -72,16 +72,14 @@ public class DecompoundTokenFilter extends TokenFilter {
         return true;
     }
 
-    protected void decompound() {
-        int start = offsetAtt.startOffset();
-        CharSequence term = new String(termAtt.buffer(), 0, termAtt.length());
-        for (String s : decomp.decompound(term.toString())) {
-            start = term.toString().indexOf(s, start) + 1;
-            int len = s.length();
-            tokens.add(new DecompoundToken(s, start, len));
-            start += len;
-        }
-    }
+	protected void decompound() {
+		int start = offsetAtt.startOffset();
+		int len = termAtt.length();
+		CharSequence term = new String(termAtt.buffer(), 0, termAtt.length());
+		for (String s : decomp.decompound(term.toString())) {
+			tokens.add(new DecompoundToken(s, start, len));
+		}
+	}
 
     @Override
     public void reset() throws IOException {
