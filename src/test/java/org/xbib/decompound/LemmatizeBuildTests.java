@@ -1,4 +1,6 @@
-package org.xbib.elasticsearch.analysis.decompound;
+package org.xbib.decompound;
+
+import org.xbib.elasticsearch.index.analysis.decompound.CompactPatriciaTrie;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;

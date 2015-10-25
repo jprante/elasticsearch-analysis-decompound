@@ -1,11 +1,8 @@
 {
     "index": {
-        "creation_date": "1433413899669",
-        "uuid": "test",
         "version": {
             "created": "1040499"
         },
-        
         "analysis": {
             "analyzer": {
                 "decompounding_default": {
@@ -16,7 +13,6 @@
                     ],
                     "type": "custom"
                 },
-
                 "with_keywords": {
                     "tokenizer": "decomp",
                     "filter": [
@@ -25,7 +21,6 @@
                     ],
                     "type": "custom"
                 },
-
                 "with_keywords_disabled": {
                     "tokenizer": "decomp",
                     "filter": [
@@ -33,9 +28,15 @@
                         "decomp_with_keywords_disabled"
                     ],
                     "type": "custom"
+                },
+                "with_subwords_only": {
+                    "tokenizer": "decomp",
+                    "filter": [
+                        "decomp_subwords_only"
+                    ],
+                    "type": "custom"
                 }
             },
-
             "filter": {
                 "keywords": {
                     "type": "keyword_marker",
@@ -53,9 +54,12 @@
                 "decomp_with_keywords_disabled": {
                     "type": "decompound",
                     "respect_keywords": false
+                },
+                "decomp_subwords_only" : {
+                    "type" : "decompound",
+                    "subwords_only" : true
                 }
             },
-
             "tokenizer": {
                 "decomp": {
                     "type": "standard",

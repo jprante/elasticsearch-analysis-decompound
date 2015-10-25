@@ -13,7 +13,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.xbib.elasticsearch.index.analysis;
+package org.xbib.elasticsearch.index.analysis.decompound;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -24,30 +24,32 @@ import org.apache.lucene.analysis.tokenattributes.KeywordAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.AttributeSource;
-import org.xbib.elasticsearch.analysis.decompound.Decompounder;
 
 public class DecompoundTokenFilter extends TokenFilter {
 
     protected final LinkedList<DecompoundToken> tokens;
     protected final Decompounder decomp;
-    protected final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
-    protected final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
+    private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
+    private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
     private final KeywordAttribute keywordAtt = addAttribute(KeywordAttribute.class);
     private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
     private AttributeSource.State current;
     private boolean respectKeywords = false;
+    private boolean subwordsonly = false;
 
-    protected DecompoundTokenFilter(TokenStream input, Decompounder decomp, boolean respectKeywords) {
+    private final static char[] EMPTY = new char[] {};
+
+    protected DecompoundTokenFilter(TokenStream input, Decompounder decomp, boolean respectKeywords, boolean subwordsonly) {
         super(input);
         this.tokens = new LinkedList<DecompoundToken>();
         this.decomp = decomp;
         this.respectKeywords = respectKeywords;
+        this.subwordsonly = subwordsonly;
     }
 
     @Override
     public final boolean incrementToken() throws IOException {
         if (!tokens.isEmpty()) {
-            assert current != null;
             DecompoundToken token = tokens.removeFirst();
             restoreState(current);
             termAtt.setEmpty().append(token.txt);
@@ -55,24 +57,22 @@ public class DecompoundTokenFilter extends TokenFilter {
             posIncAtt.setPositionIncrement(0);
             return true;
         }
-
         if (!input.incrementToken()) {
             return false;
         }
-
         if (respectKeywords && keywordAtt.isKeyword()) {
             return true;
         }
-
-        decompound();
-        if (!tokens.isEmpty()) {
+        if (!decompound()) {
             current = captureState();
+            if (subwordsonly) {
+                return incrementToken();
+            }
         }
-
         return true;
     }
 
-    protected void decompound() {
+    protected boolean decompound() {
         int start = offsetAtt.startOffset();
         CharSequence term = new String(termAtt.buffer(), 0, termAtt.length());
         for (String s : decomp.decompound(term.toString())) {
@@ -81,7 +81,9 @@ public class DecompoundTokenFilter extends TokenFilter {
             tokens.add(new DecompoundToken(s, start, len));
             start += len;
         }
+        return tokens.isEmpty();
     }
+
 
     @Override
     public void reset() throws IOException {

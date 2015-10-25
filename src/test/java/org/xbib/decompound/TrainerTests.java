@@ -1,4 +1,6 @@
-package org.xbib.elasticsearch.analysis.decompound;
+package org.xbib.decompound;
+
+import org.xbib.elasticsearch.index.analysis.decompound.Decompounder;
 
 import java.io.IOException;
 import java.io.StringReader;

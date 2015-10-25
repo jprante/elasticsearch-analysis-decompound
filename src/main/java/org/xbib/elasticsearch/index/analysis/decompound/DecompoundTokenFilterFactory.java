@@ -13,12 +13,10 @@
  * this program; if not, write to the Free Software Foundation, Inc., 51
  * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-package org.xbib.elasticsearch.index.analysis;
+package org.xbib.elasticsearch.index.analysis.decompound;
 
 import java.io.IOException;
 import org.apache.lucene.analysis.TokenStream;
-import org.elasticsearch.ElasticsearchIllegalArgumentException;
-import org.xbib.elasticsearch.analysis.decompound.Decompounder;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
@@ -31,6 +29,7 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
     private final Decompounder decompounder;
     private final Boolean respectKeywords;
+    private final Boolean subwordsonly;
 
     @Inject
     public DecompoundTokenFilterFactory(Index index,
@@ -40,11 +39,13 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
         this.decompounder = createDecompounder(env, settings);
         this.respectKeywords = settings.getAsBoolean("respect_keywords", false);
+        this.subwordsonly = settings.getAsBoolean("subwords_only", false);
+
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords);
+        return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords, subwordsonly);
     }
 
     private Decompounder createDecompounder(Environment env, Settings settings) {
@@ -58,9 +59,9 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
                     env.resolveConfig(reduce).openStream(),
                     threshold);
         } catch (ClassNotFoundException e) {
-            throw new ElasticsearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);
+            throw new IllegalArgumentException("decompounder resources in settings not found: " + settings, e);
         } catch (IOException e) {
-            throw new ElasticsearchIllegalArgumentException("decompounder resources in settings not found: " + settings, e);
+            throw new IllegalArgumentException("decompounder resources in settings not found: " + settings, e);
         }
     }
 }

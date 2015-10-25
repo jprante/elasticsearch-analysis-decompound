@@ -15,23 +15,34 @@
  */
 package org.xbib.elasticsearch.plugin.analysis.decompound;
 
+import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.analysis.AnalysisModule;
-import org.xbib.elasticsearch.index.analysis.DecompoundTokenFilterFactory;
-import org.xbib.elasticsearch.index.analysis.GermanNormalizationFilterFactory;
+import org.xbib.elasticsearch.index.analysis.decompound.DecompoundAnalysisBinderProcessor;
 import org.elasticsearch.plugins.AbstractPlugin;
 
 public class AnalysisDecompoundPlugin extends AbstractPlugin {
 
-    @Override public String name() {
+    private final Settings settings;
+
+    @Inject
+    public AnalysisDecompoundPlugin(Settings settings) {
+        this.settings = settings;
+    }
+
+    @Override
+    public String name() {
         return "analysis-decompound";
     }
 
-    @Override public String description() {
+    @Override
+    public String description() {
         return "A decompounding token filter for german and other languages";
     }
 
     public void onModule(AnalysisModule module) {
-        module.addTokenFilter("decompound", DecompoundTokenFilterFactory.class);
-        module.addTokenFilter("german_normalize", GermanNormalizationFilterFactory.class);
+        if (settings.getAsBoolean("plugins.decompound.enabled", true)) {
+            module.addProcessor(new DecompoundAnalysisBinderProcessor());
+        }
     }
 }
