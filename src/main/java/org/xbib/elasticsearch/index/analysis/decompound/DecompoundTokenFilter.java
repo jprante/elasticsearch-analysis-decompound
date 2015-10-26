@@ -37,8 +37,6 @@ public class DecompoundTokenFilter extends TokenFilter {
     private boolean respectKeywords = false;
     private boolean subwordsonly = false;
 
-    private final static char[] EMPTY = new char[] {};
-
     protected DecompoundTokenFilter(TokenStream input, Decompounder decomp, boolean respectKeywords, boolean subwordsonly) {
         super(input);
         this.tokens = new LinkedList<DecompoundToken>();
@@ -66,7 +64,11 @@ public class DecompoundTokenFilter extends TokenFilter {
         if (!decompound()) {
             current = captureState();
             if (subwordsonly) {
-                return incrementToken();
+                DecompoundToken token = tokens.removeFirst();
+                restoreState(current);
+                termAtt.setEmpty().append(token.txt);
+                offsetAtt.setOffset(token.startOffset, token.endOffset);
+                return true;
             }
         }
         return true;
@@ -74,9 +76,9 @@ public class DecompoundTokenFilter extends TokenFilter {
 
     protected boolean decompound() {
         int start = offsetAtt.startOffset();
-        CharSequence term = new String(termAtt.buffer(), 0, termAtt.length());
-        for (String s : decomp.decompound(term.toString())) {
-            start = term.toString().indexOf(s, start) + 1;
+        String term = new String(termAtt.buffer(), 0, termAtt.length());
+        for (String s : decomp.decompound(term)) {
+            start = term.indexOf(s, start) + 1;
             int len = s.length();
             tokens.add(new DecompoundToken(s, start, len));
             start += len;

@@ -7,7 +7,7 @@
 
     <groupId>org.xbib.elasticsearch.plugin</groupId>
     <artifactId>elasticsearch-analysis-decompound</artifactId>
-    <version>1.5.2.0</version>
+    <version>1.7.1.1</version>
 
     <packaging>jar</packaging>
 
@@ -73,7 +73,7 @@
         <github.global.server>github</github.global.server>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.compiler.version>1.7</java.compiler.version>
-        <elasticsearch.version>1.5.2</elasticsearch.version>
+        <elasticsearch.version>1.7.1</elasticsearch.version>
     </properties>
 
     <dependencies>
