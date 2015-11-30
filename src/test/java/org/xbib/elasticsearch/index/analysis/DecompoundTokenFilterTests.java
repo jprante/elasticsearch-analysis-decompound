@@ -1,7 +1,10 @@
 package org.xbib.elasticsearch.index.analysis;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -11,7 +14,6 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 import org.elasticsearch.common.inject.Injector;
 import org.elasticsearch.common.inject.ModulesBuilder;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.SettingsModule;
 import org.elasticsearch.env.Environment;
@@ -22,7 +24,6 @@ import org.elasticsearch.index.analysis.AnalysisModule;
 import org.elasticsearch.index.analysis.AnalysisService;
 import org.elasticsearch.index.analysis.TokenFilterFactory;
 import org.elasticsearch.index.settings.IndexSettingsModule;
-import org.elasticsearch.indices.analysis.IndicesAnalysisModule;
 import org.elasticsearch.indices.analysis.IndicesAnalysisService;
 
 import org.junit.Test;
@@ -67,9 +68,10 @@ public class DecompoundTokenFilterTests {
             "gekostet",
             "gekosten"
         };
-        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/decompound_analysis.json");
+        AnalysisService analysisService = createAnalysisService("decompound_analysis.json");
         TokenFilterFactory tokenFilter = analysisService.tokenFilter("decomp");
-        Tokenizer tokenizer = new StandardTokenizer(new StringReader(source));
+        Tokenizer tokenizer = new StandardTokenizer();
+        tokenizer.setReader(new StringReader(source));
         assertSimpleTSOutput(tokenFilter.create(tokenizer), expected);
     }
 
@@ -81,7 +83,7 @@ public class DecompoundTokenFilterTests {
             "Schlüssel",
             "wort"
         };
-        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/keywords_analysis.json");
+        AnalysisService analysisService = createAnalysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("decompounding_default");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
@@ -93,7 +95,7 @@ public class DecompoundTokenFilterTests {
         String[] expected = {
                 "Schlüsselwort"
         };
-        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/keywords_analysis.json");
+        AnalysisService analysisService = createAnalysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("with_keywords");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
@@ -107,7 +109,7 @@ public class DecompoundTokenFilterTests {
                 "Schlüssel",
                 "wort"
         };
-        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/keywords_analysis.json");
+        AnalysisService analysisService = createAnalysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("with_keywords_disabled");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
@@ -126,19 +128,23 @@ public class DecompoundTokenFilterTests {
                 "Bindestrich",
                 "wort"
         };
-        AnalysisService analysisService = createAnalysisService("org/xbib/elasticsearch/index/analysis/keywords_analysis.json");
+        AnalysisService analysisService = createAnalysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("with_subwords_only");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
     }
 
     private AnalysisService createAnalysisService(String configFilePath) {
-        Settings settings = ImmutableSettings.settingsBuilder().loadFromClasspath(configFilePath).build();
+        Settings settings =
+                Settings
+                .settingsBuilder()
+                .loadFromStream(configFilePath, DecompoundTokenFilterTests.class.getResourceAsStream(configFilePath))
+                        .put("path.home", (new File("").getAbsolutePath()))
+                        .build();
         Index index = new Index("test");
         Injector parentInjector = new ModulesBuilder().add(
                 new SettingsModule(settings),
-                new EnvironmentModule(new Environment(settings)),
-                new IndicesAnalysisModule()
+                new EnvironmentModule(new Environment(settings))
         ).createInjector();
         AnalysisModule analysisModule = new AnalysisModule(settings, parentInjector.getInstance(IndicesAnalysisService.class));
         new AnalysisDecompoundPlugin(settings).onModule(analysisModule);

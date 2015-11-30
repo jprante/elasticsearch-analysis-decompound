@@ -23,7 +23,8 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;
-import org.elasticsearch.index.settings.IndexSettings;
+import org.elasticsearch.index.settings.IndexSettingsService;
+import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
 public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
@@ -33,9 +34,9 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
     @Inject
     public DecompoundTokenFilterFactory(Index index,
-            @IndexSettings Settings indexSettings, Environment env,
+            IndexSettingsService indexSettingsService, Environment env,
             @Assisted String name, @Assisted Settings settings) {
-        super(index, indexSettings, name, settings);
+        super(index, indexSettingsService.getSettings(), name, settings);
 
         this.decompounder = createDecompounder(env, settings);
         this.respectKeywords = settings.getAsBoolean("respect_keywords", false);
@@ -54,9 +55,10 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
             String backward = settings.get("backward", "/kompVHic.tree");
             String reduce = settings.get("reduce", "/grfExt.tree");
             double threshold = settings.getAsDouble("threshold", 0.51);
-            return new Decompounder(env.resolveConfig(forward).openStream(),
-                    env.resolveConfig(backward).openStream(),
-                    env.resolveConfig(reduce).openStream(),
+            return new Decompounder(
+                    AnalysisDecompoundPlugin.class.getResourceAsStream(forward),
+                    AnalysisDecompoundPlugin.class.getResourceAsStream(backward),
+                    AnalysisDecompoundPlugin.class.getResourceAsStream(reduce),
                     threshold);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("decompounder resources in settings not found: " + settings, e);
