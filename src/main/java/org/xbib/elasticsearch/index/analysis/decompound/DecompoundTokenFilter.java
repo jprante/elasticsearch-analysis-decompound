@@ -52,7 +52,8 @@ public class DecompoundTokenFilter extends TokenFilter {
             restoreState(current);
             termAtt.setEmpty().append(token.txt);
             offsetAtt.setOffset(token.startOffset, token.endOffset);
-            posIncAtt.setPositionIncrement(0);
+            if (!subwordsonly)
+                posIncAtt.setPositionIncrement(0);
             return true;
         }
         if (!input.incrementToken()) {
