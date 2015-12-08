@@ -42,9 +42,8 @@ public class DecompounderTests {
     
         for (int i = 0; i < word.length; i++) {
             logger.info(word[i] +" => " + d.decompound(word[i]));
-            assertEquals(d.decompound(word[i]).toString(), decomp[i].toString());
+            assertEquals(d.decompound(word[i]).toString(), decomp[i]);
         }
-
     }
 
 }

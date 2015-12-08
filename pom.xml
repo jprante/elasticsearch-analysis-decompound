@@ -5,6 +5,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <github.global.server>github</github.global.server>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.compiler.version>1.7</java.compiler.version>
+        <elasticsearch.version>2.1.0</elasticsearch.version>
+    </properties>
+
     <groupId>org.xbib.elasticsearch.plugin</groupId>
     <artifactId>elasticsearch-analysis-decompound</artifactId>
     <version>${elasticsearch.version}.0</version>
@@ -68,13 +75,6 @@
             </snapshots>
         </repository>
     </repositories>
-
-    <properties>
-        <github.global.server>github</github.global.server>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.compiler.version>1.7</java.compiler.version>
-        <elasticsearch.version>2.1.0</elasticsearch.version>
-    </properties>
 
     <dependencies>
 
