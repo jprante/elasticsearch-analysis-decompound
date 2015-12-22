@@ -5,12 +5,11 @@ import java.io.InputStream;
 
 import org.elasticsearch.common.logging.ESLogger;
 import org.elasticsearch.common.logging.Loggers;
+import org.junit.Assert;
 import org.junit.Test;
 import org.xbib.elasticsearch.index.analysis.decompound.Decompounder;
 
-import static org.junit.Assert.assertEquals;
-
-public class DecompounderTests {
+public class DecompounderTests extends Assert {
 
     private final ESLogger logger = Loggers.getLogger(DecompounderTests.class.getName());
 

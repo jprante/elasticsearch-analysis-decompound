@@ -5,16 +5,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <github.global.server>github</github.global.server>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.compiler.version>1.7</java.compiler.version>
-        <elasticsearch.version>2.1.0</elasticsearch.version>
-    </properties>
-
     <groupId>org.xbib.elasticsearch.plugin</groupId>
     <artifactId>elasticsearch-analysis-decompound</artifactId>
-    <version>${elasticsearch.version}.0</version>
+    <version>2.1.1.0</version>
 
     <packaging>jar</packaging>
 
@@ -59,10 +52,6 @@
         </repository>
     </distributionManagement>
 
-
-    <!-- declaring my private repo here really sucks, it is only here for Travis CI clean builds
-    until a better solution is found for repos that can also provide snapshot artifacts
-      -->
     <repositories>
         <repository>
             <id>xbib</id>
@@ -75,6 +64,22 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <properties>
+        <github.global.server>github</github.global.server>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.7</java.version>
+        <elasticsearch.version>2.1.1</elasticsearch.version>
+        <descriptor.javaVersion>${java.version}</descriptor.javaVersion>
+        <descriptor.elasticsearchVersion>${elasticsearch.version}</descriptor.elasticsearchVersion>
+        <descriptor.classname>org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin</descriptor.classname>
+        <descriptor.name>decompound</descriptor.name>
+        <descriptor.description>${project.description}</descriptor.description>
+        <descriptor.jvm>true</descriptor.jvm>
+        <descriptor.isolated>true</descriptor.isolated>
+        <descriptor.site>false</descriptor.site>
+        <descriptor.version>${project.version}</descriptor.version>
+    </properties>
 
     <dependencies>
 
@@ -97,7 +102,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.2</version>
+            <version>2.5</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
@@ -105,7 +110,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.2</version>
+            <version>2.5</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
@@ -117,9 +122,28 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh-external</artifactId>
-                <version>2.9</version>
+                <version>2.10</version>
             </extension>
         </extensions>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/templates</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>plugin-descriptor.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/templates</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>plugin-descriptor.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
 
         <plugins>
             <plugin>
@@ -127,18 +151,24 @@
                 <version>3.3</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
+                <version>2.19</version>
                 <configuration>
                     <skipTests>false</skipTests>
                     <includes>
                         <include>**/*Tests.java</include>
                     </includes>
+                    <systemProperties>
+                        <property>
+                            <name>path.home</name>
+                            <value>${project.basedir}/target</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
             <plugin>
@@ -243,7 +273,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.18.1</version>
+                <version>2.19</version>
             </plugin>
         </plugins>
     </reporting>

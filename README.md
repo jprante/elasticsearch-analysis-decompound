@@ -29,19 +29,20 @@ by the ASV toolbox.
 
 | Plugin version   | Elasticsearch version | Release date |
 | -----------------| ----------------------| -------------|
+| 2.1.1.0          | 2.1.1                 | Dec 22 2015  |
 | 2.1.0.0          | 2.1.0                 | Dec  8 2015  |
 | 1.7.1.3          | 1.7.1                 | Nov 17 2015  |
 | 1.5.2.0          | 1.5.2                 | Oct 26 2015  |
 
 ## Installation
 
+### Elasticsearch 2.x
+
+    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.1.1.0/elasticsearch-analysis-decompound-2.1.1.0-plugin.zip
+
 ### Elasticsearch 1.x
 
     ./bin/plugin -install decompound -url http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/1.7.1.3/elasticsearch-analysis-decompound-1.7.1.3-plugin.zip
-
-### Elasticsearch 2.x
-
-    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.1.0.0/elasticsearch-analysis-decompound-2.1.0.0-plugin.zip
 
 Do not forget to restart the node after installing.
 

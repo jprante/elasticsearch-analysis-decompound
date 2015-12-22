@@ -10,6 +10,7 @@
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
             <excludes>
                 <exclude>org.elasticsearch</exclude>
                 <exclude>org.apache.lucene</exclude>
@@ -18,7 +19,8 @@
     </dependencySets>
     <files>
         <file>
-            <source>plugin-descriptor.properties</source>
+            <source>${basedir}/src/main/templates/plugin-descriptor.properties</source>
+            <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
         </file>
     </files>
