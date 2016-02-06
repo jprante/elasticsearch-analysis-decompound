@@ -1,4 +1,4 @@
-![Travis](https://travis-ci.org/jprante/elasticsearch-analysis-decompound.png)
+[![Build Status](https://travis-ci.org/apanimesh061/elasticsearch-analysis-decompound.svg?branch=master)](https://travis-ci.org/apanimesh061/elasticsearch-analysis-decompound)
 
 [Follow me on twitter](https://twitter.com/xbib)
 
