@@ -1,6 +1,6 @@
 
 def xbibGroup = 'org.xbib.elasticsearch.plugin'
-def xbibVersion = '2.1.1.0'
+def xbibVersion = '2.2.0'
 
 group = xbibGroup
 version = xbibVersion
@@ -14,7 +14,7 @@ ext {
     versions = [
         'log4j': '2.5',
         'junit' : '4.12',
-        'elasticsearch' : '2.1.1'
+        'elasticsearch' : '2.2.0'
     ]
 }
 
