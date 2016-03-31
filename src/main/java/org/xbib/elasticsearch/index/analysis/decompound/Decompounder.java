@@ -187,7 +187,7 @@ public class Decompounder {
         } else {
             list.add(word);
         }
-        List<String> retvec2 = new ArrayList();
+        List<String> retvec2 = new ArrayList<>();
         List<String> l;
         if (list.size() > 1) {
             for (String s : list) {
