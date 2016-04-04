@@ -15,10 +15,14 @@ public class DecompounderTests extends Assert {
 
     @Test
     public void testGerman() throws IOException, ClassNotFoundException {
-        InputStream forwfile = getClass().getResourceAsStream("/kompVVic.tree");
+    	
+    	InputStream forwfile = getClass().getResourceAsStream("/kompVVic.tree");
         InputStream backfile = getClass().getResourceAsStream("/kompVHic.tree");
         InputStream reducfile = getClass().getResourceAsStream("/grfExt.tree");
         Decompounder d = new Decompounder(forwfile, backfile, reducfile, 0.51);
+        
+        
+        long begin = System.currentTimeMillis();
         
         String[] word = {
             "Jahresfeier",
@@ -27,7 +31,21 @@ public class DecompounderTests extends Assert {
             "Ökosteuer",
             "Rechtsanwaltskanzleien",
             "",
-            "tomaten"
+            "tomaten",
+            "Taschenhersteller",
+            "Taschenhersteller",
+            "Taschenhersteller",
+            "Taschenhersteller",
+            "Kindergarten",
+            "Laufschritt",
+            "Geschirrtuch",
+            "Speisekarte",
+            "Brieftaube",
+            "Briefträger",
+            "Blitzschlag",
+            "Sonnenstrahl",
+            "Ersatzteil"
+            
         };
         String[] decomp = {
             "[Jahr, feier]",
@@ -36,13 +54,33 @@ public class DecompounderTests extends Assert {
             "[Ökosteuer]",
             "[Recht, anwalt, kanzlei]",
             "[]",
-            "[tomaten]"
+            "[tomaten]",
+            "[Tasche, hersteller]",
+            "[Tasche, hersteller]",
+            "[Tasche, hersteller]",
+            "[Tasche, hersteller]",
+            "[Kind, garten]",
+            "[Lauf, schritt]",
+            "[Geschirr, tuch]",
+            "[Speise, karte]",
+            "[Brief, taube]",
+            "[Brief, träger]",
+            "[Blitz, schlag]",
+            "[Sonne, strahl]",
+            "[Ersatz, teil]"
+            
         };
+        
+        
+        
     
         for (int i = 0; i < word.length; i++) {
             logger.info(word[i] +" => " + d.decompound(word[i]));
             assertEquals(d.decompound(word[i]).toString(), decomp[i]);
         }
+        
+        long end = System.currentTimeMillis();
+        System.out.println("total time : " + (end-begin));
     }
 
 }
