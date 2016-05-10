@@ -29,6 +29,7 @@ by the ASV toolbox.
 
 | Plugin version   | Elasticsearch version | Release date |
 | -----------------| ----------------------| -------------|
+| 2.3.1.0          | 2.3.1                 | May 10 2016  |
 | 2.3.0.0          | 2.3.0                 | Mar 31 2016  |
 | 2.2.1.0          | 2.2.1                 | Mar 31 2016  |
 | 2.2.0.0          | 2.2.0                 | Feb 19 2016  |
