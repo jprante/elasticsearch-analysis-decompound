@@ -44,7 +44,7 @@ by the ASV toolbox.
 
 ### Elasticsearch 2.x
 
-    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.3.1.0/elasticsearch-analysis-decompound-2.3.1.0-plugin.zip
+    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.3.3.0/elasticsearch-analysis-decompound-2.3.3.0-plugin.zip
 
 ### Elasticsearch 1.x
 
