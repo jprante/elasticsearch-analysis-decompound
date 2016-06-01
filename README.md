@@ -29,6 +29,7 @@ by the ASV toolbox.
 
 | Plugin version   | Elasticsearch version | Release date |
 | -----------------| ----------------------| -------------|
+| 2.3.1.0          | 2.3.1                 | Jun  1 2016  |
 | 2.3.0.0          | 2.3.0                 | Mar 31 2016  |
 | 2.2.1.0          | 2.2.1                 | Mar 31 2016  |
 | 2.2.0.0          | 2.2.0                 | Feb 19 2016  |
@@ -41,7 +42,7 @@ by the ASV toolbox.
 
 ### Elasticsearch 2.x
 
-    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.3.0.0/elasticsearch-analysis-decompound-2.3.0.0-plugin.zip
+    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.3.1.0/elasticsearch-analysis-decompound-2.3.1.0-plugin.zip
 
 ### Elasticsearch 1.x
 

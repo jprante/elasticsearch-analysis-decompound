@@ -1,13 +1,13 @@
 
 group = 'org.xbib.elasticsearch.plugin'
-version = '2.3.0.0'
+version = '2.3.1.0'
 
 ext {
     pluginName = 'decompound'
     pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
     pluginDescription = 'Decompounder plugin for Elasticsearch'
     versions = [
-            'elasticsearch' : '2.3.0',
+            'elasticsearch' : '2.3.1',
             'log4j': '2.5',
             'junit' : '4.12'
     ]
@@ -56,17 +56,15 @@ dependencies {
     testCompile "org.apache.logging.log4j:log4j-slf4j-impl:${versions.log4j}"
     testCompile "org.apache.logging.log4j:log4j-core:${versions.log4j}"
     integrationTestCompile "junit:junit:${versions.junit}"
-    integrationTestCompile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
+    releaseJars "${project.group}:${project.name}:${project.version}"
     wagon 'org.apache.maven.wagon:wagon-ssh-external:2.10'
 }
 
-compileJava {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:unchecked,deprecation"
 }
 
 test {
@@ -75,6 +73,27 @@ test {
         showStandardStreams = false
         exceptionFormat = 'full'
     }
+}
+
+task integrationTest(type: Test, dependsOn: ['unpackPlugin']) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = configurations.integrationTestCompile
+    classpath += fileTree("plugins/${pluginName}").include('*.jar')
+    classpath += sourceSets.integrationTest.output
+    // without this trick to remove identical jars from classpath, an Elasticsearch bug whines about a "jar hell"
+    classpath -= configurations.releaseJars
+    outputs.upToDateWhen { false }
+    systemProperty 'path.home', projectDir.absolutePath
+    testLogging.showStandardStreams = false
+}
+
+integrationTest.mustRunAfter test
+check.dependsOn integrationTest
+
+clean {
+    delete "plugins"
+    delete "data"
+    delete "logs"
 }
 
 task makePluginDescriptor(type: Copy) {
@@ -96,7 +115,6 @@ task makePluginDescriptor(type: Copy) {
 }
 
 task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
-    from files(libsDir)
     from configurations.releaseJars
     from 'build/tmp/plugin'
     classifier = 'plugin'
@@ -104,39 +122,26 @@ task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
 
 task unpackPlugin(type: Copy, dependsOn: [':buildPluginZip']) {
     delete "plugins"
-    from files(libsDir)
     from configurations.releaseJars
     from 'build/tmp/plugin'
     into "plugins/${pluginName}"
 }
 
-task integrationTest(type: Test, dependsOn: ['unpackPlugin']) {
-    testClassesDir = sourceSets.integrationTest.output.classesDir
-    classpath = configurations.integrationTestCompile
-    classpath += fileTree("plugins/${pluginName}").include('*.jar')
-    classpath += sourceSets.integrationTest.output
-    // without this trick to remove identical jars from classpath, an Elasticsearch bug whines about a "jar hell"
-    classpath -= configurations.releaseJars
-    outputs.upToDateWhen { false }
-    systemProperty 'path.home', projectDir.absolutePath
-    testLogging.showStandardStreams = false
-}
-
-integrationTest.mustRunAfter test
-check.dependsOn integrationTest
-
-clean {
-    delete "plugins"
-}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
+    into 'build/tmp/sources'
     classifier 'sources'
 }
 
+task javadocJar(type: Jar, dependsOn: classes) {
+    from javadoc
+    into 'build/tmp'
+    classifier 'javadoc'
+}
+
 artifacts {
-    archives sourcesJar
-    archives buildPluginZip
+    archives javadocJar, sourcesJar, buildPluginZip
 }
 
 uploadArchives {
