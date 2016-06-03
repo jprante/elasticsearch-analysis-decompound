@@ -22,13 +22,18 @@
  */
 package org.xbib.elasticsearch.index.analysis.decompound;
 
-import org.elasticsearch.index.analysis.AnalysisModule;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.env.Environment;
+import org.elasticsearch.index.IndexSettings;
+import org.elasticsearch.index.analysis.TokenFilterFactory;
+import org.elasticsearch.indices.analysis.AnalysisModule;
 
-public class DecompoundAnalysisBinderProcessor extends AnalysisModule.AnalysisBinderProcessor {
+import java.io.IOException;
+
+public class DecompoundAnalysisProvider implements AnalysisModule.AnalysisProvider<TokenFilterFactory> {
 
     @Override
-    public void processTokenFilters(TokenFiltersBindings tokenFiltersBindings) {
-        tokenFiltersBindings.processTokenFilter("decompound", DecompoundTokenFilterFactory.class);
+    public TokenFilterFactory get(IndexSettings indexSettings, Environment environment, String name, Settings settings) throws IOException {
+        return new DecompoundTokenFilterFactory(indexSettings, name, settings);
     }
-
 }

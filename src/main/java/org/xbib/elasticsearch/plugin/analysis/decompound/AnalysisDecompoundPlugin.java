@@ -17,9 +17,9 @@ package org.xbib.elasticsearch.plugin.analysis.decompound;
 
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.index.analysis.AnalysisModule;
-import org.xbib.elasticsearch.index.analysis.decompound.DecompoundAnalysisBinderProcessor;
+import org.elasticsearch.indices.analysis.AnalysisModule;
 import org.elasticsearch.plugins.Plugin;
+import org.xbib.elasticsearch.index.analysis.decompound.DecompoundAnalysisProvider;
 
 public class AnalysisDecompoundPlugin extends Plugin {
 
@@ -42,7 +42,7 @@ public class AnalysisDecompoundPlugin extends Plugin {
 
     public void onModule(AnalysisModule module) {
         if (settings.getAsBoolean("plugins.decompound.enabled", true)) {
-            module.addProcessor(new DecompoundAnalysisBinderProcessor());
+            module.registerTokenFilter("decompound", new DecompoundAnalysisProvider());
         }
     }
 }

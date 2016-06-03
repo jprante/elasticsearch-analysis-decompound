@@ -1,14 +1,14 @@
 
 group = 'org.xbib.elasticsearch.plugin'
-version = '2.3.3.0'
+version = '5.0.0.0'
 
 ext {
     pluginName = 'decompound'
     pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
     pluginDescription = 'Decompounder plugin for Elasticsearch'
     versions = [
-            'elasticsearch' : '2.3.3',
-            'log4j': '2.5',
+            'elasticsearch' : '5.0.0-alpha2',
+            'log4j': '1.2.17',
             'junit' : '4.12'
     ]
 }
@@ -52,16 +52,15 @@ configurations {
 
 dependencies {
     compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
-    testCompile "junit:junit:${versions.junit}"
-    testCompile "org.apache.logging.log4j:log4j-slf4j-impl:${versions.log4j}"
-    testCompile "org.apache.logging.log4j:log4j-core:${versions.log4j}"
-    integrationTestCompile "junit:junit:${versions.junit}"
+    testCompile "org.elasticsearch.test:framework:${versions.elasticsearch}"
+    testCompile "log4j:log4j:${versions.log4j}"
+    testCompile "net.java.dev.jna:jna:4.2.2"
     releaseJars "${project.group}:${project.name}:${project.version}"
     wagon 'org.apache.maven.wagon:wagon-ssh-external:2.10'
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked,deprecation"
