@@ -7,7 +7,7 @@ ext {
     pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
     pluginDescription = 'Decompounder plugin for Elasticsearch'
     versions = [
-            'elasticsearch' : '5.0.0-alpha2',
+            'elasticsearch' : '5.0.0-alpha3',
             'log4j': '1.2.17',
             'junit' : '4.12'
     ]
