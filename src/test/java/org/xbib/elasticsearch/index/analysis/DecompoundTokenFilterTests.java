@@ -140,6 +140,6 @@ public class DecompoundTokenFilterTests extends ESTestCase {
                 .loadFromStream(resource, config)
                 .build();
 
-        return createAnalysisService(index, settings, new AnalysisDecompoundPlugin(settings)::onModule);
+        return createAnalysisService(index, settings, new AnalysisDecompoundPlugin());
     }
 }

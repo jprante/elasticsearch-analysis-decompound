@@ -19,6 +19,7 @@ import java.io.IOException;
 import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
@@ -30,7 +31,7 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
     private final Boolean subwordsonly;
 
     @Inject
-    public DecompoundTokenFilterFactory(IndexSettings indexSettings, String name, Settings settings) {
+    public DecompoundTokenFilterFactory(IndexSettings indexSettings, Environment environment, String name, Settings settings) {
         super(indexSettings, name, settings);
 
         this.decompounder = createDecompounder(settings);

@@ -1,13 +1,13 @@
 
 group = 'org.xbib.elasticsearch.plugin'
-version = '5.0.0-alpha3.0'
+version = '5.0.0-alpha4.0'
 
 ext {
     pluginName = 'decompound'
     pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
     pluginDescription = 'Decompounder plugin for Elasticsearch'
     versions = [
-            'elasticsearch' : '5.0.0-alpha3',
+            'elasticsearch' : '5.0.0-alpha4',
             'log4j': '1.2.17',
             'junit' : '4.12'
     ]
