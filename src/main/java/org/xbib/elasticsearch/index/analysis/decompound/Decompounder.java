@@ -43,10 +43,16 @@ public class Decompounder {
         grfTree.setThreshold(threshold); // previous value = 0.46
     }
 
-    public Decompounder(CompactPatriciaTrie kompvv, CompactPatriciaTrie kompvh, CompactPatriciaTrie gfred) {
+    public Decompounder(CompactPatriciaTrie kompvv, CompactPatriciaTrie kompvh, CompactPatriciaTrie gfred, double threshold) {
         kompvvTree = kompvv;
+        kompvvTree.setIgnoreCase(true);
+        kompvvTree.setThreshold(threshold);
         kompvhTree = kompvh;
+        kompvhTree.setIgnoreCase(true);
+        kompvhTree.setThreshold(threshold);
         grfTree = gfred;
+        grfTree.setIgnoreCase(true);
+        grfTree.setThreshold(threshold); // previous value = 0.46
     }
     
     private String reverse(String torev) {
@@ -59,7 +65,7 @@ public class Decompounder {
 
     public List<String> decompound(String word) {
         word = reduceToBaseForm(word);
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         String classvv = kompvvTree.classify(word + "<");
         String classvh = kompvhTree.classify(reverse(word) + "<");
         StringBuilder numStrvv = new StringBuilder();
