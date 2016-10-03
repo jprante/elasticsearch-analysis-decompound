@@ -65,23 +65,23 @@ All feedback is welcome! If you find issues, please post them at [Github](https:
 
 In the mapping, use a token filter of type "decompound":
 
-  {
-     "index":{
-        "analysis":{
-            "filter":{
-                "decomp":{
-                    "type" : "decompound"
-                }
-            },
-            "tokenizer" : {
-                "decomp" : {
-                   "type" : "standard",
-                   "filter" : [ "decomp" ]
-                }
-            }
-        }
-     }
-  }
+    {
+       "index":{
+          "analysis":{
+              "filter":{
+                  "decomp":{
+                      "type" : "decompound"
+                  }
+              },
+              "tokenizer" : {
+                  "decomp" : {
+                     "type" : "standard",
+                     "filter" : [ "decomp" ]
+                  }
+              }
+          }
+       }
+    }
 
 "Die Jahresfeier der Rechtsanwaltskanzleien auf dem Donaudampfschiff hat viel Ökosteuer gekostet" will be tokenized into 
 "Die", "Die", "Jahresfeier", "Jahr", "feier", "der", "der", "Rechtsanwaltskanzleien", "Recht", "anwalt", "kanzlei", "auf", "auf", "dem",  "dem", "Donaudampfschiff", "Donau", "dampf", "schiff", "hat", "hat", "viel", "viel", "Ökosteuer", "Ökosteuer", "gekostet", "gekosten"
