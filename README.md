@@ -63,30 +63,30 @@ All feedback is welcome! If you find issues, please post them at [Github](https:
 
 # Example
 
-In the mapping, us a token filter of type "decompound"::
+In the mapping, use a token filter of type "decompound":
 
-  {
-     "index":{
-        "analysis":{
-            "filter":{
-                "decomp":{
-                    "type" : "decompound"
-                }
-            },
-            "tokenizer" : {
-                "decomp" : {
-                   "type" : "standard",
-                   "filter" : [ "decomp" ]
-                }
-            }
-        }
-     }
-  }
+    {
+       "index":{
+          "analysis":{
+              "filter":{
+                  "decomp":{
+                      "type" : "decompound"
+                  }
+              },
+              "tokenizer" : {
+                  "decomp" : {
+                     "type" : "standard",
+                     "filter" : [ "decomp" ]
+                  }
+              }
+          }
+       }
+    }
 
 "Die Jahresfeier der Rechtsanwaltskanzleien auf dem Donaudampfschiff hat viel Ökosteuer gekostet" will be tokenized into 
 "Die", "Die", "Jahresfeier", "Jahr", "feier", "der", "der", "Rechtsanwaltskanzleien", "Recht", "anwalt", "kanzlei", "auf", "auf", "dem",  "dem", "Donaudampfschiff", "Donau", "dampf", "schiff", "hat", "hat", "viel", "viel", "Ökosteuer", "Ökosteuer", "gekostet", "gekosten"
 
-It is recommended to add the `Unique token filter <http://www.elasticsearch.org/guide/reference/index-modules/analysis/unique-tokenfilter.html>`_ to skip tokens that occur more than once.
+It is recommended to add the [`Unique token filter`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-unique-tokenfilter.html) to skip tokens that occur more than once.
 
 Also the Lucene german normalization token filter is provided::
 
