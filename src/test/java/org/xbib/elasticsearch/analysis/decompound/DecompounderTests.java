@@ -3,7 +3,7 @@ package org.xbib.elasticsearch.analysis.decompound;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.elasticsearch.common.logging.ESLogger;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.common.logging.Loggers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import org.xbib.elasticsearch.index.analysis.decompound.Decompounder;
 
 public class DecompounderTests extends Assert {
 
-    private final ESLogger logger = Loggers.getLogger(DecompounderTests.class.getName());
+    private final Logger logger = Loggers.getLogger(DecompounderTests.class.getName());
 
     @Test
     public void testGerman() throws IOException, ClassNotFoundException {

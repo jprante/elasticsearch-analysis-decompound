@@ -1,14 +1,14 @@
 
 group = 'org.xbib.elasticsearch.plugin'
-version = '5.0.0-alpha5.0'
+version = '5.0.0-rc1'
 
 ext {
     pluginName = 'decompound'
     pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
     pluginDescription = 'Decompounder plugin for Elasticsearch'
     versions = [
-            'elasticsearch' : '5.0.0-alpha5',
-            'log4j': '1.2.17',
+            'elasticsearch' : '5.0.0-rc1',
+            'log4j': '2.6.2',
             'junit' : '4.12'
     ]
 }
@@ -43,17 +43,17 @@ configurations {
     integrationTestRuntime.extendsFrom testRuntime
     releaseJars {
         extendsFrom runtime
+        exclude group: 'org.apache.logging.log4j'
         exclude group: 'org.elasticsearch'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
         exclude group: 'org.slf4j'
-        exclude group: 'log4j'
     }
 }
 
 dependencies {
     compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
     testCompile "org.elasticsearch.test:framework:${versions.elasticsearch}"
-    testCompile "log4j:log4j:${versions.log4j}"
+    testCompile "org.apache.logging.log4j:log4j-core:${versions.log4j}"
     testCompile "net.java.dev.jna:jna:4.2.2"
     releaseJars "${project.group}:${project.name}:${project.version}"
     wagon 'org.apache.maven.wagon:wagon-ssh-external:2.10'
