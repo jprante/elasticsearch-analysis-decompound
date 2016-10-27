@@ -36,7 +36,6 @@ public class CompactPatriciaTrie {
     public static final int LOWER = 2;
     private static String TAB = "\t";
     private static String NL = "\n";
-    private Map<String, Object> hash;
     private boolean reverse = false;
     private boolean ignorecase = false;
     private double thresh = 0.0;
@@ -59,14 +58,12 @@ public class CompactPatriciaTrie {
         this.attentionNode = 3;
         this.endOfWordChar = 4;
         this.basis = this.endchar - this.startchar + 1;
-        this.offset = (int) Math.ceil(Math.log(Integer.MAX_VALUE)
-                / Math.log(this.basis));
+        this.offset = (int) Math.ceil(Math.log(Integer.MAX_VALUE) / Math.log(this.basis));
         this.reverse = false;
         this.ignorecase = false;
     }
 
-    public CompactPatriciaTrie(int sc, int ec, int az, int ak, int eow, boolean rv,
-            boolean ic, char[] stringtree) {
+    public CompactPatriciaTrie(int sc, int ec, int az, int ak, int eow, boolean rv, boolean ic, char[] stringtree) {
         this.root = null;
         this.stringtree = stringtree;
         this.startchar = sc;
@@ -75,8 +72,7 @@ public class CompactPatriciaTrie {
         this.attentionNode = (char) ak;
         this.endOfWordChar = (char) eow;
         this.basis = this.endchar - this.startchar + 1;
-        this.offset = (int) Math.ceil(Math.log(Integer.MAX_VALUE)
-                / Math.log(this.basis));
+        this.offset = (int) Math.ceil(Math.log(Integer.MAX_VALUE) / Math.log(this.basis));
         this.reverse = rv;
         this.ignorecase = ic;
     }
@@ -281,7 +277,7 @@ public class CompactPatriciaTrie {
 
     private List<String> add(List<String> one, List<String> two) {
         List<String> list = new ArrayList<>();
-        hash = new HashMap<>();
+        Map<String, Object> hash = new HashMap<>();
         String clas;
         String snr;
         int nr;
@@ -1026,11 +1022,12 @@ public class CompactPatriciaTrie {
         return ret;
     }
 
-    public void load(InputStream in) throws IOException, ClassNotFoundException {
+    public CompactPatriciaTrie load(InputStream in) throws IOException, ClassNotFoundException {
         load(new ObjectInputStream(in));
+        return this;
     }
 
-    public void load(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    private void load(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         String s1 = (String) (ois.readObject());
         String s2 = (String) (ois.readObject());
         String s3 = (String) (ois.readObject());

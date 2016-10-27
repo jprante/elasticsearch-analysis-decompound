@@ -1,13 +1,18 @@
 package org.xbib.decompound;
 
+import org.junit.Test;
+import org.xbib.elasticsearch.index.analysis.decompound.CompactPatriciaTrie;
 import org.xbib.elasticsearch.index.analysis.decompound.Decompounder;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+
+import static org.junit.Assert.assertEquals;
 
 public class TrainerTests {
 
-    public void train() throws IOException, ClassNotFoundException {
+    @Test
+    public void train() throws Exception {
         Trainer trainer = new Trainer();
         StringReader nouns = new StringReader(
                 "Rente Rente\n"
@@ -38,53 +43,57 @@ public class TrainerTests {
                 + "Schiff Schiff\n"
                 );
         StringReader compounds = new StringReader(
-                "Rentenversicherungen Renten + versicherungen\n"
-                + "Reichskanzler Reichs + kanzler\n"
-                + "Thronfolge Thron + folge\n"
-                + "Industriewerte Industrie + werte\n"
-                + "Bundesministeriums Bundes + ministeriums\n"
-                + "Bierzelt Bier + zelt\n"
-                + "Waldsterben Wald + sterben\n"
-                + "Industriekunden Industrie + kunden\n"
-                + "Publikumsmagnet Publikums + magnet \n"
-                + "Bundesbildungsminister Bundes + bildungs + minister\n"
-                + "Binnenland Binnen + land\n"
-                + "Postleitzahlen Post + leit + zahlen\n"
-                + "Mutprobe Mut + probe\n"
-                + "Firefox Fire + fox\n"
-                + "Neonlicht Neon + licht\n"
-                + "Messerstiche Messer + stiche\n"
-                + "Materialkosten Material + kosten\n"
-                + "Hochschulreife Hochschul + reife\n"
-                + "Blutspuren Blut + spuren\n"
-                + "Kulturausschuss Kultur + ausschuss\n"
-                + "Doppelmoral Doppel + moral\n"
-                + "Tourismusindustrie Tourismus + industrie\n"
-                + "Weihwasser Weih + wasser\n"
-                + "Vorschulalter Vorschul + alter\n"
-                + "Kulturausschuss Kultur + ausschuss\n"
-                + "Ausbildungszeiten Ausbildungs + zeiten\n"
-                + "Stromkunden Strom + kunden\n"
-                + "Kindergarten Kinder + garten\n"
-                + "Dampfschiff Dampf + schiff\n"
-                );
+                "Rentenversicherung Renten + versicherung\n"
+                        + "Reichskanzler Reichs + kanzler\n"
+                        + "Thronfolge Thron + folge\n"
+                        + "Industriewerte Industrie + werte\n"
+                        + "Bundesministeriums Bundes + ministeriums\n"
+                        + "Bierzelt Bier + zelt\n"
+                        + "Waldsterben Wald + sterben\n"
+                        + "Industriekunden Industrie + kunden\n"
+                        + "Publikumsmagnet Publikums + magnet \n"
+                        + "Bundesbildungsminister Bundes + bildungs + minister\n"
+                        + "Binnenland Binnen + land\n"
+                        + "Postleitzahlen Post + leit + zahlen\n"
+                        + "Mutprobe Mut + probe\n"
+                        + "Firefox Fire + fox\n"
+                        + "Neonlicht Neon + licht\n"
+                        + "Messerstiche Messer + stiche\n"
+                        + "Materialkosten Material + kosten\n"
+                        + "Hochschulreife Hochschul + reife\n"
+                        + "Blutspuren Blut + spuren\n"
+                        + "Kulturausschuss Kultur + ausschuss\n"
+                        + "Doppelmoral Doppel + moral\n"
+                        + "Tourismusindustrie Tourismus + industrie\n"
+                        + "Weihwasser Weih + wasser\n"
+                        + "Vorschulalter Vorschul + alter\n"
+                        + "Kulturausschuss Kultur + ausschuss\n"
+                        + "Ausbildungszeiten Ausbildungs + zeiten\n"
+                        + "Stromkunden Strom + kunden\n"
+                        + "Kindergarten Kinder + garten\n"
+                        + "Dampfschiff Dampf + schiff\n"
+        );
         
-        trainer.trainReduce(nouns);
+        trainer.trainReduce(nouns, 0.51d);
         //trainer.loadReduce(getClass().getResourceAsStream("/grfExt.tree"));
-        trainer.trainCompounds(compounds, null, null);
+        trainer.trainCompounds(compounds, null, null, 0.51d);
+
         //InputStream forwfile = getClass().getResourceAsStream("/kompVVic.tree");
-        //InputStream backfile = getClass().getResourceAsStream("/kompVHic.tree");
+        //InputStream backwfile = getClass().getResourceAsStream("/kompVHic.tree");
         //InputStream reducfile = getClass().getResourceAsStream("/grfExt.tree");
-        Decompounder d = new Decompounder(trainer.getForward(), trainer.getBackward(), trainer.getReduce());
+        //Decompounder d = new Decompounder(forwfile, backwfile, reducfile, 0.51d);
+        Decompounder d = new Decompounder(trainer.getForward(), trainer.getBackward(), trainer.getReduce(), 0.51d);
+        //assertEquals("[Rente, versicherung]", d.decompound("Rentenversicherung").toString());
+
         String s[] = new String[]{
-            "Rentenversicherungen",
+            "Rentenversicherung",
             "Dampfschiff",
             "Kinder",
             "Kindergarten",
             "Waldsterben"
         };
         for (String w : s) {
-            System.err.println("word = " + w + " decompound = " + d.decompound(w));
+            System.err.println("input = " + w + " decompound output = " + d.decompound(w));
         }
     }
 }

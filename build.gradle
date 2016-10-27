@@ -1,17 +1,26 @@
 
 group = 'org.xbib.elasticsearch.plugin'
-version = '5.0.0'
+version = '5.0.0.0'
 
 ext {
     pluginName = 'decompound'
     pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
     pluginDescription = 'Decompounder plugin for Elasticsearch'
+    user = 'jprante'
+    name = 'elasticsearch-analysis-decompound'
+    scmUrl = 'https://github.com/' + user + '/' + name
+    scmConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
+    scmDeveloperConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
     versions = [
             'elasticsearch' : '5.0.0',
             'log4j': '2.6.2',
             'junit' : '4.12'
     ]
 }
+
+println "Host: " + java.net.InetAddress.getLocalHost()
+println "Gradle: " + gradle.gradleVersion + " JVM: " + org.gradle.internal.jvm.Jvm.current() + " Groovy: " + GroovySystem.getVersion()
+println "Build: group: '${project.group}', name: '${project.name}', version: '${project.version}'"
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -47,6 +56,7 @@ configurations {
         exclude group: 'org.elasticsearch'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
         exclude group: 'org.slf4j'
+        exclude group: 'log4j'
     }
 }
 
@@ -146,27 +156,4 @@ artifacts {
     archives javadocJar, sourcesJar, buildPluginZip
 }
 
-uploadArchives {
-    repositories {
-        if (project.hasProperty("xbibUsername")) {
-            mavenDeployer {
-                configuration = configurations.wagon
-                repository(
-                        id: 'xbib.org',
-                        url: uri('scpexe://xbib.org/repository'),
-                        authentication: [userName: xbibUsername, privateKey: xbibPrivateKey]
-                )
-                pom.project {
-                    inceptionYear '2012'
-                    licenses {
-                        license {
-                            name 'The Apache Software License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            distribution 'repo'
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+apply from: 'gradle/publish.gradle'

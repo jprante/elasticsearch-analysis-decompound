@@ -3,16 +3,18 @@ package org.xbib.decompound;
 import org.xbib.elasticsearch.index.analysis.decompound.CompactPatriciaTrie;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 
 public class Trainer {
 
-    CompactPatriciaTrie reduce;
-    CompactPatriciaTrie forward;
-    CompactPatriciaTrie backward;
+    private CompactPatriciaTrie reduce;
+
+    private CompactPatriciaTrie forward;
+
+    private CompactPatriciaTrie backward;
 
     /*public static void main(String[] args) {
 
@@ -51,10 +53,11 @@ public class Trainer {
     public Trainer() {
     }
     
-    public Trainer loadReduce(InputStream in) throws IOException, ClassNotFoundException {
+    public Trainer loadReduce(InputStream in, double threshold) throws IOException, ClassNotFoundException {
         reduce = new CompactPatriciaTrie();
         reduce.setIgnoreCase(true);
         reduce.setReverse(true);
+        reduce.setThreshold(threshold);
         reduce.load(in);
         return this;
     }
@@ -71,10 +74,11 @@ public class Trainer {
         return reduce;
     }
 
-    public void trainReduce(Reader reader) throws IOException, ClassNotFoundException {
+    public void trainReduce(Reader reader, double threshold) throws IOException {
         reduce = new CompactPatriciaTrie();
         reduce.setIgnoreCase(true);
-        reduce.setReverse(true);
+        //reduce.setReverse(true);
+        reduce.setThreshold(threshold);
         BufferedReader br = new BufferedReader(reader);
         String line;
         while ((line = br.readLine()) != null) {
@@ -86,7 +90,6 @@ public class Trainer {
                 // <fullform> <baseform>
                 String wclass = createRule(forms[0], forms[1]);
                 //String cl = reduce.classify(line);
-                System.err.println("w=" + forms[0]  + " wclass="+ wclass);
                 reduce.train(forms[0], wclass);
             }
         }
@@ -102,9 +105,13 @@ public class Trainer {
      * @param reader
      * @throws IOException
      */
-    public void trainCompounds(Reader reader, FileOutputStream forw, FileOutputStream backw) throws IOException, ClassNotFoundException {
+    public void trainCompounds(Reader reader, OutputStream forw, OutputStream backw, double threshold) throws IOException {
         forward = new CompactPatriciaTrie();
+        forward.setIgnoreCase(true);
+        forward.setThreshold(threshold);
         backward = new CompactPatriciaTrie();
+        backward.setIgnoreCase(true);
+        backward.setThreshold(threshold);
         BufferedReader br = new BufferedReader(reader);
         String line;
         while ((line = br.readLine()) != null) {
@@ -118,17 +125,18 @@ public class Trainer {
                 line = line.substring(pos + 1);
             }
             String[] decompArr = line.split(" \\+ ");
-            StringBuilder decomp = new StringBuilder();
-            for (String s : decompArr) {
-                decomp.append(s).append(" ");
-            }
+            //StringBuilder decomp = new StringBuilder();
+            //for (String s : decompArr) {
+            //    decomp.append(s).append(" ");
+            //}
             //String cl = reduce.classify(comp);
+            //System.err.println("comp=" + comp + " cl=" + cl);
             //reduce.train(comp, cl);
             //String baseform = applyRule(comp, cl);
-            //System.err.println("baseform = '" + baseform + "'");
-            System.err.println("comp = '" + comp + "' decomp = '" + decomp + "'");
+            //System.err.println("baseform = '" + baseform + "' decomp=" + Arrays.asList(decompArr));
+            //System.err.println("comp = '" + comp + "' decomp = '" + decomp + "'");
             //if (decompArr.length > 1) {
-                traintrees(decompArr, comp);
+            trainTrees(decompArr, comp);
             //}
         }
         br.close();
@@ -142,12 +150,16 @@ public class Trainer {
         }
     }
 
-    private void traintrees(String[] decomp, String compound) {
-        if (compound == null) 
+    private void trainTrees(String[] decomp, String compound) {
+        if (compound == null) {
             return;
-        compound = compound.toLowerCase();
+        }
         for (int i = 0; i < decomp.length; i++) {
-            decomp[i] = decomp[i].toLowerCase();
+            String s = decomp[i];
+            String cl = reduce.classify(s);
+            reduce.train(s, cl);
+            String baseform = applyRule(s, cl);
+            decomp[i] = baseform;
         }
         if (decomp.length > 1) {
             String compoundpart = compound;
@@ -159,28 +171,21 @@ public class Trainer {
                 StringBuilder decomppart = new StringBuilder(decomp[i]);
                 for (int j = i + 1; j < decomp.length; j++) {
                     decomppart.append(" ").append(decomp[j]);
-                    //try {
-                        currentcompound = compound.substring(compound.indexOf(decomp[i]), compound.indexOf(decomp[j]) + decomp[j].length());
-                    //} catch (StringIndexOutOfBoundsException e) {
-                    //    currentcompound = compound;
-                    //}
-                    //try {
-                        System.err.println("regeln: decomppart=" + decomppart + " compoundpart=" + compoundpart);
-                        String forwardRule = createForwardRule(decomppart.toString(), compoundpart);
-                        String backwardRule = createBackwardRule(decomppart.toString());
-                        System.err.println("currentcompound=" + currentcompound + " for=" + forwardRule + " back=" + backwardRule);
-                        forward.train(currentcompound, forwardRule);
-                        backward.train(currentcompound, backwardRule);
-                    //} catch (NoSuchElementException ex) {
-                    //}
+                    currentcompound = compound.substring(compound.indexOf(decomp[i]), compound.indexOf(decomp[j]) + decomp[j].length());
+                    System.err.println("decomppart=" + decomppart + " compoundpart=" + compoundpart);
+                    String forwardRule = createForwardRule(decomppart.toString(), compoundpart);
+                    String backwardRule = createBackwardRule(decomppart.toString());
+                    System.err.println("currentcompound=" + currentcompound
+                            + " for=" + forwardRule + " back=" + backwardRule);
+                    forward.train(currentcompound, forwardRule);
+                    backward.train(currentcompound, backwardRule);
                 }
             }
         }
     }
 
-    // EasytrainCompPanel getvhregel
     private String createForwardRule(String decomp, String compound) {
-        String[] s = decomp.split("[ -/,;]");
+        String[] s = decomp.split("[ \\-/,;]");
         if (s.length < 2) {
             return "";
         }
@@ -190,22 +195,15 @@ public class Trainer {
             return Integer.toString(s[0].length());
         } else {
             try {
-            /*if (occur1 + s[0].length() >= 0
-                    && occur1 + s[0].length() <= occur2
-                    && occur2 < compound.length()) {*/
-                String subcompound = compound.substring(occur1 + s[0].length(), occur2);
-                return Integer.toString(s[0].length()) + subcompound;
-            //} else {
+                return Integer.toString(s[0].length()) + compound.substring(occur1 + s[0].length(), occur2);
             } catch (StringIndexOutOfBoundsException e) {
                 return "";
             }
-            //}
         }
     }
 
-    // EasytrainComPanel getvvregel
     private String createBackwardRule(String decomp) {
-        String[] s = decomp.split("[ -/]");
+        String[] s = decomp.split("[ \\-/]");
         return Integer.toString(s[s.length - 1].length());
     }
 
