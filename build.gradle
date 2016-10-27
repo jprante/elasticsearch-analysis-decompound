@@ -1,6 +1,6 @@
 
 group = 'org.xbib.elasticsearch.plugin'
-version = '2.3.4.0'
+version = '5.0.0.0'
 
 ext {
     pluginName = 'decompound'
@@ -12,8 +12,8 @@ ext {
     scmConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
     scmDeveloperConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
     versions = [
-            'elasticsearch' : '2.3.4',
-            'log4j': '2.5',
+            'elasticsearch' : '5.0.0',
+            'log4j': '2.6.2',
             'junit' : '4.12'
     ]
 }
@@ -52,6 +52,7 @@ configurations {
     integrationTestRuntime.extendsFrom testRuntime
     releaseJars {
         extendsFrom runtime
+        exclude group: 'org.apache.logging.log4j'
         exclude group: 'org.elasticsearch'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
         exclude group: 'org.slf4j'
@@ -61,16 +62,15 @@ configurations {
 
 dependencies {
     compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
-    testCompile "junit:junit:${versions.junit}"
-    testCompile "org.apache.logging.log4j:log4j-slf4j-impl:${versions.log4j}"
+    testCompile "org.elasticsearch.test:framework:${versions.elasticsearch}"
     testCompile "org.apache.logging.log4j:log4j-core:${versions.log4j}"
-    integrationTestCompile "junit:junit:${versions.junit}"
+    testCompile "net.java.dev.jna:jna:4.2.2"
     releaseJars "${project.group}:${project.name}:${project.version}"
     wagon 'org.apache.maven.wagon:wagon-ssh-external:2.10'
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked,deprecation"
@@ -125,7 +125,10 @@ task makePluginDescriptor(type: Copy) {
 
 task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
     from configurations.releaseJars
+    into "elasticsearch"
+
     from 'build/tmp/plugin'
+    into "elasticsearch"
     classifier = 'plugin'
 }
 

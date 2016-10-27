@@ -1,6 +1,7 @@
 package org.xbib.elasticsearch.index.analysis;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -9,14 +10,16 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.AnalysisService;
 import org.elasticsearch.index.analysis.TokenFilterFactory;
 
-import org.junit.Assert;
+import org.elasticsearch.test.ESTestCase;
 import org.junit.Test;
-import org.xbib.elasticsearch.MapperTestUtils;
+import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
-public class DecompoundTokenFilterTests extends Assert {
+public class DecompoundTokenFilterTests extends ESTestCase {
 
     @Test
     public void testExampleFromReadme() throws IOException {
@@ -50,7 +53,7 @@ public class DecompoundTokenFilterTests extends Assert {
             "gekostet",
             "gekosten"
         };
-        AnalysisService analysisService = MapperTestUtils.analysisService("decompound_analysis.json");
+        AnalysisService analysisService = analysisService("decompound_analysis.json");
         TokenFilterFactory tokenFilter = analysisService.tokenFilter("decomp");
         Tokenizer tokenizer = new StandardTokenizer();
         tokenizer.setReader(new StringReader(source));
@@ -65,7 +68,7 @@ public class DecompoundTokenFilterTests extends Assert {
             "Schlüssel",
             "wort"
         };
-        AnalysisService analysisService = MapperTestUtils.analysisService("keywords_analysis.json");
+        AnalysisService analysisService = analysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("decompounding_default");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
@@ -77,7 +80,7 @@ public class DecompoundTokenFilterTests extends Assert {
         String[] expected = {
                 "Schlüsselwort"
         };
-        AnalysisService analysisService = MapperTestUtils.analysisService("keywords_analysis.json");
+        AnalysisService analysisService = analysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("with_keywords");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
@@ -91,7 +94,7 @@ public class DecompoundTokenFilterTests extends Assert {
                 "Schlüssel",
                 "wort"
         };
-        AnalysisService analysisService = MapperTestUtils.analysisService("keywords_analysis.json");
+        AnalysisService analysisService = analysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("with_keywords_disabled");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
@@ -110,7 +113,7 @@ public class DecompoundTokenFilterTests extends Assert {
                 "Bindestrich",
                 "wort"
         };
-        AnalysisService analysisService = MapperTestUtils.analysisService("keywords_analysis.json");
+        AnalysisService analysisService = analysisService("keywords_analysis.json");
         Analyzer analyzer = analysisService.analyzer("with_subwords_only");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
@@ -126,5 +129,17 @@ public class DecompoundTokenFilterTests extends Assert {
             assertEquals(expected[i++], termAttr.toString());
         }
         assertEquals(i, expected.length);
+    }
+
+    public static AnalysisService analysisService(String resource) throws IOException {
+        ClassLoader loader = DecompoundTokenFilterTests.class.getClassLoader();
+        InputStream config = loader.getResourceAsStream(resource);
+
+        Index index = new Index("test", "_na_");
+        Settings settings = Settings.builder()
+                .loadFromStream(resource, config)
+                .build();
+
+        return createAnalysisService(index, settings, new AnalysisDecompoundPlugin());
     }
 }

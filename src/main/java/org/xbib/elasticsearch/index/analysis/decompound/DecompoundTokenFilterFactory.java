@@ -18,12 +18,10 @@ package org.xbib.elasticsearch.index.analysis.decompound;
 import java.io.IOException;
 import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
-import org.elasticsearch.index.Index;
+import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;
-import org.elasticsearch.index.settings.IndexSettingsService;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
 public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
@@ -33,12 +31,10 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
     private final Boolean subwordsonly;
 
     @Inject
-    public DecompoundTokenFilterFactory(Index index,
-            IndexSettingsService indexSettingsService, Environment env,
-            @Assisted String name, @Assisted Settings settings) {
-        super(index, indexSettingsService.getSettings(), name, settings);
+    public DecompoundTokenFilterFactory(IndexSettings indexSettings, Environment environment, String name, Settings settings) {
+        super(indexSettings, name, settings);
 
-        this.decompounder = createDecompounder(env, settings);
+        this.decompounder = createDecompounder(settings);
         this.respectKeywords = settings.getAsBoolean("respect_keywords", false);
         this.subwordsonly = settings.getAsBoolean("subwords_only", false);
 
@@ -49,7 +45,7 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
         return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords, subwordsonly);
     }
 
-    private Decompounder createDecompounder(Environment env, Settings settings) {
+    private Decompounder createDecompounder(Settings settings) {
         try {
             String forward = settings.get("forward", "/kompVVic.tree");
             String backward = settings.get("backward", "/kompVHic.tree");
@@ -60,9 +56,7 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
                     AnalysisDecompoundPlugin.class.getResourceAsStream(backward),
                     AnalysisDecompoundPlugin.class.getResourceAsStream(reduce),
                     threshold);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("decompounder resources in settings not found: " + settings, e);
-        } catch (IOException e) {
+        } catch (ClassNotFoundException | IOException e) {
             throw new IllegalArgumentException("decompounder resources in settings not found: " + settings, e);
         }
     }
