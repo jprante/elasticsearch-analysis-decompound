@@ -4,6 +4,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.MockNode;
 import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeValidationException;
 import org.junit.After;
 import org.junit.Before;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
@@ -21,8 +22,8 @@ public class NodeTestUtils {
     private Node node;
     private Client client;
 
-    public static Node createNode() {
-        Settings nodeSettings = Settings.settingsBuilder()
+    public static Node createNode() throws NodeValidationException {
+        Settings nodeSettings = Settings.builder()
                 .put("path.home", System.getProperty("path.home"))
                 .put("index.number_of_shards", 1)
                 .put("index.number_of_replica", 0)
@@ -32,8 +33,8 @@ public class NodeTestUtils {
         return node;
     }
 
-    public static Node createNodeWithoutPlugin() {
-        Settings nodeSettings = Settings.settingsBuilder()
+    public static Node createNodeWithoutPlugin() throws NodeValidationException {
+        Settings nodeSettings = Settings.builder()
                 .put("path.home", System.getProperty("path.home"))
                 .put("index.number_of_shards", 1)
                 .put("index.number_of_replica", 0)
@@ -51,7 +52,7 @@ public class NodeTestUtils {
     }
 
     @Before
-    public void setupNode() throws IOException {
+    public void setupNode() throws IOException, NodeValidationException {
         node = createNode();
         client = node.client();
     }
