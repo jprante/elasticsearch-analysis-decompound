@@ -1,13 +1,9 @@
 package org.xbib.decompound;
 
 import org.junit.Test;
-import org.xbib.elasticsearch.index.analysis.decompound.CompactPatriciaTrie;
 import org.xbib.elasticsearch.index.analysis.decompound.Decompounder;
 
-import java.io.InputStream;
 import java.io.StringReader;
-
-import static org.junit.Assert.assertEquals;
 
 public class TrainerTests {
 

@@ -53,7 +53,7 @@ public class Trainer {
     public Trainer() {
     }
     
-    public Trainer loadReduce(InputStream in, double threshold) throws IOException, ClassNotFoundException {
+    public Trainer loadReduce(InputStream in, double threshold) throws IOException {
         reduce = new CompactPatriciaTrie();
         reduce.setIgnoreCase(true);
         reduce.setReverse(true);
