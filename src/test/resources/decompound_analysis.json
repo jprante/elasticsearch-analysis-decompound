@@ -1,0 +1,23 @@
+{
+    "index":{
+        "creation_date": "1433413899669",
+        "uuid": "test",
+        "version": {
+            "created": "1040499"
+        },
+
+        "analysis":{
+            "filter":{
+                "decomp":{
+                    "type":"decompound"
+                }
+            },
+            "tokenizer" : {
+                "decomp" : {
+                   "type":"standard",
+                   "filter" : "decomp"
+                }            
+            }
+        }
+    }
+}
