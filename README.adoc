@@ -7,53 +7,59 @@ image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[title="Apache L
 image:https://img.shields.io/twitter/url/https/twitter.com/xbib.svg?style=social&label=Follow%20%40xbib[title="Twitter", link="https://twitter.com/xbib"]
 image:https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif[title="PayPal", link="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVHFQYZ9WZ8HG"]
 
-This is an implementation of a word decompounder plugin for [Elasticsearch](http://github.com/elasticsearch/elasticsearch).
+This is an implementation of a word decompounder plugin for link:http://github.com/elasticsearch/elasticsearch[Elasticsearch].
 
 Compounding several words into one word is a property not all languages share. Compounding is used in German, Scandinavian Languages, Finnish and Korean.
 
-This code is a reworked implementation of the [Baseforms Tool](http://wortschatz.uni-leipzig.de/~cbiemann/software/toolbox/Baseforms%20Tool.htm)
-found in the [ASV toolbox](http://wortschatz.uni-leipzig.de/~cbiemann/software/toolbox/index.htm>)  
-of [Chris Biemann](http://asv.informatik.uni-leipzig.de/staff/Chris_Biemann), 
+This code is a reworked implementation of the link:http://wortschatz.uni-leipzig.de/~cbiemann/software/toolbox/Baseforms%20Tool.htm[Baseforms Tool]
+found in the http://wortschatz.uni-leipzig.de/~cbiemann/software/toolbox/index.htm[ASV toolbox]
+of http://asv.informatik.uni-leipzig.de/staff/Chris_Biemann[Chris Biemann],
 Automatische Sprachverarbeitung of Leipzig University.
 
-Lucene comes with two coumpound word token filters, a dictionary- and a hyphenation-based variant. 
+Lucene comes with two compound word token filters, a dictionary- and a hyphenation-based variant.
 Both of them have a disadvantage, they require loading a word list in memory before they run. 
 This decompounder does not require word lists, it can process german language text out of the box.
-The decompounder uses prebuilt *Compact Patricia Tries* for efficient word segmentation provided 
+The decompounder uses prebuilt _Compact Patricia Tries_ for efficient word segmentation provided
 by the ASV toolbox.
 
 .Table Compatibility matrix
 [frame="all"]
 |===
-| Plugin version   | Elasticsearch version | Release date |
-| 5.1.1.0          | 5.1.1                 | Dec 19 2016  |
-| 2.4.1.0          | 2.4.1                 | Nov 16 2016  |
-| 2.3.4.0          | 2.3.4                 | Jul 30 2016  |
-| 2.3.3.0          | 2.3.3                 | Jun  1 2016  |
-| 2.3.2.0          | 2.3.2                 | Jun  1 2016  |
-| 2.3.1.0          | 2.3.1                 | Jun  1 2016  |
-| 2.3.0.0          | 2.3.0                 | Mar 31 2016  |
-| 2.2.1.0          | 2.2.1                 | Mar 31 2016  |
-| 2.2.0.0          | 2.2.0                 | Feb 19 2016  |
-| 2.1.1.0          | 2.1.1                 | Dec 22 2015  |
-| 2.1.0.0          | 2.1.0                 | Dec  8 2015  |
-| 1.7.1.3          | 1.7.1                 | Nov 17 2015  |
-| 1.5.2.0          | 1.5.2                 | Oct 26 2015  |
+| Plugin version   | Elasticsearch version | Release date
+| 5.1.1.0          | 5.1.1                 | Dec 19 2016
+| 2.4.1.0          | 2.4.1                 | Nov 16 2016
+| 2.3.4.0          | 2.3.4                 | Jul 30 2016
+| 2.3.3.0          | 2.3.3                 | Jun  1 2016
+| 2.3.2.0          | 2.3.2                 | Jun  1 2016
+| 2.3.1.0          | 2.3.1                 | Jun  1 2016
+| 2.3.0.0          | 2.3.0                 | Mar 31 2016
+| 2.2.1.0          | 2.2.1                 | Mar 31 2016
+| 2.2.0.0          | 2.2.0                 | Feb 19 2016
+| 2.1.1.0          | 2.1.1                 | Dec 22 2015
+| 2.1.0.0          | 2.1.0                 | Dec  8 2015
+| 1.7.1.3          | 1.7.1                 | Nov 17 2015
+| 1.5.2.0          | 1.5.2                 | Oct 26 2015
 |===
 
 ## Installation
 
 ### Elasticsearch 5.x
 
-### Elasticsearch 2.x
-
-    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.4.1.0/elasticsearch-analysis-decompound-2.4.1.0-plugin.zip
+[source]
+----
+./bin/elasticsearch-plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/5.1.1.0/elasticsearch-analysis-decompound-5.1.1.0-plugin.zip
+----
 
 Do not forget to restart the node after installing.
 
-## Project docs
+### Elasticsearch 2.x
 
-The Maven project site is available at [Github](http://jprante.github.io/elasticsearch-analysis-decompound)
+[source]
+----
+./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.4.1.0/elasticsearch-analysis-decompound-2.4.1.0-plugin.zip
+----
+
+Do not forget to restart the node after installing.
 
 ## Issues
 

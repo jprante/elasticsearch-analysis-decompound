@@ -14,7 +14,7 @@ task xbibUpload(type: Upload) {
     }
 }
 
-task mavenCentralUpload(type: Upload) {
+task sonaTypeUpload(type: Upload) {
     configuration = configurations.archives
     uploadDescriptor = true
     repositories {
