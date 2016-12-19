@@ -63,7 +63,7 @@ Do not forget to restart the node after installing.
 
 ## Issues
 
-All feedback is welcome! If you find issues, please post them at [Github](https://github.com/jprante/elasticsearch-analysis-decompound/issues)
+All feedback is welcome! If you find issues, please post them at https://github.com/jprante/elasticsearch-analysis-decompound/issues[Github]
 
 # Example
 
@@ -126,7 +126,7 @@ POST /test/docs/_search?explain
 "Die Jahresfeier der Rechtsanwaltskanzleien auf dem Donaudampfschiff hat viel Ökosteuer gekostet" will be tokenized into 
 "Die", "Die", "Jahresfeier", "Jahr", "feier", "der", "der", "Rechtsanwaltskanzleien", "Recht", "anwalt", "kanzlei", "auf", "auf", "dem",  "dem", "Donaudampfschiff", "Donau", "dampf", "schiff", "hat", "hat", "viel", "viel", "Ökosteuer", "Ökosteuer", "gekostet", "gekosten"
 
-It is recommended to add the [`Unique token filter`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-unique-tokenfilter.html) to skip tokens that occur more than once.
+It is recommended to add the https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-unique-tokenfilter.html[Unique token filter] to skip tokens that occur more than once.
 
 The input "Ein schöner Tag in Köln im Café an der Straßenecke" will be tokenized into 
 "Ein", "schoner", "Tag", "in", "Koln", "im", "Café", "an", "der", "Strassenecke".
