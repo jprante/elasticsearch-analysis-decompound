@@ -15,7 +15,6 @@
  */
 package org.xbib.elasticsearch.index.analysis.decompound;
 
-import java.io.IOException;
 import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.inject.assistedinject.Assisted;
@@ -26,11 +25,16 @@ import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;
 import org.elasticsearch.index.settings.IndexSettingsService;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
     private final Decompounder decompounder;
     private final Boolean respectKeywords;
     private final Boolean subwordsonly;
+    private final Map<String,Boolean> filter;
 
     @Inject
     public DecompoundTokenFilterFactory(Index index,
@@ -41,12 +45,16 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
         this.decompounder = createDecompounder(env, settings);
         this.respectKeywords = settings.getAsBoolean("respect_keywords", false);
         this.subwordsonly = settings.getAsBoolean("subwords_only", false);
-
+        this.filter = new HashMap<>();
+        final String[] filtersInput = settings.getAsArray("filter", new String[0], true);
+        for(final String filterInput : filtersInput) {
+               this.filter.put(filterInput, true);
+        }
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords, subwordsonly);
+        return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords, subwordsonly, filter);
     }
 
     private Decompounder createDecompounder(Environment env, Settings settings) {

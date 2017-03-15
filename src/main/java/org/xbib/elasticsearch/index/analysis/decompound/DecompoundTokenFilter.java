@@ -15,8 +15,6 @@
  */
 package org.xbib.elasticsearch.index.analysis.decompound;
 
-import java.io.IOException;
-import java.util.LinkedList;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -24,6 +22,10 @@ import org.apache.lucene.analysis.tokenattributes.KeywordAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.AttributeSource;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class DecompoundTokenFilter extends TokenFilter {
 
@@ -36,13 +38,16 @@ public class DecompoundTokenFilter extends TokenFilter {
     private AttributeSource.State current;
     private boolean respectKeywords = false;
     private boolean subwordsonly = false;
+    // premature opt would be to transform string into int an save some space but is not really necessary
+    private final Map<String,Boolean> filter;
 
-    protected DecompoundTokenFilter(TokenStream input, Decompounder decomp, boolean respectKeywords, boolean subwordsonly) {
+    protected DecompoundTokenFilter(TokenStream input, Decompounder decomp, boolean respectKeywords, boolean subwordsonly, Map<String,Boolean> filter) {
         super(input);
         this.tokens = new LinkedList<DecompoundToken>();
         this.decomp = decomp;
         this.respectKeywords = respectKeywords;
         this.subwordsonly = subwordsonly;
+        this.filter = filter;
     }
 
     @Override
@@ -80,6 +85,9 @@ public class DecompoundTokenFilter extends TokenFilter {
         int start = offsetAtt.startOffset();
         int len = termAtt.length();
         String term = new String(termAtt.buffer(), 0, len);
+        if(this.filter.containsKey(term)) {
+            return true;
+        }
         for (String s : decomp.decompound(term)) {
             tokens.add(new DecompoundToken(s, start, len));
         }
