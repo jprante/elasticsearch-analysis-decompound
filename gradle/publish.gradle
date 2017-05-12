@@ -6,7 +6,7 @@ task xbibUpload(type: Upload) {
         if (project.hasProperty("xbibUsername")) {
             mavenDeployer {
                 configuration = configurations.wagon
-                repository(url: uri('scpexe://xbib.org/repository')) {
+                repository(url: uri('sftp://xbib.org/repository')) {
                         authentication(userName: xbibUsername, privateKey: xbibPrivateKey)
                 }
             }

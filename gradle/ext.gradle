@@ -1,0 +1,16 @@
+
+ext {
+    pluginName = 'decompound'
+    pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
+    pluginDescription = 'Decompounder plugin for Elasticsearch'
+    user = 'jprante'
+    name = 'elasticsearch-analysis-decompound'
+    scmUrl = 'https://github.com/' + user + '/' + name
+    scmConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
+    scmDeveloperConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
+    versions = [
+            'elasticsearch' : '5.1.1',
+            'log4j': '2.5',
+            'junit' : '4.12'
+    ]
+}

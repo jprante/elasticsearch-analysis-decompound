@@ -1,8 +1,10 @@
 
 plugins {
     id "org.sonarqube" version "2.2"
-    id "org.xbib.gradle.plugin.jbake" version "1.2.1"
+    id "org.xbib.gradle.plugin.asciidoctor" version "1.5.4.1.0"
+    id "io.codearte.nexus-staging" version "0.7.0"
 }
+
 
 printf "Host: %s\nOS: %s %s %s\nJVM: %s %s %s %s\nGroovy: %s\nGradle: %s\n" +
         "Build: group: ${project.group} name: ${project.name} version: ${project.version}\n",
@@ -17,22 +19,6 @@ printf "Host: %s\nOS: %s %s %s\nJVM: %s %s %s %s\nGroovy: %s\nGradle: %s\n" +
         GroovySystem.getVersion(),
         gradle.gradleVersion
 
-ext {
-    pluginName = 'decompound'
-    pluginClassname  = 'org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin'
-    pluginDescription = 'Decompounder plugin for Elasticsearch'
-    user = 'jprante'
-    name = 'elasticsearch-analysis-decompound'
-    scmUrl = 'https://github.com/' + user + '/' + name
-    scmConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
-    scmDeveloperConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
-    versions = [
-            'elasticsearch' : '5.1.1',
-            'log4j': '2.5',
-            'junit' : '4.12'
-    ]
-}
-
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
@@ -40,6 +26,7 @@ apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 apply plugin: "jacoco"
+apply plugin: 'org.xbib.gradle.plugin.asciidoctor'
 
 repositories {
     mavenCentral()
@@ -60,13 +47,18 @@ configurations {
     }
 }
 
+apply from: 'gradle/ext.gradle'
+apply from: 'gradle/publish.gradle'
+apply from: 'gradle/sonarqube.gradle'
+
 dependencies {
-    compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
-    compile "org.apache.logging.log4j:log4j-api:${versions.log4j}"
-    testCompile "junit:junit:4.12"
-    testCompile "org.apache.logging.log4j:log4j-core:${versions.log4j}"
+    compile "org.elasticsearch:elasticsearch:${project.property('elasticsearch.version')}"
+    compile "org.apache.logging.log4j:log4j-api:${project.property('log4j.version')}"
+    testCompile "junit:junit:${project.property('junit.version')}"
+    testCompile "org.apache.logging.log4j:log4j-core:${project.property('log4j.version')}"
+    testCompile "org.elasticsearch.plugin:transport-netty4-client:${project.property('elasticsearch.version')}"
     distJars "${project.group}:${project.name}:${project.version}"
-    wagon 'org.apache.maven.wagon:wagon-ssh-external:2.10'
+    wagon "org.apache.maven.wagon:wagon-ssh:${project.property('wagon.version')}"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -120,21 +112,24 @@ clean {
     delete "logs"
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
-task javadocJar(type: Jar, dependsOn: javadoc) {
+task javadocJar(type: Jar, dependsOn: classes) {
+    from javadoc
+    into 'build/tmp'
     classifier 'javadoc'
 }
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+    into 'build/tmp'
+    classifier 'sources'
+}
+
 artifacts {
     archives sourcesJar, javadocJar, buildPluginZip
 }
+
 if (project.hasProperty('signing.keyId')) {
     signing {
         sign configurations.archives
     }
 }
-
-apply from: 'gradle/publish.gradle'
-apply from: 'gradle/sonarqube.gradle'
