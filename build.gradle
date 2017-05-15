@@ -87,7 +87,7 @@ task makePluginDescriptor(type: Copy) {
                     'description': pluginDescription,
                     'version': project.property('version'),
                     'javaVersion': project.property('targetCompatibility'),
-                    'elasticsearchVersion' : versions.elasticsearch
+                    'elasticsearchVersion' : project.property('elasticsearch.version')
             ]
     ])
 }
