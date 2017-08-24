@@ -1,8 +1,8 @@
 tasks.withType(FindBugs) {
     ignoreFailures = true
     reports {
-        xml.enabled = true
-        html.enabled = false
+        xml.enabled = false
+        html.enabled = true
     }
 }
 tasks.withType(Pmd) {
@@ -22,10 +22,8 @@ tasks.withType(Checkstyle) {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
-        csv.enabled false
-        xml.destination "${buildDir}/reports/jacoco-xml"
-        html.destination "${buildDir}/reports/jacoco-html"
+        xml.enabled = true
+        csv.enabled = false
     }
 }
 

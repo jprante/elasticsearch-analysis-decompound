@@ -26,6 +26,7 @@ by the ASV toolbox.
 [frame="all"]
 |===
 | Plugin version   | Elasticsearch version | Release date
+| 5.4.3.0          | 5.4.3                 | Aug 24 2017
 | 5.4.0.0          | 5.4.0                 | May 12 2017
 | 5.1.1.0          | 5.1.1                 | Dec 19 2016
 | 2.4.1.0          | 2.4.1                 | Nov 16 2016
@@ -48,7 +49,7 @@ by the ASV toolbox.
 
 [source]
 ----
-./bin/elasticsearch-plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/5.4.0.0/elasticsearch-analysis-decompound-5.4.0.0-plugin.zip
+./bin/elasticsearch-plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/5.4.3.0/elasticsearch-analysis-decompound-5.4.3.0-plugin.zip
 ----
 
 Do not forget to restart the node after installing.
