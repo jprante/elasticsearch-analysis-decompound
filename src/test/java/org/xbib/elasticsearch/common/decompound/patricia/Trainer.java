@@ -1,6 +1,6 @@
-package org.xbib.decompound;
+package org.xbib.elasticsearch.common.decompound.patricia;
 
-import org.xbib.elasticsearch.index.analysis.decompound.CompactPatriciaTrie;
+import com.carrotsearch.randomizedtesting.annotations.SuppressForbidden;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 
+@SuppressForbidden(value = "Trainer for Decompounder")
 public class Trainer {
 
     private CompactPatriciaTrie reduce;
@@ -42,7 +43,8 @@ public class Trainer {
             InputStream in = new FileInputStream(path);
             Reader reader = new InputStreamReader(in, "UTF-8");
             Trainer trainer = new Trainer();
-            trainer.train(reader, options.valueOf("forward").toString(), options.valueOf("backward").toString(), options.valueOf("reduce").toString());
+            trainer.train(reader, options.valueOf("forward").toString(), options.valueOf("backward").toString(),
+            options.valueOf("reduce").toString());
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

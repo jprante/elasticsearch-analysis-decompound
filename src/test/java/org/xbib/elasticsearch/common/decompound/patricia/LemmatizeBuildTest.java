@@ -1,6 +1,6 @@
-package org.xbib.decompound;
+package org.xbib.elasticsearch.common.decompound.patricia;
 
-import org.xbib.elasticsearch.index.analysis.decompound.CompactPatriciaTrie;
+import com.carrotsearch.randomizedtesting.annotations.SuppressForbidden;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -10,9 +10,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
 
-public class LemmatizeBuildTests {
+@SuppressForbidden(value = "Trainer for Decompounder")
+public class LemmatizeBuildTest {
 
-    public void trainReduce() throws IOException, ClassNotFoundException {
+    public void trainReduce() throws IOException {
         Trainer trainer = new Trainer();
         CompactPatriciaTrie reduce = new CompactPatriciaTrie();
         reduce.setIgnoreCase(true);
@@ -23,11 +24,9 @@ public class LemmatizeBuildTests {
         BufferedReader br = new BufferedReader(reader);
         String line;
         while ((line = br.readLine()) != null) {
-            //System.err.println(line);
             String[] forms = line.split("\t");
             if (forms.length == 2) {
                 String wclass = trainer.createRule(forms[0], forms[1]);
-                //System.err.println("w=" + forms[0]  + " wclass="+ wclass);
                 reduce.train(forms[0], wclass);
             }
         }

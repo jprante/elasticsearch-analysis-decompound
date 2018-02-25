@@ -1,4 +1,4 @@
-package org.xbib.elasticsearch.index.analysis.decompound;
+package org.xbib.elasticsearch.index.analysis.decompound.patricia;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.ElasticsearchException;
@@ -6,9 +6,10 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;
+import org.xbib.elasticsearch.common.decompound.patricia.Decompounder;
 
 /**
- *
+ * Decompound token filter factory.
  */
 public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
@@ -32,9 +33,9 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
 
     private Decompounder createDecompounder(Settings settings) {
         try {
-            String forward = settings.get("forward", "/decompound/kompVVic.tree");
-            String backward = settings.get("backward", "/decompound/kompVHic.tree");
-            String reduce = settings.get("reduce", "/decompound/grfExt.tree");
+            String forward = settings.get("forward", "/decompound/patricia/kompVVic.tree");
+            String backward = settings.get("backward", "/decompound/patricia/kompVHic.tree");
+            String reduce = settings.get("reduce", "/decompound/patricia/grfExt.tree");
             double threshold = settings.getAsDouble("threshold", 0.51);
             return new Decompounder(getClass().getResourceAsStream(forward),
                     getClass().getResourceAsStream(backward),

@@ -1,4 +1,4 @@
-package org.xbib.elasticsearch.index.analysis.decompound;
+package org.xbib.elasticsearch.index.analysis.decompound.patricia;
 
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
@@ -6,12 +6,13 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.KeywordAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.AttributeSource;
+import org.xbib.elasticsearch.common.decompound.patricia.Decompounder;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
 /**
- *
+ * Decompound token filter.
  */
 public class DecompoundTokenFilter extends TokenFilter {
 
@@ -19,15 +20,15 @@ public class DecompoundTokenFilter extends TokenFilter {
 
     private final Decompounder decomp;
 
+    private final boolean respectKeywords;
+
+    private final boolean subwordsonly;
+
     private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
 
     private final KeywordAttribute keywordAtt = addAttribute(KeywordAttribute.class);
 
     private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
-
-    private final boolean respectKeywords;
-
-    private final boolean subwordsonly;
 
     private AttributeSource.State current;
 
@@ -42,7 +43,9 @@ public class DecompoundTokenFilter extends TokenFilter {
     @Override
     public final boolean incrementToken() throws IOException {
         if (!tokens.isEmpty()) {
-            assert current != null;
+            if (current == null) {
+                throw new IllegalArgumentException("current is null");
+            }
             String token = tokens.removeFirst();
             restoreState(current);
             termAtt.setEmpty().append(token);
@@ -71,9 +74,7 @@ public class DecompoundTokenFilter extends TokenFilter {
 
     protected boolean decompound() {
         String term = new String(termAtt.buffer(), 0, termAtt.length());
-        for (String s : decomp.decompound(term)) {
-            tokens.add(s);
-        }
+        tokens.addAll(decomp.decompound(term));
         return tokens.isEmpty();
     }
 

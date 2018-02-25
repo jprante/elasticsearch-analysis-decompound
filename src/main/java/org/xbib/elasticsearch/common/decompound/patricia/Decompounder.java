@@ -1,4 +1,4 @@
-package org.xbib.elasticsearch.index.analysis.decompound;
+package org.xbib.elasticsearch.common.decompound.patricia;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- *
+ * Decompounder.
  */
 public class Decompounder {
 

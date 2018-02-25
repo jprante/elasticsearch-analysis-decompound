@@ -1,35 +1,18 @@
 
 task xbibUpload(type: Upload) {
+    group = 'publish'
     configuration = configurations.archives
     uploadDescriptor = true
     repositories {
         if (project.hasProperty("xbibUsername")) {
             mavenDeployer {
                 configuration = configurations.wagon
-                repository(url: uri('sftp://xbib.org/repository')) {
+                repository(url: uri(project.property('xbibUrl'))) {
                         authentication(userName: xbibUsername, privateKey: xbibPrivateKey)
                 }
-            }
-        }
-    }
-}
-
-task sonaTypeUpload(type: Upload) {
-    configuration = configurations.archives
-    uploadDescriptor = true
-    repositories {
-        if (project.hasProperty('ossrhUsername')) {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                repository(url: uri(ossrhReleaseUrl)) {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-                snapshotRepository(url: uri(ossrhSnapshotUrl)) {
-                        authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
                 pom.project {
-                    name pluginName
-                    description pluginDescription
+                    name project.name
+                    description project.description
                     packaging 'jar'
                     inceptionYear '2012'
                     url scmUrl
@@ -61,3 +44,57 @@ task sonaTypeUpload(type: Upload) {
         }
     }
 }
+
+task sonaTypeUpload(type: Upload) {
+    group = 'publish'
+    configuration = configurations.archives
+    uploadDescriptor = true
+    repositories {
+        if (project.hasProperty('ossrhUsername')) {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                repository(url: uri(ossrhReleaseUrl)) {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+                snapshotRepository(url: uri(ossrhSnapshotUrl)) {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+                pom.project {
+                    name project.name
+                    description project.description
+                    packaging 'jar'
+                    inceptionYear '2012'
+                    url scmUrl
+                    organization {
+                        name 'xbib'
+                        url 'http://xbib.org'
+                    }
+                    developers {
+                        developer {
+                            id user
+                            name 'Jörg Prante'
+                            email 'joergprante@gmail.com'
+                            url 'https://github.com/jprante'
+                        }
+                    }
+                    scm {
+                        url scmUrl
+                        connection scmConnection
+                        developerConnection scmDeveloperConnection
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+nexusStaging {
+    packageGroup = "org.xbib"
+}
+

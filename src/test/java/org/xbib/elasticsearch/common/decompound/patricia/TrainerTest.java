@@ -1,11 +1,12 @@
-package org.xbib.decompound;
+package org.xbib.elasticsearch.common.decompound.patricia;
 
+import com.carrotsearch.randomizedtesting.annotations.SuppressForbidden;
 import org.junit.Test;
-import org.xbib.elasticsearch.index.analysis.decompound.Decompounder;
 
 import java.io.StringReader;
 
-public class TrainerTests {
+@SuppressForbidden(value = "Trainer for Decompounder")
+public class TrainerTest {
 
     @Test
     public void train() throws Exception {
@@ -71,15 +72,9 @@ public class TrainerTests {
         );
         
         trainer.trainReduce(nouns, 0.51d);
-        //trainer.loadReduce(getClass().getResourceAsStream("/grfExt.tree"));
         trainer.trainCompounds(compounds, null, null, 0.51d);
 
-        //InputStream forwfile = getClass().getResourceAsStream("/kompVVic.tree");
-        //InputStream backwfile = getClass().getResourceAsStream("/kompVHic.tree");
-        //InputStream reducfile = getClass().getResourceAsStream("/grfExt.tree");
-        //Decompounder d = new Decompounder(forwfile, backwfile, reducfile, 0.51d);
         Decompounder d = new Decompounder(trainer.getForward(), trainer.getBackward(), trainer.getReduce(), 0.51d);
-        //assertEquals("[Rente, versicherung]", d.decompound("Rentenversicherung").toString());
 
         String s[] = new String[]{
             "Rentenversicherung",
