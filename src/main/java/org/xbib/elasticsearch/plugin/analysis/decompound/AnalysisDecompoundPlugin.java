@@ -8,7 +8,6 @@ import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
 
 import org.xbib.elasticsearch.index.analysis.decompound.patricia.DecompoundTokenFilterFactory;
-import org.xbib.elasticsearch.index.analysis.keyword.KeywordMarkerTokenFilterFactory;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -30,17 +29,13 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin {
     @Override
     public List<Setting<?>> getSettings() {
         return Arrays.asList(
-                new Setting<>("plugins.xbib.decompound.enabled", "true", Function.identity(), Setting.Property.NodeScope),
-                new Setting<>("plugins.xbib.keywordmarker.enabled", "true", Function.identity(), Setting.Property.NodeScope)
+                new Setting<>("plugins.xbib.decompound.enabled", "true", Function.identity(), Setting.Property.NodeScope)
         );
     }
 
     @Override
     public Map<String, AnalysisModule.AnalysisProvider<TokenFilterFactory>> getTokenFilters() {
         Map<String, AnalysisModule.AnalysisProvider<TokenFilterFactory>> extra = new LinkedHashMap<>();
-        if (settings.getAsBoolean("plugins.xbib.keywordmarker.enabled", true)) {
-            extra.put("keyword_marker", KeywordMarkerTokenFilterFactory::new);
-        }
         if (settings.getAsBoolean("plugins.xbib.decompound.enabled", true)) {
             extra.put("decompound", DecompoundTokenFilterFactory::new);
         }
