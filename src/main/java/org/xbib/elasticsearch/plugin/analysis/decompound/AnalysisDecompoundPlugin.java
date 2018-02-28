@@ -24,7 +24,7 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin {
 
 	private static final Logger LOG = LogManager.getLogger(AnalysisDecompoundPlugin.class);
 	
-	private static final Setting<Long> SETTING_MAX_CACHE_SIZE = 
+	public static final Setting<Long> SETTING_MAX_CACHE_SIZE = 
 			Setting.longSetting("decompound_max_cache_size", 8388608, 131072, Setting.Property.NodeScope);
 
 	private final long maxCacheSize;
