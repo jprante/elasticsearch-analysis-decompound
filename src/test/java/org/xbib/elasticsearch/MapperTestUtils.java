@@ -40,7 +40,7 @@ public class MapperTestUtils {
                 .put(customSettings)
                 .build();
         Environment environment = new Environment(settings, null);
-        AnalysisDecompoundPlugin plugin = new AnalysisDecompoundPlugin();
+        AnalysisDecompoundPlugin plugin = new AnalysisDecompoundPlugin(settings);
         AnalysisModule analysisModule = new AnalysisModule(environment, Collections.singletonList(plugin));
         return analysisModule.getAnalysisRegistry();
     }
@@ -56,7 +56,7 @@ public class MapperTestUtils {
                 .put(customSettings)
                 .build();
         Environment environment = new Environment(settings, null);
-        AnalysisDecompoundPlugin plugin = new AnalysisDecompoundPlugin();
+        AnalysisDecompoundPlugin plugin = new AnalysisDecompoundPlugin(settings);
         AnalysisModule analysisModule = new AnalysisModule(environment, Collections.singletonList(plugin));
         IndicesModule indicesModule = new IndicesModule(Collections.emptyList());
         MapperRegistry mapperRegistry = indicesModule.getMapperRegistry();
