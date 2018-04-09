@@ -87,9 +87,9 @@ task makePluginDescriptor(type: Copy) {
     into 'build/tmp/plugin'
     expand([
             'descriptor': [
-                    'name': pluginName,
-                    'classname': pluginClassname,
-                    'description': pluginDescription,
+                    'name': project.property('pluginName'),
+                    'classname': project.property('pluginClassname'),
+                    'description': project.property('pluginDescription'),
                     'version': project.property('version'),
                     'javaVersion': project.property('targetCompatibility'),
                     'elasticsearchVersion' : project.property('elasticsearch.version')
