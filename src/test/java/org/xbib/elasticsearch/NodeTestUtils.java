@@ -12,8 +12,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.support.AbstractClient;
 import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.transport.LocalTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.MockNode;
 import org.elasticsearch.node.Node;
@@ -21,7 +20,11 @@ import org.elasticsearch.node.NodeValidationException;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -134,15 +137,8 @@ public class NodeTestUtils {
         nodesInfoRequestBuilder.setTransport(true);
         NodesInfoResponse response = nodesInfoRequestBuilder.execute().actionGet();
         Object obj = response.getNodes().iterator().next().getTransport().getAddress().publishAddress();
-        if (obj instanceof InetSocketTransportAddress) {
-            InetSocketTransportAddress address = (InetSocketTransportAddress) obj;
-            host = address.address().getHostName();
-        } else if (obj instanceof LocalTransportAddress) {
-            LocalTransportAddress address = (LocalTransportAddress) obj;
-            host = address.getHost();
-        } else {
-            logger.info("class=" + obj.getClass());
-        }
+        TransportAddress transportAddress = response.getNodes().iterator().next().getTransport().getAddress().publishAddress();
+        host = transportAddress.getAddress();
         if (host == null) {
             throw new IllegalArgumentException("host not found");
         }
@@ -153,23 +149,15 @@ public class NodeTestUtils {
         nodesInfoRequestBuilder.setHttp(true).setTransport(false);
         NodesInfoResponse response = nodesInfoRequestBuilder.execute().actionGet();
         Object obj = response.getNodes().iterator().next().getHttp().getAddress().publishAddress();
-        if (obj instanceof InetSocketTransportAddress) {
-            InetSocketTransportAddress httpAddress = (InetSocketTransportAddress) obj;
-            return "http://" + httpAddress.getHost() + ":" + httpAddress.getPort();
-        } else if (obj instanceof LocalTransportAddress) {
-            LocalTransportAddress httpAddress = (LocalTransportAddress) obj;
-            return "http://" + httpAddress.getHost() + ":" + httpAddress.getPort();
-        } else {
-            logger.info("class=" + obj.getClass());
-        }
-        return null;
+        TransportAddress transportAddress = response.getNodes().iterator().next().getHttp().getAddress().publishAddress();
+        return "http://" + transportAddress.getAddress() + ":" + transportAddress.getPort();
     }
 
     public Node buildNodeWithoutPlugins() throws IOException {
         Settings nodeSettings = Settings.builder()
                 .put(getNodeSettings())
                 .build();
-        logger.info("settings={}", nodeSettings.getAsMap());
+        logger.info("settings={}", nodeSettings);
         Node node = new MockNode(nodeSettings, Collections.emptyList());
         AbstractClient client = (AbstractClient) node.client();
         return node;
@@ -179,7 +167,7 @@ public class NodeTestUtils {
         Settings nodeSettings = Settings.builder()
                 .put(getNodeSettings())
                 .build();
-        logger.info("settings={}", nodeSettings.getAsMap());
+        logger.info("settings={}", nodeSettings);
         Node node = new MockNode(nodeSettings, Collections.singletonList(AnalysisDecompoundPlugin.class));
         AbstractClient client = (AbstractClient) node.client();
         return node;
