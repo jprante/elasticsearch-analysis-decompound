@@ -8,7 +8,6 @@
                 "decompounding_default": {
                     "tokenizer": "decomp",
                     "filter": [
-                        "keywords",
                         "decomp"
                     ],
                     "type": "custom"
@@ -16,16 +15,7 @@
                 "with_keywords": {
                     "tokenizer": "decomp",
                     "filter": [
-                        "keywords",
                         "decomp_with_keywords"
-                    ],
-                    "type": "custom"
-                },
-                "with_keywords_disabled": {
-                    "tokenizer": "decomp",
-                    "filter": [
-                        "keywords",
-                        "decomp_with_keywords_disabled"
                     ],
                     "type": "custom"
                 },
@@ -38,12 +28,6 @@
                 }
             },
             "filter": {
-                "keywords": {
-                    "type": "keyword_marker",
-                    "keywords": [
-                        "Schlüsselwort"
-                    ]
-                },
                 "decomp": {
                     "type": "decompound"
                 },
@@ -69,4 +53,3 @@
         }
     }
 }
-
