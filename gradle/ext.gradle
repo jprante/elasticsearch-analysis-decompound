@@ -9,8 +9,8 @@ ext {
     scmConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
     scmDeveloperConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
     versions = [
-            'elasticsearch' : '5.1.1',
-            'log4j': '2.5',
+            'elasticsearch' : '6.3.0',
+            'log4j': '2.9.1',
             'junit' : '4.12'
     ]
 }

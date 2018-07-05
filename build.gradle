@@ -54,9 +54,12 @@ apply from: 'gradle/sonarqube.gradle'
 dependencies {
     compile "org.elasticsearch:elasticsearch:${project.property('elasticsearch.version')}"
     compile "org.apache.logging.log4j:log4j-api:${project.property('log4j.version')}"
-    testCompile "junit:junit:${project.property('junit.version')}"
+    testCompile "junit:junit:${project.property('junit.version')}" ,{
+        exclude group: "org.hamcrest", module: "hamcrest-core"
+    }
     testCompile "org.apache.logging.log4j:log4j-core:${project.property('log4j.version')}"
     testCompile "org.elasticsearch.plugin:transport-netty4-client:${project.property('elasticsearch.version')}"
+    testCompile "org.elasticsearch.test:framework:${project.property('elasticsearch.version')}"
     distJars "${project.group}:${project.name}:${project.version}"
     wagon "org.apache.maven.wagon:wagon-ssh:${project.property('wagon.version')}"
 }
@@ -71,6 +74,7 @@ tasks.withType(JavaCompile) {
 
 test {
     systemProperties['path.home'] = System.getProperty("user.dir")
+    systemProperties['tests.security.manager'] = false
     testLogging {
         showStandardStreams = false
         exceptionFormat = 'full'
@@ -95,7 +99,7 @@ task makePluginDescriptor(type: Copy) {
 task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
     from configurations.distJars
     from 'build/tmp/plugin'
-    into 'elasticsearch'
+    into '.'
     classifier = 'plugin'
 }
 

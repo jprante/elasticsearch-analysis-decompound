@@ -1,24 +1,26 @@
 package org.xbib.elasticsearch.index.analysis.decompound;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.elasticsearch.Version;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.IndexSettings;
+import org.elasticsearch.index.analysis.NamedAnalyzer;
 import org.elasticsearch.index.analysis.TokenFilterFactory;
+import org.elasticsearch.test.ESTestCase;
 import org.junit.Assert;
 import org.junit.Test;
+import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.xbib.elasticsearch.MapperTestUtils.analyzer;
-import static org.xbib.elasticsearch.MapperTestUtils.tokenFilterFactory;
-import static org.xbib.elasticsearch.MapperTestUtils.tokenizerFactory;
-
 /**
  *
  */
-public class DecompoundTokenFilterTests extends Assert {
+public class DecompoundTokenFilterTests extends ESTestCase {
 
     @Test
     public void test() throws IOException {
@@ -55,8 +57,10 @@ public class DecompoundTokenFilterTests extends Assert {
                 "gekosten"
         };
         String resource = "decompound_analysis.json";
-        TokenFilterFactory tokenFilter = tokenFilterFactory(ClassLoader.getSystemClassLoader(), resource, "decomp");
-        Tokenizer tokenizer = tokenizerFactory(resource, "standard").create();
+        Settings nodeSettings = getNodeSettings();
+        TestAnalysis analysis = createTestAnalysis(new IndexSettings(getIndexMetaData(resource), nodeSettings), nodeSettings, new AnalysisDecompoundPlugin());
+        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("decomp");
+        Tokenizer tokenizer = analysis.tokenizer.get("standard").create();
         tokenizer.setReader(new StringReader(source));
         assertSimpleTSOutput(tokenFilter.create(tokenizer), expected);
     }
@@ -75,7 +79,9 @@ public class DecompoundTokenFilterTests extends Assert {
                 "wort"
         };
         String resource = "keywords_analysis.json";
-        Analyzer analyzer = analyzer(ClassLoader.getSystemClassLoader(), resource, "with_subwords_only");
+        Settings nodeSettings = getNodeSettings();
+        TestAnalysis analysis = createTestAnalysis(new IndexSettings(getIndexMetaData(resource), nodeSettings), nodeSettings, new AnalysisDecompoundPlugin());
+        NamedAnalyzer analyzer = analysis.indexAnalyzers.get("with_subwords_only");
         assertNotNull(analyzer);
         assertSimpleTSOutput(analyzer.tokenStream("test-field", source), expected);
     }
@@ -93,4 +99,22 @@ public class DecompoundTokenFilterTests extends Assert {
         assertEquals(i, expected.length);
         stream.close();
     }
+
+    private IndexMetaData getIndexMetaData(String resource) throws IOException {
+        return IndexMetaData.builder("test")
+            .settings(Settings.builder()
+                          .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
+                          .loadFromStream(resource, ClassLoader.getSystemClassLoader().getResourceAsStream(resource), false)
+                          .build())
+            .numberOfShards(1)
+            .numberOfReplicas(1)
+            .build();
+    }
+
+    private Settings getNodeSettings() {
+        return Settings.builder()
+            .put("path.home", System.getProperty("path.home", "/tmp"))
+            .build();
+    }
+
 }
