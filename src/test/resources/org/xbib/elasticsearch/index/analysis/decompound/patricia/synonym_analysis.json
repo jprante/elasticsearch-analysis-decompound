@@ -1,0 +1,30 @@
+{
+  "index" : {
+    "analysis" : {
+      "analyzer": {
+        "decompounding_with_synonym": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "my_synonym_filter",
+            "decomp",
+            "unique"
+          ],
+          "type": "custom"
+        }
+      },
+      "filter": {
+        "decomp": {
+          "type": "decompound"
+        },
+        "my_synonym_filter": {
+          "tokenizer": "keyword",
+          "type": "synonym",
+          "synonyms": [
+            "deutsche bank => deutschebank"
+          ]
+        }
+      }
+    }
+  }
+}

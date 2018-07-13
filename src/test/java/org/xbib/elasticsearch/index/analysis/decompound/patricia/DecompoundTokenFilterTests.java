@@ -18,9 +18,7 @@ import java.io.StringReader;
 public class DecompoundTokenFilterTests extends ESTokenStreamTestCase {
 
     public void test() throws Exception {
-
         String source = "Die Jahresfeier der Rechtsanwaltskanzleien auf dem Donaudampfschiff hat viel Ökosteuer gekostet";
-
         String[] expected = {
             "Die",
             "Die",
@@ -63,7 +61,7 @@ public class DecompoundTokenFilterTests extends ESTokenStreamTestCase {
         assertTokenStreamContents(tokenFilter.create(tokenizer), expected);
     }
 
-    public void testWithSubwordsOnly() throws Exception {
+    public void testWithSubwordsOnlyAndKeywords() throws Exception {
         String source = "Das ist ein Schlüsselwort, ein Bindestrichwort";
         String[] expected = {
                 "Da",
@@ -82,8 +80,52 @@ public class DecompoundTokenFilterTests extends ESTokenStreamTestCase {
         ESTestCase.TestAnalysis analysis = ESTestCase.createTestAnalysis(new Index("test", "_na_"),
                 settings,
                 new AnalysisDecompoundPlugin(Settings.EMPTY), new CommonAnalysisPlugin());
-        Analyzer analyzer =analysis.indexAnalyzers.get("with_subwords_only");
+        Analyzer analyzer = analysis.indexAnalyzers.get("with_subwords_only");
+        assertNotNull(analyzer);
+        assertTokenStreamContents(analyzer.tokenStream("test-field", source), expected);
+
+        String[] expected_keywords = {
+                "Das",
+                "Da",
+                "ist",
+                "ist",
+                "ein",
+                "ein",
+                "Schlüsselwort",
+                "ein",
+                "ein",
+                "Bindestrichwort",
+                "Bindestrich",
+                "wort"
+        };
+        analyzer = analysis.indexAnalyzers.get("with_keywords");
+        assertNotNull(analyzer);
+        assertTokenStreamContents(analyzer.tokenStream("test-field", source), expected_keywords);
+    }
+
+    public void testSynonym() throws Exception {
+        String source = "Die deutsche Spielbankgesellschaft ist nicht die Deutsche Bank";
+        String[] expected = {
+                "die",
+                "deutsche",
+                "spielbankgesellschaft",
+                "spiel",
+                "bank",
+                "gesellschaft",
+                "ist",
+                "nicht",
+                "deutschebank"
+        };
+        String resource = "/org/xbib/elasticsearch/index/analysis/decompound/patricia/synonym_analysis.json";
+        Settings settings = Settings.builder()
+                .loadFromStream(resource, getClass().getResourceAsStream(resource), true)
+                .build();
+        ESTestCase.TestAnalysis analysis = ESTestCase.createTestAnalysis(new Index("test", "_na_"),
+                settings,
+                new AnalysisDecompoundPlugin(Settings.EMPTY), new CommonAnalysisPlugin());
+        Analyzer analyzer = analysis.indexAnalyzers.get("decompounding_with_synonym");
         assertNotNull(analyzer);
         assertTokenStreamContents(analyzer.tokenStream("test-field", source), expected);
     }
+
 }
