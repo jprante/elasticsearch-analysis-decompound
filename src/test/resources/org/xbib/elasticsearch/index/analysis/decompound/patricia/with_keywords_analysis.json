@@ -1,0 +1,29 @@
+{
+    "index": {
+        "analysis": {
+            "analyzer": {
+                "decompound_with_keywords": {
+                    "tokenizer": "standard",
+                    "filter": [
+                        "mark_keywords",
+                        "decomp_with_keywords",
+                        "unique"
+                    ],
+                    "type": "custom"
+                }
+            },
+            "filter": {
+                "mark_keywords": {
+                    "type": "keyword_marker",
+                    "keywords": [
+                        "Spielbankgesellschaft"
+                    ]
+                },
+                "decomp_with_keywords": {
+                    "type": "decompound",
+                    "respect_keywords": true
+                }
+            }
+        }
+    }
+}
