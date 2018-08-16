@@ -78,6 +78,40 @@ public class DecompoundTokenFilterTests extends ESTestCase {
     }
 
     @Test
+    public void testFalsePositive() throws IOException {
+
+        String source = "Deutsche Spielbankgesellschaft";
+
+        String[] expected = {
+                "Deutsche",
+                "Deutsche",
+                "Spielbankgesellschaft",
+                "Spiel",
+                "bank",
+                "gesellschaft"
+        };
+        String resource = "decompound_analysis.json";
+        Settings settings = Settings.builder()
+                .put(IndexMetaData.SETTING_VERSION_CREATED, Version.CURRENT)
+                .loadFromStream(resource, ClassLoader.getSystemClassLoader().getResourceAsStream(resource), false)
+                .build();
+        IndexMetaData indexMetaData = IndexMetaData.builder("test")
+                .settings(settings)
+                .numberOfShards(1)
+                .numberOfReplicas(1)
+                .build();
+        Settings nodeSettings = Settings.builder()
+        			.put(AnalysisDecompoundPlugin.SETTING_MAX_CACHE_SIZE.getKey(), 131072)
+                .put("path.home", System.getProperty("path.home", "/tmp"))
+                .build();
+        TestAnalysis analysis = createTestAnalysis(new IndexSettings(indexMetaData, nodeSettings), nodeSettings, new AnalysisDecompoundPlugin(nodeSettings));
+        TokenFilterFactory tokenFilter = analysis.tokenFilter.get("decomp");
+        Tokenizer tokenizer = analysis.tokenizer.get("standard").create();
+        tokenizer.setReader(new StringReader(source));
+        assertSimpleTSOutput(tokenFilter.create(tokenizer), expected);
+    }
+
+    @Test
     public void testWithSubwordsOnly() throws IOException {
         String source = "Das ist ein Schlüsselwort, ein Bindestrichwort";
         String[] expected = {

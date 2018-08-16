@@ -1,5 +1,6 @@
 package org.xbib.elasticsearch.plugin.analysis.decompound;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,15 @@ import org.elasticsearch.index.analysis.TokenFilterFactory;
 import org.elasticsearch.indices.analysis.AnalysisModule.AnalysisProvider;
 import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.plugins.SearchPlugin;
 import org.xbib.elasticsearch.index.analysis.decompound.DecompoundTokenFilterAnalysisProvider;
+import org.xbib.elasticsearch.index.query.decompound.ExactMatchPhraseQueryBuilder;
+import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
 
 /**
  *
  */
-public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin {
+public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin, SearchPlugin {
 
 	private static final Logger LOG = LogManager.getLogger(AnalysisDecompoundPlugin.class);
 	
@@ -45,4 +49,18 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin {
 	public List<Setting<?>> getSettings() {
 		return Stream.of(SETTING_MAX_CACHE_SIZE).collect(Collectors.toList());
 	}
+    
+    @Override
+    public List<QuerySpec<?>> getQueries() {
+    	return Arrays.asList(
+        		new QuerySpec<>(
+        				ExactMatchPhraseQueryBuilder.NAME,
+        				ExactMatchPhraseQueryBuilder::new,
+        				ExactMatchPhraseQueryBuilder::fromXContent),
+        		new QuerySpec<>(
+        				ExactPhraseQueryBuilder.NAME,
+        				ExactPhraseQueryBuilder::new,
+        				ExactPhraseQueryBuilder::fromXContent));
+    }
+
 }

@@ -14,8 +14,10 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.KeywordAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PayloadAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.util.AttributeSource;
+import org.apache.lucene.util.BytesRef;
 
 /**
  *
@@ -23,6 +25,9 @@ import org.apache.lucene.util.AttributeSource;
 public class DecompoundTokenFilter extends TokenFilter {
 
 	private static final Logger LOG = LogManager.getLogger(DecompoundTokenFilter.class);
+	
+	private static final byte ORIGINAL_TYPE = 1;
+	private static final byte DECOMPOUND_TYPE = 2;
 	
     private static ConcurrentHashMap<String, String[]> TERM_CACHE;
     
@@ -43,6 +48,8 @@ public class DecompoundTokenFilter extends TokenFilter {
     private final OffsetAttribute offsetAtt = addAttribute(OffsetAttribute.class);
 
     private final KeywordAttribute keywordAtt = addAttribute(KeywordAttribute.class);
+    
+    private final PayloadAttribute payloadAtt = addAttribute(PayloadAttribute.class);
 
     private final PositionIncrementAttribute posIncAtt = addAttribute(PositionIncrementAttribute.class);
 
@@ -75,24 +82,28 @@ public class DecompoundTokenFilter extends TokenFilter {
             if (!subwordsonly) {
                 posIncAtt.setPositionIncrement(0);
             }
+            setPayload(DECOMPOUND_TYPE);
             return true;
         }
         if (!input.incrementToken()) {
             return false;
         }
         if (respectKeywords && keywordAtt.isKeyword()) {
+        	setPayload(ORIGINAL_TYPE);
             return true;
         }
         if (!decompound()) {
             current = captureState();
             if (subwordsonly) {
-            		DecompoundToken token = tokens.removeFirst();
+            	DecompoundToken token = tokens.removeFirst();
                 restoreState(current);
                 termAtt.setEmpty().append(token.txt);
                 offsetAtt.setOffset(token.startOffset, token.endOffset);
+                setPayload(DECOMPOUND_TYPE);
                 return true;
             }
         }
+        setPayload(ORIGINAL_TYPE);
         return true;
     }
 
@@ -127,6 +138,22 @@ public class DecompoundTokenFilter extends TokenFilter {
 		TERM_CACHE = new ConcurrentHashMap<String, String[]>();
 		termCacheCount.set(0);
 		LOG.debug("Clearing term cache for decompound, memory usage: " + memoryUsage);
+	}
+	
+	
+	private void setPayload(byte tokenType) {
+		BytesRef payload = payloadAtt.getPayload();
+		if (tokenType == ORIGINAL_TYPE) {
+			payload = new BytesRef();
+		} else {
+			if (payload != null && payload.length > 0) {
+				payload = BytesRef.deepCopyOf(payload);
+			} else {
+				payload = new BytesRef(new byte[1]);
+			}
+			payload.bytes[payload.offset] |= tokenType;
+		}
+		payloadAtt.setPayload(payload);
 	}
 
     @Override
