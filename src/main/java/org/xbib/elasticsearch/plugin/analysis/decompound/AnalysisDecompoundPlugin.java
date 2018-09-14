@@ -18,7 +18,6 @@ import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.plugins.SearchPlugin;
 import org.xbib.elasticsearch.index.analysis.decompound.DecompoundTokenFilterAnalysisProvider;
-import org.xbib.elasticsearch.index.query.decompound.ExactMatchPhraseQueryBuilder;
 import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
 
 /**
@@ -53,10 +52,6 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin, 
     @Override
     public List<QuerySpec<?>> getQueries() {
     	return Arrays.asList(
-        		new QuerySpec<>(
-        				ExactMatchPhraseQueryBuilder.NAME,
-        				ExactMatchPhraseQueryBuilder::new,
-        				ExactMatchPhraseQueryBuilder::fromXContent),
         		new QuerySpec<>(
         				ExactPhraseQueryBuilder.NAME,
         				ExactPhraseQueryBuilder::new,

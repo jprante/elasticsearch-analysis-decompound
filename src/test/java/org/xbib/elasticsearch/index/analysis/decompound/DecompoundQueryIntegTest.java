@@ -28,13 +28,12 @@ import org.elasticsearch.test.hamcrest.ElasticsearchAssertions;
 //import org.elasticsearch.test.junit.annotations.TestLogging;
 import org.elasticsearch.transport.Netty4Plugin;
 import org.junit.Before;
-import org.xbib.elasticsearch.index.query.decompound.ExactMatchPhraseQueryBuilder;
 import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
 //@TestLogging("level:DEBUG")
 public class DecompoundQueryIntegTest extends ESIntegTestCase {
-	
+
     @Override
     protected Collection<Class<? extends Plugin>> nodePlugins() {
         return Arrays.asList(Netty4Plugin.class, AnalysisDecompoundPlugin.class);
@@ -93,24 +92,8 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         SearchResponse resp = client().prepareSearch("test").setQuery(queryStringQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 1L);
         assertHits(resp.getHits(), "1");
-    	
     }
     
-    public void testExactPhraseQuery() throws Exception {
-        List<IndexRequestBuilder> reqs = new ArrayList<>();
-        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "deutsche Spielbankgesellschaft"));
-        indexRandom(true, false, reqs);
-       
-        ExactMatchPhraseQueryBuilder queryStringQueryBuilder = new ExactMatchPhraseQueryBuilder("text", "deutsche spielbankgesellschaft");
-        SearchResponse resp = client().prepareSearch("test").setQuery(queryStringQueryBuilder).get();
-        ElasticsearchAssertions.assertHitCount(resp, 1L);
-        assertHits(resp.getHits(), "1");
-    	
-        ExactMatchPhraseQueryBuilder queryStringQueryBuilder2 = new ExactMatchPhraseQueryBuilder("text", "deutsche bank");
-        SearchResponse resp2 = client().prepareSearch("test").setQuery(queryStringQueryBuilder2).get();
-        ElasticsearchAssertions.assertHitCount(resp2, 0L);
-    }
-
     private void assertHits(SearchHits hits, String... ids) {
         assertThat(hits.getTotalHits(), equalTo((long) ids.length));
         Set<String> hitIds = new HashSet<>();
