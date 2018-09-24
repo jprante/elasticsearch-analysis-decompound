@@ -172,7 +172,8 @@ Sometimes only the decomposed subwords should be indexed. For this, you can use 
 
 # Caching
 
-The time consumed by the decompound computation may increase your overall indexing time drastically if applied in the billions. You can configure the cache size (in number of entries) for mapping a token to an array of decompound tokens. The reach of the cache size limit results in clearing the cache and starting anew. This setting and the cache respectivly is applied to a node, so configure it in the elasticsearch.yml file:
+The time consumed by the decompound computation may increase your overall indexing time drastically if applied in the billions. You can configure the cache size (in number of entries) for mapping a token to an array of decompound tokens.
+Reaching the cache size limit results in clearing of the cache and starting anew. This setting and the cache respectively is applied to a node, so configure it in the elasticsearch.yml file:
 
 ```
 # default: 8388608 entries
