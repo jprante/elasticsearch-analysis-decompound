@@ -169,6 +169,38 @@ Sometimes only the decomposed subwords should be indexed. For this, you can use 
     }
 }
 ```
+
+# Caching
+
+The time consumed by the decompound computation may increase your overall indexing time drastically if applied in the billions. You can configure the cache size (in number of entries) for mapping a token to an array of decompound tokens. The reach of the cache size limit results in clearing the cache and starting anew. This setting and the cache respectivly is applied to a node, so configure it in the elasticsearch.yml file:
+
+```
+# default: 8388608 entries
+# minimum: 131072 entries
+# decompound_max_cache_size: 8388608
+```
+
+# Exact phrase matches
+
+The usage of decompounds can lead to undesired results regarding phrase queries. After indexing, decompound tokens are indistinguishable from their original token. The outcome of a phrase query "Deutsche Bank" could be "Deutsche Spielbankgesellschaft", what is clearly an unexpected result. To enable "exact" phrase queries, each decoumpound token is tagged with additional payload data. To evaluate this payload data use the newly introduced query "exact_phrase" as a wrapper around a query-tree containing your phrase queries.
+
+```
+{
+  "query": {
+    "exact_phrase": {
+      "query": {
+        "query_string": {
+          "query": "\"deutsche Bank\"",
+          "fields": [
+            "message"
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
 # References
 
 The Compact Patricia Trie data structure can be found in 
