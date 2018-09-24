@@ -183,7 +183,7 @@ Reaching the cache size limit results in clearing of the cache and starting anew
 
 # Exact phrase matches
 
-The usage of decompounds can lead to undesired results regarding phrase queries. After indexing, decompound tokens are indistinguishable from their original token. The outcome of a phrase query "Deutsche Bank" could be "Deutsche Spielbankgesellschaft", what is clearly an unexpected result. To enable "exact" phrase queries, each decoumpound token is tagged with additional payload data. To evaluate this payload data use the newly introduced query "exact_phrase" as a wrapper around a query-tree containing your phrase queries.
+The usage of decompounds can lead to undesired results regarding phrase queries. After indexing, decompound tokens are indistinguishable from their original token. The outcome of a phrase query "Deutsche Bank" could be `Deutsche Spielbankgesellschaft`, what is clearly an unexpected result. To enable "exact" phrase queries, each decoumpound token is tagged with additional payload data. To evaluate this payload data use the newly introduced query "exact_phrase" as a wrapper around a query-tree containing your phrase queries.
 
 ```
 {
