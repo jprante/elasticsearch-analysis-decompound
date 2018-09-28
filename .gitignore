@@ -10,4 +10,5 @@
 /.project
 /.gradle
 /build
+/bin
 /plugins

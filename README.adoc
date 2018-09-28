@@ -5,7 +5,6 @@ image:https://img.shields.io/sonar/http/nemo.sonarqube.com/org.xbib.elasticsaerc
 image:https://maven-badges.herokuapp.com/maven-central/org.jprante/elasticsearch-analysis-decompound/badge.svg[title="Maven Central", link="http://search.maven.org/#search%7Cga%7C1%7Cxbib%20elasticsearch-analysis-decompound"]
 image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[title="Apache License 2.0", link="https://opensource.org/licenses/Apache-2.0"]
 image:https://img.shields.io/twitter/url/https/twitter.com/xbib.svg?style=social&label=Follow%20%40xbib[title="Twitter", link="https://twitter.com/xbib"]
-image:https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif[title="PayPal", link="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GVHFQYZ9WZ8HG"]
 
 This is an implementation of a word decompounder plugin for link:http://github.com/elasticsearch/elasticsearch[Elasticsearch].
 
@@ -22,46 +21,10 @@ This decompounder does not require word lists, it can process german language te
 The decompounder uses prebuilt _Compact Patricia Tries_ for efficient word segmentation provided
 by the ASV toolbox.
 
-.Table Compatibility matrix
-[frame="all"]
-|===
-| Plugin version   | Elasticsearch version | Release date
-| 5.4.3.0          | 5.4.3                 | Aug 24 2017
-| 5.4.0.0          | 5.4.0                 | May 12 2017
-| 5.1.1.0          | 5.1.1                 | Dec 19 2016
-| 2.4.1.0          | 2.4.1                 | Nov 16 2016
-| 2.3.4.0          | 2.3.4                 | Jul 30 2016
-| 2.3.3.0          | 2.3.3                 | Jun  1 2016
-| 2.3.2.0          | 2.3.2                 | Jun  1 2016
-| 2.3.1.0          | 2.3.1                 | Jun  1 2016
-| 2.3.0.0          | 2.3.0                 | Mar 31 2016
-| 2.2.1.0          | 2.2.1                 | Mar 31 2016
-| 2.2.0.0          | 2.2.0                 | Feb 19 2016
-| 2.1.1.0          | 2.1.1                 | Dec 22 2015
-| 2.1.0.0          | 2.1.0                 | Dec  8 2015
-| 1.7.1.3          | 1.7.1                 | Nov 17 2015
-| 1.5.2.0          | 1.5.2                 | Oct 26 2015
-|===
 
 ## Installation
 
-### Elasticsearch 5.x
-
-[source]
-----
-./bin/elasticsearch-plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/5.4.3.0/elasticsearch-analysis-decompound-5.4.3.0-plugin.zip
-----
-
-Do not forget to restart the node after installing.
-
-### Elasticsearch 2.x
-
-[source]
-----
-./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-decompound/2.4.1.0/elasticsearch-analysis-decompound-2.4.1.0-plugin.zip
-----
-
-Do not forget to restart the node after installing.
+Use Gradle to build the plugin and install it using the elasticsearch-plugin command. Check the "gradle.properties" for the supported version.
 
 ## Issues
 
@@ -170,6 +133,39 @@ Sometimes only the decomposed subwords should be indexed. For this, you can use 
     }
 }
 ```
+
+# Caching
+
+The time consumed by the decompound computation may increase your overall indexing time drastically if applied in the billions. You can configure the cache size (in number of entries) for mapping a token to an array of decompound tokens.
+Reaching the cache size limit results in clearing of the cache and starting anew. This setting and the cache respectively is applied to a node, so configure it in the elasticsearch.yml file:
+
+```
+# default: 8388608 entries
+# minimum: 131072 entries
+# decompound_max_cache_size: 8388608
+```
+
+# Exact phrase matches
+
+The usage of decompounds can lead to undesired results regarding phrase queries. After indexing, decompound tokens are indistinguishable from their original token. The outcome of a phrase query "Deutsche Bank" could be `Deutsche Spielbankgesellschaft`, what is clearly an unexpected result. To enable "exact" phrase queries, each decoumpound token is tagged with additional payload data. To evaluate this payload data use the newly introduced query "exact_phrase" as a wrapper around a query-tree containing your phrase queries.
+
+```
+{
+  "query": {
+    "exact_phrase": {
+      "query": {
+        "query_string": {
+          "query": "\"deutsche Bank\"",
+          "fields": [
+            "message"
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
 # References
 
 The Compact Patricia Trie data structure can be found in 
@@ -207,3 +203,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+# Credits
+
+GBI-Genios Deutsche Wirtschaftsdatenbank GmbH for adding the caching-functionality and the "Exact phrase matches"
