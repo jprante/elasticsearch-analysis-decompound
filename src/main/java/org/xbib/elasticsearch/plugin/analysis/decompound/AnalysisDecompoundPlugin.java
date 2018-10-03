@@ -7,9 +7,12 @@ import org.elasticsearch.indices.analysis.AnalysisModule;
 import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
 
+import org.elasticsearch.plugins.SearchPlugin;
 import org.xbib.elasticsearch.index.analysis.decompound.patricia.DecompoundTokenFilterFactory;
+import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +21,7 @@ import java.util.function.Function;
 /**
  * Decompound plugin.
  */
-public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin {
+public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin, SearchPlugin {
 
     private final Settings settings;
 
@@ -28,7 +31,7 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin {
 
     @Override
     public List<Setting<?>> getSettings() {
-        return Arrays.asList(
+        return Collections.singletonList(
                 new Setting<>("plugins.xbib.decompound.enabled", "true", Function.identity(), Setting.Property.NodeScope)
         );
     }
@@ -41,4 +44,12 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin {
         }
         return extra;
     }
+
+    @Override
+    public List<QuerySpec<?>> getQueries() {
+        return Collections.singletonList(new QuerySpec<>(ExactPhraseQueryBuilder.NAME,
+                ExactPhraseQueryBuilder::new,
+                ExactPhraseQueryBuilder::fromXContent));
+    }
+
 }

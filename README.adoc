@@ -26,6 +26,7 @@ by the ASV toolbox.
 [frame="all"]
 |===
 | Plugin version   | Elasticsearch version | Release date
+| 6.3.2.3          | 6.2.2                 | Oct  2 2018
 | 6.2.2.0          | 6.2.2                 | Feb 25 2018
 | 5.4.3.0          | 5.4.3                 | Aug 24 2017
 | 5.4.0.0          | 5.4.0                 | May 12 2017
@@ -181,6 +182,96 @@ Sometimes only the decomposed subwords should be indexed. For this, you can use 
     }
 }
 ```
+
+## Caching
+
+The time consumed by the decompound computation may increase your overall indexing time drastically if applied in
+the billions. You can configure a least-frequently-used cache for mapping a token to the decompounded tokens
+with the following settings:
+
+`use_cache: true` - enables caching
+`cache_size` - sets cache size, default: 100000
+`cache_eviction_factor` - sets cache eviction factor, valida values are between 0.00 and 1.00, default: 0.90
+
+```
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "analysis": {
+        "filter": {
+          "decomp":{
+            "type" : "decompound",
+            "use_payload": true,
+            "use_cache": true
+          }
+        },
+        "analyzer": {
+          "decomp": {
+            "type": "custom",
+            "tokenizer" : "standard",
+            "filter" : [
+              "decomp",
+              "lowercase"
+            ]
+          },
+          "lowercase": {
+            "type": "custom",
+            "tokenizer" : "standard",
+            "filter" : [
+              "lowercase"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "text": {
+          "type": "text",
+          "analyzer": "decomp",
+          "search_analyzer": "lowercase"
+        }
+      }
+    }
+  }
+}
+```
+
+## Exact phrase matches
+
+The usage of decompounds can lead to undesired results regarding phrase queries.
+After indexing, decompound tokens ca not be distinguished from original tokens.
+The outcome of a phrase query "Deutsche Bank" could be `Deutsche Spielbankgesellschaft`,
+what is clearly an unexpected result. To enable "exact" phrase queries, each decoumpound token is
+tagged with additional payload data.
+
+To evaluate this payload data, you can use the `exact_phrase` as a wrapper around a query
+containing your phrase queries.
+
+`use_payload` - if set to true, enable payload creation. Default: false
+
+ ```
+{
+  "query": {
+    "exact_phrase": {
+      "query": {
+        "query_string": {
+          "query": "\"deutsche bank\"",
+          "fields": [
+            "message"
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+
 # References
 
 The Compact Patricia Trie data structure can be found in 

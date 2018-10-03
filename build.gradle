@@ -6,7 +6,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.xbib.elasticsearch:gradle-plugin-elasticsearch-build:6.2.2.0"
+        classpath "org.xbib.elasticsearch:gradle-plugin-elasticsearch-build:6.3.2.1"
     }
 }
 
@@ -59,10 +59,18 @@ dependencies {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-esTest.dependsOn jar
+esTest {
+    dependsOn jar
+    enabled = true
+}
 
-test.enabled = false
-randomizedTest.enabled = false
+test {
+    enabled = false
+}
+
+randomizedTest {
+    enabled = false
+}
 
 clean {
     delete fileTree('.') { include '.local*.log' }
