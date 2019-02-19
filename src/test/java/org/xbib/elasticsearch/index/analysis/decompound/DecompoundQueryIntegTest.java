@@ -29,6 +29,7 @@ import org.elasticsearch.test.hamcrest.ElasticsearchAssertions;
 import org.elasticsearch.transport.Netty4Plugin;
 import org.junit.Before;
 import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
+import org.xbib.elasticsearch.index.query.decompound.ExactQueryStringQueryBuilder;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
 //@TestLogging("level:DEBUG")
@@ -92,6 +93,21 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         SearchResponse resp = client().prepareSearch("test").setQuery(queryStringQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 1L);
         assertHits(resp.getHits(), "1");
+    }
+
+    public void testOneTermQuery() throws Exception {
+        List<IndexRequestBuilder> reqs = new ArrayList<>();
+        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "deutsche Spielbankgesellschaft"));
+        indexRandom(true, false, reqs);
+       
+        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder = new ExactQueryStringQueryBuilder("text:\"bank\"");
+        SearchResponse resp = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder).get();
+        ElasticsearchAssertions.assertHitCount(resp, 0L);
+
+        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder2 = new ExactQueryStringQueryBuilder("text:\"spielbankgesellschaft\"");
+        SearchResponse resp2 = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder2).get();
+        ElasticsearchAssertions.assertHitCount(resp2, 1L);
+        assertHits(resp2.getHits(), "1");
     }
     
     private void assertHits(SearchHits hits, String... ids) {
