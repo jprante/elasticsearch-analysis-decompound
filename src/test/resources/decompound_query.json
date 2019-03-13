@@ -36,6 +36,9 @@
         	"type": "text",
         	"analyzer": "decomp",
         	"search_analyzer": "lowercase"
+        },
+        "keyword": {
+        	"type": "keyword"
         }
       }
     }

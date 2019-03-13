@@ -104,10 +104,27 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         SearchResponse resp = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 0L);
 
-        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder2 = new ExactQueryStringQueryBuilder("text:\"spielbankgesellschaft\"");
+        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder2 = new ExactQueryStringQueryBuilder("text:bank");
         SearchResponse resp2 = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder2).get();
         ElasticsearchAssertions.assertHitCount(resp2, 1L);
         assertHits(resp2.getHits(), "1");
+
+        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder3 = new ExactQueryStringQueryBuilder("text:\"spielbankgesellschaft\"");
+        SearchResponse resp3 = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder3).get();
+        ElasticsearchAssertions.assertHitCount(resp3, 1L);
+        assertHits(resp3.getHits(), "1");
+    }
+    
+    public void testKeywordOneTermQuery() throws Exception {
+    	
+        List<IndexRequestBuilder> reqs = new ArrayList<>();
+        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("keyword", "spielbankgesellschaft"));
+        indexRandom(true, false, reqs);
+
+        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder = new ExactQueryStringQueryBuilder("keyword:\"spielbankgesellschaft\"");
+        SearchResponse resp = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder).get();
+        ElasticsearchAssertions.assertHitCount(resp, 1L);
+        assertHits(resp.getHits(), "1");
     }
     
     private void assertHits(SearchHits hits, String... ids) {
