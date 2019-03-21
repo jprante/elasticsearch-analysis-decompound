@@ -1,15 +1,9 @@
 package org.xbib.elasticsearch.index.query.decompound;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Objects;
 
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queries.payloads.SpanPayloadCheckQuery;
-import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.spans.SpanNearQuery;
-import org.apache.lucene.search.spans.SpanTermQuery;
 import org.elasticsearch.common.ParseField;
 import org.elasticsearch.common.ParsingException;
 import org.elasticsearch.common.io.stream.StreamInput;
@@ -25,40 +19,10 @@ import de.pansoft.lucene.search.traversal.CloneOnChangeBooleanQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeBoostQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeConstantScoreQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeDisjunctionMaxQueryHandler;
-import de.pansoft.lucene.search.traversal.QueryHandler;
+import de.pansoft.lucene.search.traversal.ExactSpanPhraseQueryHandler;
 import de.pansoft.lucene.search.traversal.QueryTraverser;
 
 public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQueryBuilder> {
-	
-	private static class ReplacePhraseQueryHandler implements QueryHandler {
-
-		@Override
-		public Query handleQuery(final Query query, QueryTraverser queryTraverser) {
-			final PhraseQuery phraseQuery = (PhraseQuery) query;
-			SpanNearQuery.Builder builder = new SpanNearQuery.Builder(phraseQuery.getTerms()[0].field(), true);
-			int i = 0;
-			int position = -1;
-			for(Term term: phraseQuery.getTerms()) {
-				if (i > 0) {
-					int gap = (phraseQuery.getPositions()[i] - position) - 1;
-					if (gap > 0) {
-						builder.addGap(gap);
-					}
-				}
-				position = phraseQuery.getPositions()[i];
-//				builder.addClause(new SpanPayloadCheckQuery(new SpanTermQuery(term), Collections.singletonList(new BytesRef(new byte[] {1}))));
-				builder.addClause(new SpanPayloadCheckQuery(new SpanTermQuery(term), Collections.singletonList(null)));
-				i++;
-			}
-			return builder.setSlop(phraseQuery.getSlop()).build();
-		}
-
-		@Override
-		public boolean acceptQuery(Query query) {
-			return query != null && query instanceof PhraseQuery;
-		}
-		
-	}
 	
 	public static final String NAME = "exact_phrase";
     private static final ParseField QUERY_FIELD = new ParseField("query");
@@ -67,7 +31,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
     		new CloneOnChangeBoostQueryHandler(),
     		new CloneOnChangeDisjunctionMaxQueryHandler(),
     		new CloneOnChangeConstantScoreQueryHandler(),
-    		new ReplacePhraseQueryHandler()
+    		new ExactSpanPhraseQueryHandler()
     );
 
     private final QueryBuilder query;
@@ -102,7 +66,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 
 	@Override
 	protected Query doToQuery(QueryShardContext context) throws IOException {
-		return QUERY_TRAVERSER.traverse(this.query.toQuery(context));
+		return QUERY_TRAVERSER.traverse(context, this.query.toQuery(context));
 	}
 	
 	@Override

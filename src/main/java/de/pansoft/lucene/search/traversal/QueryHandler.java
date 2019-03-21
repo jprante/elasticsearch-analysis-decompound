@@ -1,11 +1,12 @@
 package de.pansoft.lucene.search.traversal;
 
 import org.apache.lucene.search.Query;
+import org.elasticsearch.index.query.QueryShardContext;
 
 public interface QueryHandler {
 	
-	Query handleQuery(Query query, QueryTraverser queryTraverser);
+	Query handleQuery(final QueryShardContext context, Query query, QueryTraverser queryTraverser);
 	
-	boolean acceptQuery(Query query);
+	boolean acceptQuery(final QueryShardContext context, Query query);
 
 }

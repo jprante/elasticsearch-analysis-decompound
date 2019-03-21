@@ -7,8 +7,11 @@ import static org.hamcrest.core.Is.is;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
@@ -127,6 +130,21 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         assertHits(resp.getHits(), "1");
     }
     
+    public void testBoostedTermQuery() throws Exception {
+    	
+        List<IndexRequestBuilder> reqs = new ArrayList<>();
+        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "spielbankgesellschaft", "text2", "spielbankgesellschaft"));
+        indexRandom(true, false, reqs);
+
+        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder = new ExactQueryStringQueryBuilder("\"bank\"");
+        Map<String, Float> fields = new HashMap<>();
+        fields.put("text", 2.0f);
+        fields.put("text2", 1.0f);
+        exactQueryStringQueryBuilder.fields(fields);
+        SearchResponse resp = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder).get();
+        ElasticsearchAssertions.assertHitCount(resp, 0L);
+    }
+
     private void assertHits(SearchHits hits, String... ids) {
         assertThat(hits.getTotalHits(), equalTo((long) ids.length));
         Set<String> hitIds = new HashSet<>();
