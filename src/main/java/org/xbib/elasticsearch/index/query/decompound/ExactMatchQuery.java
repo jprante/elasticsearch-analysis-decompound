@@ -483,7 +483,7 @@ public class ExactMatchQuery {
     		clausesIn[i] = new SpanPayloadCheckQuery(new SpanTermQuery(term), Collections.singletonList(null));
     		i++;
     	}
-    	return new SpanNearQuery(clausesIn, query.getSlop(), true);
+    	return new SpanNearQuery(clausesIn, query.getSlop(), false);
     }
 
     protected Query blendTermsQuery(Term[] terms, MappedFieldType fieldType) {

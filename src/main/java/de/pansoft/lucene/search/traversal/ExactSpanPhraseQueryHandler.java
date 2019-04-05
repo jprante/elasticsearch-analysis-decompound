@@ -13,7 +13,7 @@ public class ExactSpanPhraseQueryHandler implements QueryHandler {
 	@Override
 	public Query handleQuery(final QueryShardContext context, final Query query, QueryTraverser queryTraverser) {
 		final PhraseQuery phraseQuery = (PhraseQuery) query;
-		SpanNearQuery.Builder builder = new SpanNearQuery.Builder(phraseQuery.getTerms()[0].field(), true);
+		SpanNearQuery.Builder builder = new SpanNearQuery.Builder(phraseQuery.getTerms()[0].field(), false);
 		int i = 0;
 		int position = -1;
 		for(Term term: phraseQuery.getTerms()) {
