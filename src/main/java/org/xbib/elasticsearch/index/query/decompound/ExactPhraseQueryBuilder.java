@@ -19,30 +19,45 @@ import de.pansoft.lucene.search.traversal.CloneOnChangeBooleanQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeBoostQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeConstantScoreQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeDisjunctionMaxQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactSpanMultiTermWrapperQueryHandler;
 import de.pansoft.lucene.search.traversal.ExactSpanPhraseQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactSpanTermQueryHandler;
 import de.pansoft.lucene.search.traversal.QueryTraverser;
 
 public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQueryBuilder> {
 	
 	public static final String NAME = "exact_phrase";
     private static final ParseField QUERY_FIELD = new ParseField("query");
-    private static final QueryTraverser QUERY_TRAVERSER = new QueryTraverser(
+    private static final ParseField ALL_QUERY_TYPES_FIELD = new ParseField("all_query_types");
+    private static final QueryTraverser PHRASE_QUERY_TRAVERSER = new QueryTraverser(
     		new CloneOnChangeBooleanQueryHandler(),
     		new CloneOnChangeBoostQueryHandler(),
     		new CloneOnChangeDisjunctionMaxQueryHandler(),
     		new CloneOnChangeConstantScoreQueryHandler(),
     		new ExactSpanPhraseQueryHandler()
     );
+    private static final QueryTraverser FULL_QUERY_TRAVERSER = new QueryTraverser(
+    		new CloneOnChangeBooleanQueryHandler(),
+    		new CloneOnChangeBoostQueryHandler(),
+    		new CloneOnChangeDisjunctionMaxQueryHandler(),
+    		new CloneOnChangeConstantScoreQueryHandler(),
+    		new ExactSpanPhraseQueryHandler(),
+    		new ExactSpanTermQueryHandler(),
+    		new ExactSpanMultiTermWrapperQueryHandler()
+    );
 
     private final QueryBuilder query;
+    private final boolean allQueryTypes;
 
-    public ExactPhraseQueryBuilder(QueryBuilder query) {
+    public ExactPhraseQueryBuilder(QueryBuilder query, boolean allQueryTypes) {
     	this.query = query;
+    	this.allQueryTypes = allQueryTypes;
     }
 
     public ExactPhraseQueryBuilder(StreamInput in) throws IOException {
         super(in);
         query = in.readNamedWriteable(QueryBuilder.class);
+        allQueryTypes = in.readBoolean();
     }
 
 	@Override
@@ -53,6 +68,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 	@Override
 	protected void doWriteTo(StreamOutput out) throws IOException {
         out.writeNamedWriteable(query);
+        out.writeBoolean(allQueryTypes);
 	}
 
 	@Override
@@ -60,20 +76,21 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
         builder.startObject(NAME);
         builder.field(QUERY_FIELD.getPreferredName());
         query.toXContent(builder, params);
+        builder.field(ALL_QUERY_TYPES_FIELD.getPreferredName(), allQueryTypes);
         printBoostAndQueryName(builder);
         builder.endObject();
 	}
 
 	@Override
 	protected Query doToQuery(QueryShardContext context) throws IOException {
-		return QUERY_TRAVERSER.traverse(context, this.query.toQuery(context));
+		return (allQueryTypes?FULL_QUERY_TRAVERSER:PHRASE_QUERY_TRAVERSER).traverse(context, this.query.toQuery(context));
 	}
 	
 	@Override
     protected QueryBuilder doRewrite(QueryRewriteContext queryRewriteContext) throws IOException {
         QueryBuilder rewrittenQuery = query.rewrite(queryRewriteContext);
         if (rewrittenQuery != query) {
-        	ExactPhraseQueryBuilder exactPhraseQuery = new ExactPhraseQueryBuilder(rewrittenQuery);
+        	ExactPhraseQueryBuilder exactPhraseQuery = new ExactPhraseQueryBuilder(rewrittenQuery, allQueryTypes);
             return exactPhraseQuery;
         }
         return this;
@@ -83,6 +100,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
         float boost = AbstractQueryBuilder.DEFAULT_BOOST;
         String queryName = null;
         QueryBuilder query = null;
+        boolean allQueryTypes = false;
         String currentFieldName = null;
         XContentParser.Token token;
         while ((token = parser.nextToken()) != XContentParser.Token.END_OBJECT) {
@@ -99,12 +117,14 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
                     boost = parser.floatValue();
                 } else if (AbstractQueryBuilder.NAME_FIELD.match(currentFieldName, parser.getDeprecationHandler())) {
                     queryName = parser.text();
+                } else if (ALL_QUERY_TYPES_FIELD.match(currentFieldName, parser.getDeprecationHandler())) {
+                	allQueryTypes = parser.booleanValue();
                 } else {
                     throw new ParsingException(parser.getTokenLocation(), "[nested] query does not support [" + currentFieldName + "]");
                 }
             }
         }
-        ExactPhraseQueryBuilder queryBuilder =  new ExactPhraseQueryBuilder(query)
+        ExactPhraseQueryBuilder queryBuilder =  new ExactPhraseQueryBuilder(query, allQueryTypes)
             .queryName(queryName)
             .boost(boost);
         return queryBuilder;

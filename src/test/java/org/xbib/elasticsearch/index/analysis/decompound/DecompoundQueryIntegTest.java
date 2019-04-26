@@ -70,21 +70,59 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         indexRandom(true, false, reqs);
        
         QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("text:\"deutsche spielbankgesellschaft\"");
-        ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder);
+        ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder, false);
         SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 1L);
         assertHits(resp.getHits(), "1");
 
         QueryStringQueryBuilder queryStringQueryBuilder2 = QueryBuilders.queryStringQuery("text:\"deutsche bank\"");
-        ExactPhraseQueryBuilder exactPhraseQueryBuilder2 = new ExactPhraseQueryBuilder(queryStringQueryBuilder2);
+        ExactPhraseQueryBuilder exactPhraseQueryBuilder2 = new ExactPhraseQueryBuilder(queryStringQueryBuilder2, false);
         SearchResponse resp2 = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder2).get();
         ElasticsearchAssertions.assertHitCount(resp2, 0L);
 
         QueryStringQueryBuilder queryStringQueryBuilder3 = QueryBuilders.queryStringQuery("text:\"deutsche spielbankgesellschaft\" AND NOT text:\"deutsche bank\"");
-        ExactPhraseQueryBuilder exactPhraseQueryBuilder3 = new ExactPhraseQueryBuilder(queryStringQueryBuilder3);
+        ExactPhraseQueryBuilder exactPhraseQueryBuilder3 = new ExactPhraseQueryBuilder(queryStringQueryBuilder3, false);
         SearchResponse resp3 = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder3).get();
         ElasticsearchAssertions.assertHitCount(resp3, 1L);
         assertHits(resp3.getHits(), "1");
+    }
+    
+    
+    public void testAllQueryTypesExactQuery() throws Exception {
+        List<IndexRequestBuilder> reqs = new ArrayList<>();
+        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "deutsche Spielbankgesellschaft"));
+        indexRandom(true, false, reqs);
+      
+        {
+			QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("text:bank");
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder, true);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
+        {
+			QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("text:spielbankgesell*");
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder, true);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 1L);
+        }
+        {
+			QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("text:ban*");
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder, true);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
+        {
+			QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("text:spielbankgesellschuft~");
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder, true);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 1L);
+        }
+        {
+			QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("text:bunk~");
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder, true);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
     }
 
     public void testCommonPhraseQuery() throws Exception {
