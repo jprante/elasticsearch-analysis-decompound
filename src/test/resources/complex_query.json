@@ -1,0 +1,258 @@
+{
+    "function_score": {
+      "query": {
+        "exact_phrase": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "exact_query_string": {
+                    "query": "der~2",
+                    "fields": [
+                      "_preset^1.0",
+                      "FIRMA^1.5",
+                      "PERSON^1.5",
+                      "TITEL^2.0"
+                    ],
+                    "default_operator": "AND",
+                    "allow_leading_wildcard": false,
+                    "analyze_wildcard": true
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "functions": [
+        {
+          "filter": {
+            "terms": {
+              "DATABASE": ["FIDO", "FICH", "MADO"]
+            }
+          },
+          "weight": 1.32
+        },
+        {
+          "filter": {
+            "terms": {
+              "DATABASE": [
+                "BOEZ",
+                "FAZ",
+                "FAZN",
+                "FAS",
+                "FR",
+                "HB",
+                "HBLI",
+                "HBMB",
+                "HBON",
+                "NZZ",
+                "NZZS",
+                "RP",
+                "SPIE",
+                "SPON",
+                "SZ",
+                "SZDE",
+                "TSP",
+                "TSPO",
+                "TAZ",
+                "WELT",
+                "WEAK",
+                "WAMS",
+                "WEON",
+                "WW",
+                "WWON",
+                "ZEIT",
+                "ZEIO"
+              ]
+            }
+          },
+          "weight": 1.3
+        },
+        {
+          "filter": {
+            "terms": {
+              "DATABASE": [
+                "BMP",
+                "BMPO",
+                "BEZE",
+                "BLDI",
+                "BZ",
+                "FOCU",
+                "FOBU",
+                "FOSP",
+                "FOCM",
+                "HA",
+                "HABO",
+                "MOPO",
+                "HZ",
+                "HZO",
+                "MUME",
+                "SPII",
+                "STN",
+                "STZ",
+                "BMAX",
+                "TPCP",
+                "WB",
+                "WWBW",
+                "WIZ",
+                "ZTWI"
+              ]
+            }
+          },
+          "weight": 1.2
+        },
+        {
+          "filter": {
+            "terms": {
+              "DATABASE": [
+                "IWPR",
+                "BEFO",
+                "BLIS",
+                "CEAB",
+                "CBNB",
+                "DDB",
+                "DZI",
+                "ECON",
+                "ESTE",
+                "FINE",
+                "HWWA",
+                "IFOK",
+                "IFOL",
+                "IHSL",
+                "INFO",
+                "KOEL",
+                "KUSE",
+                "MIND",
+                "PRIN",
+                "PSYT",
+                "SOFI",
+                "SOLI",
+                "SSOA",
+                "SWET",
+                "TEMA",
+                "WAO",
+                "AEA",
+                "DIAK",
+                "GART",
+                "BACO",
+                "BEEF",
+                "ASBL",
+                "BT",
+                "BDF",
+                "BDFK",
+                "BDFS",
+                "BLAU",
+                "RBOL",
+                "RBF",
+                "RBM",
+                "RBMF",
+                "BRIG",
+                "BRIM",
+                "BRIW",
+                "BUNT",
+                "BUPU",
+                "CHEK",
+                "COSM",
+                "COU",
+                "DOGS",
+                "EDF",
+                "ELTN",
+                "ELTF",
+                "EUT",
+                "EUTD",
+                "FODI",
+                "FOGE",
+                "FRA",
+                "FRIM",
+                "FRSR",
+                "FRIT",
+                "FVH",
+                "FREV",
+                "FBLD",
+                "GALA",
+                "GALM",
+                "GALS",
+                "GEOS",
+                "GEOE",
+                "RGP",
+                "DAGO",
+                "GONG",
+                "ASGR",
+                "HAEU",
+                "HERZ",
+                "HIBA",
+                "HOER",
+                "HZGS",
+                "HZWI",
+                "ICON",
+                "RIL",
+                "RILS",
+                "LISA",
+                "LISW",
+                "LIAH",
+                "ASMO",
+                "ASMU",
+                "NEWE",
+                "NIDO",
+                "PIQU",
+                "PMB",
+                "PMH",
+                "GJPM",
+                "ASRO",
+                "SOWO",
+                "SIIL",
+                "SIAD",
+                "SIAT",
+                "SIGR",
+                "SISP",
+                "SITR",
+                "LALI",
+                "STGL",
+                "SIST",
+                "SUPI",
+                "ASTC",
+                "WOMA",
+                "TVDT",
+                "TVME",
+                "VIVA",
+                "ZFM"
+              ]
+            }
+          },
+          "weight": 0.8
+        },
+        {
+          "filter": {
+            "bool": {
+              "must": {
+                "range": {
+                  "WORTE": {
+                    "lte": 39
+                  }
+                }
+              },
+              "must_not": [
+                {
+                  "wildcard": {
+                    "_index": "db_firmen*"
+                  }
+                },
+                {
+                  "wildcard": {
+                    "_index": "db_literaturnachweise*"
+                  }
+                },
+                {
+                  "wildcard": {
+                    "_index": "db_personen*"
+                  }
+                }
+              ]
+            }
+          },
+          "weight": 0.2
+        }
+      ]
+    }
+}

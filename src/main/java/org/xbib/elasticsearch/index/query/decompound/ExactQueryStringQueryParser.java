@@ -11,8 +11,8 @@ import de.pansoft.lucene.search.traversal.CloneOnChangeBooleanQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeBoostQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeConstantScoreQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeDisjunctionMaxQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactSpanPhraseQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactSpanTermQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactPhraseQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactTermQueryHandler;
 import de.pansoft.lucene.search.traversal.QueryTraverser;
 
 public class ExactQueryStringQueryParser extends QueryStringQueryParser {
@@ -23,8 +23,8 @@ public class ExactQueryStringQueryParser extends QueryStringQueryParser {
     		new CloneOnChangeBoostQueryHandler(),
     		new CloneOnChangeDisjunctionMaxQueryHandler(),
     		new CloneOnChangeConstantScoreQueryHandler(),
-    		new ExactSpanPhraseQueryHandler(),
-    		new ExactSpanTermQueryHandler()
+    		new ExactPhraseQueryHandler(),
+    		new ExactTermQueryHandler()
     );
 	public ExactQueryStringQueryParser(QueryShardContext context, boolean lenient) {
 		super(context, lenient);
