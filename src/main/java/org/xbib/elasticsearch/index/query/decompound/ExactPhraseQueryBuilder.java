@@ -45,9 +45,9 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
     		new CloneOnChangeConstantScoreQueryHandler(),
     		new ExactPhraseQueryHandler(),
     		new ExactTermQueryHandler(),
+    		new ExactMinFrequencyPrefixQueryHandler(),
     		new ExactMultiTermQueryHandler(),
-    		new ExactMinFrequencyTermQuery(),
-    		new ExactMinFrequencyPrefixQueryHandler()
+    		new ExactMinFrequencyTermQuery()
     );
 
     private final QueryBuilder query;

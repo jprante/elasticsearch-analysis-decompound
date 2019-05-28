@@ -43,6 +43,7 @@ import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
 import org.xbib.elasticsearch.index.query.decompound.ExactQueryStringQueryBuilder;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
 
+import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyPrefixQueryBuilder;
 import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyTermQueryBuilder;
 
 //@TestLogging("level:DEBUG")
@@ -164,6 +165,31 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
 			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 1L);
         }
+        {
+        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 2);
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, false);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 1L);
+        }
+        {
+        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 3);
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, false);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
+        {
+        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 2);
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, true);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
+        {
+        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 1);
+			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, true);
+			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+			ElasticsearchAssertions.assertHitCount(resp, 1L);
+        }
+
     }
 
     public void testCommonPhraseQuery() throws Exception {
