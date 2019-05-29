@@ -169,7 +169,9 @@ public class DecompoundTokenFilter extends TokenFilter {
 	private void setPayload(byte tokenType) {
 		BytesRef payload = payloadAtt.getPayload();
 		if (tokenType == ORIGINAL_TYPE) {
-			payload = new BytesRef();
+			if (payload == null) {
+				payload = new BytesRef();
+			}
 		} else {
 			if (payload != null && payload.length > 0) {
 				payload = BytesRef.deepCopyOf(payload);
