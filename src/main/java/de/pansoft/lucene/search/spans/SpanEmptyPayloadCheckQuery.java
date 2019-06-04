@@ -1,4 +1,4 @@
-package org.xbib.elasticsearch.index.query.decompound;
+package de.pansoft.lucene.search.spans;
 
 import java.io.IOException;
 import java.util.Collections;

@@ -5,9 +5,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 import org.elasticsearch.index.mapper.MappedFieldType;
 import org.elasticsearch.index.query.QueryShardContext;
-import org.xbib.elasticsearch.index.query.decompound.SpanEmptyPayloadCheckQuery;
 
-public class ExactSpanMultiTermWrapperQueryHandler implements QueryHandler {
+import de.pansoft.lucene.search.spans.SpanEmptyPayloadCheckQuery;
+
+public class ExactMultiTermQueryHandler implements QueryHandler {
 
 	@Override
 	public Query handleQuery(final QueryShardContext context, final Query query, QueryTraverser queryTraverser) {

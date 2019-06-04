@@ -21,6 +21,9 @@ import org.xbib.elasticsearch.index.analysis.decompound.DecompoundTokenFilterAna
 import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
 import org.xbib.elasticsearch.index.query.decompound.ExactQueryStringQueryBuilder;
 
+import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyPrefixQueryBuilder;
+import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyTermQueryBuilder;
+
 /**
  *
  */
@@ -60,7 +63,15 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin, 
         		new QuerySpec<>(
         				ExactQueryStringQueryBuilder.NAME,
         				ExactQueryStringQueryBuilder::new,
-        				ExactQueryStringQueryBuilder::fromXContent)
+        				ExactQueryStringQueryBuilder::fromXContent),
+        		new QuerySpec<>(
+        				MinFrequencyTermQueryBuilder.NAME,
+        				MinFrequencyTermQueryBuilder::new,
+        				MinFrequencyTermQueryBuilder::fromXContent),
+        		new QuerySpec<>(
+        				MinFrequencyPrefixQueryBuilder.NAME,
+        				MinFrequencyPrefixQueryBuilder::new,
+        				MinFrequencyPrefixQueryBuilder::fromXContent)
     			);
     }
 

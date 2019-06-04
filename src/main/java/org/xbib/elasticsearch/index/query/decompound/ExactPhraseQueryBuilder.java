@@ -19,9 +19,11 @@ import de.pansoft.lucene.search.traversal.CloneOnChangeBooleanQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeBoostQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeConstantScoreQueryHandler;
 import de.pansoft.lucene.search.traversal.CloneOnChangeDisjunctionMaxQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactSpanMultiTermWrapperQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactSpanPhraseQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactSpanTermQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactMinFrequencyPrefixQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactMinFrequencyTermQuery;
+import de.pansoft.lucene.search.traversal.ExactMultiTermQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactPhraseQueryHandler;
+import de.pansoft.lucene.search.traversal.ExactTermQueryHandler;
 import de.pansoft.lucene.search.traversal.QueryTraverser;
 
 public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQueryBuilder> {
@@ -34,16 +36,18 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
     		new CloneOnChangeBoostQueryHandler(),
     		new CloneOnChangeDisjunctionMaxQueryHandler(),
     		new CloneOnChangeConstantScoreQueryHandler(),
-    		new ExactSpanPhraseQueryHandler()
+    		new ExactPhraseQueryHandler()
     );
     private static final QueryTraverser FULL_QUERY_TRAVERSER = new QueryTraverser(
     		new CloneOnChangeBooleanQueryHandler(),
     		new CloneOnChangeBoostQueryHandler(),
     		new CloneOnChangeDisjunctionMaxQueryHandler(),
     		new CloneOnChangeConstantScoreQueryHandler(),
-    		new ExactSpanPhraseQueryHandler(),
-    		new ExactSpanTermQueryHandler(),
-    		new ExactSpanMultiTermWrapperQueryHandler()
+    		new ExactPhraseQueryHandler(),
+    		new ExactTermQueryHandler(),
+    		new ExactMinFrequencyPrefixQueryHandler(),
+    		new ExactMultiTermQueryHandler(),
+    		new ExactMinFrequencyTermQuery()
     );
 
     private final QueryBuilder query;

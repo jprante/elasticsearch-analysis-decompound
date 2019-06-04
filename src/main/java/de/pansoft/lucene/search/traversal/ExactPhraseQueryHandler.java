@@ -6,9 +6,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.spans.SpanNearQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
 import org.elasticsearch.index.query.QueryShardContext;
-import org.xbib.elasticsearch.index.query.decompound.SpanEmptyPayloadCheckQuery;
 
-public class ExactSpanPhraseQueryHandler implements QueryHandler {
+import de.pansoft.lucene.search.spans.SpanEmptyPayloadCheckQuery;
+
+public class ExactPhraseQueryHandler implements QueryHandler {
 	
 	@Override
 	public Query handleQuery(final QueryShardContext context, final Query query, QueryTraverser queryTraverser) {
