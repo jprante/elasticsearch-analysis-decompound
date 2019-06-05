@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,8 +19,11 @@ import java.util.Set;
 import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
 import org.elasticsearch.action.admin.cluster.node.info.NodesInfoResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
+import org.elasticsearch.action.search.SearchAction;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.LoggingDeprecationHandler;
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -33,6 +38,7 @@ import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.plugins.PluginInfo;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.test.ESIntegTestCase;
 import org.elasticsearch.test.StreamsUtils;
 import org.elasticsearch.test.hamcrest.ElasticsearchAssertions;
@@ -140,59 +146,65 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         List<IndexRequestBuilder> reqs = new ArrayList<>();
         reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "deutsche Spielbankgesellschaft als Bank"));
         indexRandom(true, false, reqs);
-      
+       
         {
-        	MinFrequencyTermQueryBuilder minFrequencyTermQueryBuilder = new MinFrequencyTermQueryBuilder("text", "bank", 2);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyTermQueryBuilder, false);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyTerm.json", "bank", 2, false);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 1L);
         }
         {
-        	MinFrequencyTermQueryBuilder minFrequencyTermQueryBuilder = new MinFrequencyTermQueryBuilder("text", "bank", 3);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyTermQueryBuilder, false);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyTerm.json", "bank", 3, false);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 0L);
         }
         {
-        	MinFrequencyTermQueryBuilder minFrequencyTermQueryBuilder = new MinFrequencyTermQueryBuilder("text", "bank", 2);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyTermQueryBuilder, true);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyTerm.json", "bank", 2, true);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 0L);
         }
         {
-        	MinFrequencyTermQueryBuilder minFrequencyTermQueryBuilder = new MinFrequencyTermQueryBuilder("text", "bank", 1);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyTermQueryBuilder, true);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyTerm.json", "bank", 1, true);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 1L);
         }
         {
-        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 2);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, false);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyPrefix.json", "spie", 2, false);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 1L);
         }
         {
-        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 3);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, false);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyPrefix.json", "spie", 3, false);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 0L);
         }
         {
-        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 2);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, true);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyPrefix.json", "spie", 2, true);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 0L);
         }
         {
-        	MinFrequencyPrefixQueryBuilder minFrequencyPrefixQueryBuilder = new MinFrequencyPrefixQueryBuilder("text", "spie", 1);
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(minFrequencyPrefixQueryBuilder, true);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        	SearchSourceBuilder sourceBuilder = getFromSource("/minFrequencyPrefix.json", "spie", 1, true);
+			SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
 			ElasticsearchAssertions.assertHitCount(resp, 1L);
         }
 
     }
 
-    public void testCommonPhraseQuery() throws Exception {
+    private SearchSourceBuilder getFromSource(String resource, Object... arguments) throws IOException {
+        String rawResourceString = StreamsUtils.copyToStringFromClasspath(resource);
+        String resourceString = rawResourceString;
+        if (arguments != null && arguments.length > 0) {
+        	rawResourceString = rawResourceString.replaceAll("\\{(?![0-9])", "'{'").replaceAll("(?<![0-9])\\}", "'}'");
+        	resourceString = MessageFormat.format(rawResourceString, arguments);
+        }
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        XContentParser parser = XContentFactory.xContent(XContentType.JSON).
+        		createParser(xContentRegistry(), LoggingDeprecationHandler.INSTANCE, resourceString);
+        searchSourceBuilder.parseXContent(parser);
+		return searchSourceBuilder;
+	}
+
+	public void testCommonPhraseQuery() throws Exception {
         List<IndexRequestBuilder> reqs = new ArrayList<>();
         reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "deutsche Spielbankgesellschaft"));
         indexRandom(true, false, reqs);

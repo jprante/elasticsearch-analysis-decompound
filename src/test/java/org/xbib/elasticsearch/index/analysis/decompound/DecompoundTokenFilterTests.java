@@ -29,29 +29,22 @@ public class DecompoundTokenFilterTests extends ESTestCase {
 
         String[] expected = {
                 "Die",
-                "Die",
                 "Jahresfeier",
                 "Jahr",
                 "feier",
-                "der",
                 "der",
                 "Rechtsanwaltskanzleien",
                 "Recht",
                 "anwalt",
                 "kanzlei",
                 "auf",
-                "auf",
-                "dem",
                 "dem",
                 "Donaudampfschiff",
                 "Donau",
                 "dampf",
                 "schiff",
                 "hat",
-                "hat",
                 "viel",
-                "viel",
-                "Ökosteuer",
                 "Ökosteuer",
                 "gekostet",
                 "gekosten"
@@ -83,7 +76,6 @@ public class DecompoundTokenFilterTests extends ESTestCase {
         String source = "Deutsche Spielbankgesellschaft";
 
         String[] expected = {
-                "Deutsche",
                 "Deutsche",
                 "Spielbankgesellschaft",
                 "Spiel",
