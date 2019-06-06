@@ -6,7 +6,7 @@
             "bool": {
               "must": [
                 {
-                  "exact_query_string": {
+                  "genios_query_string": {
                     "query": "der~2",
                     "fields": [
                       "_preset^1.0",

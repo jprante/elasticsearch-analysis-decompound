@@ -19,11 +19,8 @@ import java.util.Set;
 import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
 import org.elasticsearch.action.admin.cluster.node.info.NodesInfoResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
-import org.elasticsearch.action.search.SearchAction;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.LoggingDeprecationHandler;
-import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -45,12 +42,9 @@ import org.elasticsearch.test.hamcrest.ElasticsearchAssertions;
 //import org.elasticsearch.test.junit.annotations.TestLogging;
 import org.elasticsearch.transport.Netty4Plugin;
 import org.junit.Before;
-import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
-import org.xbib.elasticsearch.index.query.decompound.ExactQueryStringQueryBuilder;
+import de.pansoft.elasticsearch.index.query.exact.ExactPhraseQueryBuilder;
+import de.pansoft.elasticsearch.index.query.string.GeniosQueryStringQueryBuilder;
 import org.xbib.elasticsearch.plugin.analysis.decompound.AnalysisDecompoundPlugin;
-
-import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyPrefixQueryBuilder;
-import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyTermQueryBuilder;
 
 //@TestLogging("level:DEBUG")
 public class DecompoundQueryIntegTest extends ESIntegTestCase {
@@ -219,30 +213,68 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         List<IndexRequestBuilder> reqs = new ArrayList<>();
         reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "deutsche Spielbankgesellschaft"));
         indexRandom(true, false, reqs);
-       
-        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder = new ExactQueryStringQueryBuilder("text:\"bank\"");
-        SearchResponse resp = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder).get();
-        ElasticsearchAssertions.assertHitCount(resp, 0L);
 
-        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder2 = new ExactQueryStringQueryBuilder("text:bank");
-        SearchResponse resp2 = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder2).get();
+        {
+            GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("text:\"bank\"");
+            SearchResponse resp = client().prepareSearch("test").setQuery(geniosQueryStringQueryBuilder).get();
+            ElasticsearchAssertions.assertHitCount(resp, 1L);
+        }
+
+        {
+            GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("text:\"bank\"");
+            ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, false);
+            SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+            ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
+
+        GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder2 = new GeniosQueryStringQueryBuilder("text:bank");
+        SearchResponse resp2 = client().prepareSearch("test").setQuery(geniosQueryStringQueryBuilder2).get();
         ElasticsearchAssertions.assertHitCount(resp2, 1L);
         assertHits(resp2.getHits(), "1");
 
-        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder3 = new ExactQueryStringQueryBuilder("text:\"spielbankgesellschaft\"");
-        SearchResponse resp3 = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder3).get();
+        GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder3 = new GeniosQueryStringQueryBuilder("text:\"spielbankgesellschaft\"");
+        SearchResponse resp3 = client().prepareSearch("test").setQuery(geniosQueryStringQueryBuilder3).get();
         ElasticsearchAssertions.assertHitCount(resp3, 1L);
         assertHits(resp3.getHits(), "1");
     }
-    
+
+    public void testFrequencyQuery() throws Exception {
+        List<IndexRequestBuilder> reqs = new ArrayList<>();
+        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "deutsche Spielbankgesellschaft in der Bank"));
+        indexRandom(true, false, reqs);
+
+        {
+            GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("text:bank#2");
+            SearchResponse resp = client().prepareSearch("test").setQuery(geniosQueryStringQueryBuilder).get();
+            ElasticsearchAssertions.assertHitCount(resp, 1L);
+        }
+        {
+            GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("text:ban*#2");
+            SearchResponse resp = client().prepareSearch("test").setQuery(geniosQueryStringQueryBuilder).get();
+            ElasticsearchAssertions.assertHitCount(resp, 1L);
+        }
+        {
+            GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("text:bank#2");
+            ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, true);
+            SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+            ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
+        {
+            GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("text:ban*#2");
+            ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, true);
+            SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+            ElasticsearchAssertions.assertHitCount(resp, 0L);
+        }
+    }
+
     public void testKeywordOneTermQuery() throws Exception {
     	
         List<IndexRequestBuilder> reqs = new ArrayList<>();
         reqs.add(client().prepareIndex("test", "_doc", "1").setSource("keyword", "spielbankgesellschaft"));
         indexRandom(true, false, reqs);
 
-        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder = new ExactQueryStringQueryBuilder("keyword:\"spielbankgesellschaft\"");
-        SearchResponse resp = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder).get();
+        GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("keyword:\"spielbankgesellschaft\"");
+        SearchResponse resp = client().prepareSearch("test").setQuery(geniosQueryStringQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 1L);
         assertHits(resp.getHits(), "1");
     }
@@ -253,12 +285,13 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "spielbankgesellschaft", "text2", "spielbankgesellschaft"));
         indexRandom(true, false, reqs);
 
-        ExactQueryStringQueryBuilder exactQueryStringQueryBuilder = new ExactQueryStringQueryBuilder("\"bank\"");
+        GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("\"bank\"");
         Map<String, Float> fields = new HashMap<>();
         fields.put("text", 2.0f);
         fields.put("text2", 1.0f);
-        exactQueryStringQueryBuilder.fields(fields);
-        SearchResponse resp = client().prepareSearch("test").setQuery(exactQueryStringQueryBuilder).get();
+        geniosQueryStringQueryBuilder.fields(fields);
+        ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, false);
+        SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 0L);
     }
 

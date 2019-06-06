@@ -18,8 +18,8 @@ import org.elasticsearch.plugins.AnalysisPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.plugins.SearchPlugin;
 import org.xbib.elasticsearch.index.analysis.decompound.DecompoundTokenFilterAnalysisProvider;
-import org.xbib.elasticsearch.index.query.decompound.ExactPhraseQueryBuilder;
-import org.xbib.elasticsearch.index.query.decompound.ExactQueryStringQueryBuilder;
+import de.pansoft.elasticsearch.index.query.exact.ExactPhraseQueryBuilder;
+import de.pansoft.elasticsearch.index.query.string.GeniosQueryStringQueryBuilder;
 
 import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyPrefixQueryBuilder;
 import de.pansoft.elasticsearch.index.query.frequency.MinFrequencyTermQueryBuilder;
@@ -61,9 +61,9 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin, 
         				ExactPhraseQueryBuilder::new,
         				ExactPhraseQueryBuilder::fromXContent),
         		new QuerySpec<>(
-        				ExactQueryStringQueryBuilder.NAME,
-        				ExactQueryStringQueryBuilder::new,
-        				ExactQueryStringQueryBuilder::fromXContent),
+        				GeniosQueryStringQueryBuilder.NAME,
+        				GeniosQueryStringQueryBuilder::new,
+        				GeniosQueryStringQueryBuilder::fromXContent),
         		new QuerySpec<>(
         				MinFrequencyTermQueryBuilder.NAME,
         				MinFrequencyTermQueryBuilder::new,

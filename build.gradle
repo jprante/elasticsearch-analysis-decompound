@@ -3,6 +3,7 @@ plugins {
     id "org.sonarqube" version "2.5"
     id "org.xbib.gradle.plugin.asciidoctor" version "1.5.4.1.0"
     id "io.codearte.nexus-staging" version "0.7.0"
+    id "com.intershop.gradle.javacc" version "3.0.3"
 }
 
 
@@ -27,6 +28,7 @@ apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 apply plugin: "jacoco"
 apply plugin: 'org.xbib.gradle.plugin.asciidoctor'
+apply plugin: "com.intershop.gradle.javacc"
 
 repositories {
     mavenCentral()
@@ -72,6 +74,24 @@ targetCompatibility = JavaVersion.VERSION_1_8
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:all" << "-profile" << "compact2"
 }
+
+javacc {
+    configs {
+        parser {
+            javaCCVersion = '5.0'
+            args = []
+            inputFile = file 'src/main/java/de/pansoft/lucene/queryparser/classic/QueryParser.jj'
+            packageName = 'de.pansoft.lucene.queryparser.classic'
+        }
+    }
+}
+
+sourceSets.main.java.srcDirs += 'build/generated/javacc/parser'
+sourceSets.main.java.exclude(
+    'de/pansoft/lucene/queryparser/classic/CharStream.java',
+    'de/pansoft/lucene/queryparser/classic/Token.java',
+    'de/pansoft/lucene/queryparser/classic/ParseException.java'
+)
 
 test {
     systemProperties['path.home'] = System.getProperty("user.dir")
