@@ -1,8 +1,10 @@
-package org.xbib.elasticsearch.index.query.decompound;
+package de.pansoft.elasticsearch.index.query.exact;
 
 import java.io.IOException;
 import java.util.Objects;
 
+import de.pansoft.lucene.index.query.term.MarkedTermQuery;
+import de.pansoft.lucene.search.traversal.*;
 import org.apache.lucene.search.Query;
 import org.elasticsearch.common.ParseField;
 import org.elasticsearch.common.ParsingException;
@@ -15,17 +17,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryRewriteContext;
 import org.elasticsearch.index.query.QueryShardContext;
 
-import de.pansoft.lucene.search.traversal.CloneOnChangeBooleanQueryHandler;
-import de.pansoft.lucene.search.traversal.CloneOnChangeBoostQueryHandler;
-import de.pansoft.lucene.search.traversal.CloneOnChangeConstantScoreQueryHandler;
-import de.pansoft.lucene.search.traversal.CloneOnChangeDisjunctionMaxQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactMinFrequencyPrefixQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactMinFrequencyTermQuery;
-import de.pansoft.lucene.search.traversal.ExactMultiTermQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactPhraseQueryHandler;
-import de.pansoft.lucene.search.traversal.ExactTermQueryHandler;
-import de.pansoft.lucene.search.traversal.QueryTraverser;
-
 public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQueryBuilder> {
 	
 	public static final String NAME = "exact_phrase";
@@ -36,6 +27,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
     		new CloneOnChangeBoostQueryHandler(),
     		new CloneOnChangeDisjunctionMaxQueryHandler(),
     		new CloneOnChangeConstantScoreQueryHandler(),
+    		new ExactMarkedTermQueryHandler(MarkedTermQuery.Context.PHRASE),
     		new ExactPhraseQueryHandler()
     );
     private static final QueryTraverser FULL_QUERY_TRAVERSER = new QueryTraverser(

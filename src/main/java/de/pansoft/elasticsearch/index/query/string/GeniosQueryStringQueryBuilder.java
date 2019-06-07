@@ -1,4 +1,4 @@
-package org.xbib.elasticsearch.index.query.decompound;
+package de.pansoft.elasticsearch.index.query.string;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.support.QueryParsers;
 import org.elasticsearch.index.search.QueryParserHelper;
 
-public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
+public class GeniosQueryStringQueryBuilder extends QueryStringQueryBuilder {
 	
-    public static final String NAME = "exact_query_string";
+    public static final String NAME = "exact_query_string";     // TODO rename in "genios_query_string" later on.... (check also complex_query.json)
     
     public static final MultiMatchQueryBuilder.Type DEFAULT_TYPE = MultiMatchQueryBuilder.Type.BEST_FIELDS;
     
@@ -73,17 +73,17 @@ public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
     private static final ParseField GENERATE_SYNONYMS_PHRASE_QUERY = new ParseField("auto_generate_synonyms_phrase_query");
     private static final ParseField FUZZY_TRANSPOSITIONS_FIELD = new ParseField("fuzzy_transpositions");
 
-	public ExactQueryStringQueryBuilder(String queryString) throws IOException {
+	public GeniosQueryStringQueryBuilder(String queryString) throws IOException {
 		super(queryString);
 	}
 
-	public ExactQueryStringQueryBuilder(StreamInput in) throws IOException {
+	public GeniosQueryStringQueryBuilder(StreamInput in) throws IOException {
 		super(in);
 	}
 
 	@Override
     public String getWriteableName() {
-        return ExactQueryStringQueryBuilder.NAME;
+        return GeniosQueryStringQueryBuilder.NAME;
     }
 	
    @Override
@@ -148,7 +148,7 @@ public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
         builder.endObject();
     }
         		
-    public static ExactQueryStringQueryBuilder fromXContent(XContentParser parser) throws IOException {
+    public static GeniosQueryStringQueryBuilder fromXContent(XContentParser parser) throws IOException {
     	
         String currentFieldName = null;
         XContentParser.Token token;
@@ -191,7 +191,7 @@ public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
                     }
                     fieldsAndWeights = QueryParserHelper.parseFieldsAndWeights(fields);
                 } else {
-                    throw new ParsingException(parser.getTokenLocation(), "[" + ExactQueryStringQueryBuilder.NAME +
+                    throw new ParsingException(parser.getTokenLocation(), "[" + GeniosQueryStringQueryBuilder.NAME +
                             "] query does not support [" + currentFieldName + "]");
                 }
             } else if (token.isValue()) {
@@ -247,7 +247,7 @@ public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
                     try {
                         timeZone = parser.text();
                     } catch (IllegalArgumentException e) {
-                        throw new ParsingException(parser.getTokenLocation(), "[" + ExactQueryStringQueryBuilder.NAME +
+                        throw new ParsingException(parser.getTokenLocation(), "[" + GeniosQueryStringQueryBuilder.NAME +
                                 "] time_zone [" + parser.text() + "] is unknown");
                     }
                 } else if (AbstractQueryBuilder.NAME_FIELD.match(currentFieldName, parser.getDeprecationHandler())) {
@@ -267,19 +267,19 @@ public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
                 } else if (SPLIT_ON_WHITESPACE.match(currentFieldName, parser.getDeprecationHandler())) {
                     // ignore, deprecated setting
                 } else {
-                    throw new ParsingException(parser.getTokenLocation(), "[" + ExactQueryStringQueryBuilder.NAME +
+                    throw new ParsingException(parser.getTokenLocation(), "[" + GeniosQueryStringQueryBuilder.NAME +
                             "] query does not support [" + currentFieldName + "]");
                 }
             } else {
-                throw new ParsingException(parser.getTokenLocation(), "[" + ExactQueryStringQueryBuilder.NAME +
+                throw new ParsingException(parser.getTokenLocation(), "[" + GeniosQueryStringQueryBuilder.NAME +
                         "] unknown token [" + token + "] after [" + currentFieldName + "]");
             }
         }
         if (queryString == null) {
-            throw new ParsingException(parser.getTokenLocation(), "[" + ExactQueryStringQueryBuilder.NAME + "] must be provided with a [query]");
+            throw new ParsingException(parser.getTokenLocation(), "[" + GeniosQueryStringQueryBuilder.NAME + "] must be provided with a [query]");
         }
 
-        ExactQueryStringQueryBuilder queryStringQuery = new ExactQueryStringQueryBuilder(queryString);
+        GeniosQueryStringQueryBuilder queryStringQuery = new GeniosQueryStringQueryBuilder(queryString);
         if (fieldsAndWeights != null) {
             queryStringQuery.fields(fieldsAndWeights);
         }
@@ -320,17 +320,17 @@ public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
             throw addValidationError("cannot use [fields] parameter in conjunction with [default_field]", null);
         }
 
-        ExactQueryStringQueryParser queryParser;
+        GeniosQueryStringQueryParser queryParser;
         boolean isLenient = lenient() == null ? context.queryStringLenient() : lenient();
         if (defaultField() != null) {
             if (Regex.isMatchAllPattern(defaultField())) {
-                queryParser = new ExactQueryStringQueryParser(context, lenient() == null ? true : lenient());
+                queryParser = new GeniosQueryStringQueryParser(context, lenient() == null ? true : lenient());
             } else {
-                queryParser = new ExactQueryStringQueryParser(context, defaultField(), isLenient);
+                queryParser = new GeniosQueryStringQueryParser(context, defaultField(), isLenient);
             }
         } else if (fields().size() > 0) {
             final Map<String, Float> resolvedFields = QueryParserHelper.resolveMappingFields(context, fields());
-            queryParser = new ExactQueryStringQueryParser(context, resolvedFields, isLenient);
+            queryParser = new GeniosQueryStringQueryParser(context, resolvedFields, isLenient);
         } else {
             List<String> defaultFields = context.defaultFields();
             if (context.getMapperService().allEnabled() == false &&
@@ -340,11 +340,11 @@ public class ExactQueryStringQueryBuilder extends QueryStringQueryBuilder {
             }
             boolean isAllField = defaultFields.size() == 1 && Regex.isMatchAllPattern(defaultFields.get(0));
             if (isAllField) {
-                queryParser = new ExactQueryStringQueryParser(context, lenient() == null ? true : lenient());
+                queryParser = new GeniosQueryStringQueryParser(context, lenient() == null ? true : lenient());
             } else {
                 final Map<String, Float> resolvedFields = QueryParserHelper.resolveMappingFields(context,
                     QueryParserHelper.parseFieldsAndWeights(defaultFields));
-                queryParser = new ExactQueryStringQueryParser(context, resolvedFields, isLenient);
+                queryParser = new GeniosQueryStringQueryParser(context, resolvedFields, isLenient);
             }
         }
 
