@@ -26,12 +26,12 @@ PARSER_BEGIN(QueryParser)
 package de.pansoft.lucene.queryparser.classic;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.DateTools;
@@ -39,7 +39,6 @@ import org.apache.lucene.queryparser.classic.CharStream;
 import org.apache.lucene.queryparser.classic.FastCharStream;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.Token;
-import org.apache.lucene.queryparser.classic.XQueryParserBase;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermRangeQuery;
