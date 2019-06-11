@@ -1,8 +1,10 @@
-package org.apache.lucene.queryparser.classic;
+package de.pansoft.lucene.queryparser.classic;
 
 import de.pansoft.lucene.index.query.frequency.MinFrequencyPrefixQuery;
 import de.pansoft.lucene.index.query.frequency.MinFrequencyTermQuery;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.Token;
 import org.apache.lucene.search.Query;
 
 public abstract class XQueryParserBase extends QueryParserBase {
@@ -15,16 +17,16 @@ public abstract class XQueryParserBase extends QueryParserBase {
    protected static final int MOD_NOT = 10;
    protected static final int MOD_REQ = 11;
 
-   protected String discardEscapeChar(String input) throws ParseException {
+   protected String discardEscapeChar(String input) throws org.apache.lucene.queryparser.classic.ParseException {
       return super.discardEscapeChar(input);
    }
 
-   protected Query handleBoost(Query q, Token boost) {
+   protected Query handleBoost(Query q, org.apache.lucene.queryparser.classic.Token boost) {
       return super.handleBoost(q, boost);
    }
 
-   protected Query handleBareTokenQuery(String qfield, Token term, Token fuzzySlop, Token freqency,
-             boolean prefix, boolean wildcard, boolean fuzzy, boolean regexp, boolean hasFrequency) throws ParseException {
+   protected Query handleBareTokenQuery(String qfield, org.apache.lucene.queryparser.classic.Token term, org.apache.lucene.queryparser.classic.Token fuzzySlop, org.apache.lucene.queryparser.classic.Token freqency,
+                                        boolean prefix, boolean wildcard, boolean fuzzy, boolean regexp, boolean hasFrequency) throws org.apache.lucene.queryparser.classic.ParseException {
       if (!hasFrequency) {
          return super.handleBareTokenQuery(qfield, term, fuzzySlop, prefix, wildcard, fuzzy, regexp);
       } else {
@@ -36,7 +38,7 @@ public abstract class XQueryParserBase extends QueryParserBase {
       }
    }
 
-   protected Query handleFreqencyQuery(String qfield, Token frequency, String termImage) {
+   protected Query handleFreqencyQuery(String qfield, org.apache.lucene.queryparser.classic.Token frequency, String termImage) {
       Term term = new Term(qfield, termImage);
       int minFrequency = 2;
       if (frequency != null && !frequency.image.isEmpty()) {
@@ -45,7 +47,7 @@ public abstract class XQueryParserBase extends QueryParserBase {
       return newFreqencyQuery(term, minFrequency);
    }
 
-   protected Query handleFreqencyPrefixQuery(String qfield, Token frequency, String termImage) {
+   protected Query handleFreqencyPrefixQuery(String qfield, org.apache.lucene.queryparser.classic.Token frequency, String termImage) {
       Term term = new Term(qfield, termImage);
       int minFrequency = 2;
       if (frequency != null && !frequency.image.isEmpty()) {
@@ -62,7 +64,7 @@ public abstract class XQueryParserBase extends QueryParserBase {
       return new MinFrequencyPrefixQuery(term, minFrequency);
    }
 
-   protected Query handleQuotedTerm(String qfield, Token term, Token fuzzySlop) throws ParseException {
+   protected Query handleQuotedTerm(String qfield, org.apache.lucene.queryparser.classic.Token term, org.apache.lucene.queryparser.classic.Token fuzzySlop) throws org.apache.lucene.queryparser.classic.ParseException {
       return super.handleQuotedTerm(qfield, term, fuzzySlop);
    }
 
