@@ -10,14 +10,19 @@ import org.elasticsearch.index.query.QueryShardContext;
 import java.util.Map;
 
 public class GeniosQueryStringQueryParser extends QueryStringQueryParser {
-	
-    private static final QueryTraverser QUERY_TRAVERSER = new QueryTraverser(
-    		new CloneOnChangeBooleanQueryHandler(),
-    		new CloneOnChangeBoostQueryHandler(),
-    		new CloneOnChangeDisjunctionMaxQueryHandler(),
-    		new CloneOnChangeConstantScoreQueryHandler(),
+
+	private static final QueryTraverser CONTAINER_QUERY_TRAVERSER = new QueryTraverser(
+			new CloneOnChangeBooleanQueryHandler(),
+			new CloneOnChangeBoostQueryHandler(),
+			new CloneOnChangeDisjunctionMaxQueryHandler(),
+			new CloneOnChangeConstantScoreQueryHandler()
+	);
+
+    private static final QueryTraverser MARK_TERM_QUERY_TRAVERSER =
+            CONTAINER_QUERY_TRAVERSER.add(
     		new MarkTermQueryHandler(MarkedTermQuery.Context.PHRASE)
     );
+
 	private final QueryShardContext context;
 
 	public GeniosQueryStringQueryParser(QueryShardContext context, boolean lenient) {
@@ -39,7 +44,19 @@ public class GeniosQueryStringQueryParser extends QueryStringQueryParser {
     @Override
     protected Query getFieldQuery(String field, String queryText, int slop) throws ParseException {
     	Query query = super.getFieldQuery(field, queryText, slop);
-    	return QUERY_TRAVERSER.traverse(this.context, query);
+    	return MARK_TERM_QUERY_TRAVERSER.traverse(this.context, query);
     }
+
+	@Override
+	protected Query transformTermToFrequencyQuery(Query query, int minFrequency) {
+		return CONTAINER_QUERY_TRAVERSER.add(new TransformTermQueryToMinFrequencyTermQueryHandler(minFrequency))
+				.traverse(this.context, query);
+	}
+
+	@Override
+	protected Query transformPrefixToFrequencyPrefixQuery(Query query, int minFrequency) {
+		return CONTAINER_QUERY_TRAVERSER.add(new TransformPrefixQueryToMinFrequencyPrefixQueryHandler(minFrequency))
+				.traverse(this.context, query);
+	}
 
 }
