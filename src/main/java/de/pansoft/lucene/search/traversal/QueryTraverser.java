@@ -11,6 +11,13 @@ public class QueryTraverser {
 	public QueryTraverser(final QueryHandler ...queryHandlers) {
 		this.queryHandlers = queryHandlers;
 	}
+
+	public QueryTraverser add(final QueryHandler queryHandler) {
+		QueryHandler[] queryHandlers = new QueryHandler[this.queryHandlers.length + 1];
+		System.arraycopy(this.queryHandlers, 0, queryHandlers, 0, this.queryHandlers.length);
+		queryHandlers[this.queryHandlers.length] = queryHandler;
+		return new QueryTraverser(queryHandlers);
+	}
 	
 	public Query traverse(final QueryShardContext context, final Query query) {
 		for (QueryHandler queryHandler : queryHandlers) {
