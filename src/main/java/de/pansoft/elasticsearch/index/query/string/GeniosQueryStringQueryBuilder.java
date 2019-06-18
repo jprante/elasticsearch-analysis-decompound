@@ -31,7 +31,7 @@ import org.elasticsearch.index.search.QueryParserHelper;
 
 public class GeniosQueryStringQueryBuilder extends QueryStringQueryBuilder {
 	
-    public static final String NAME = "exact_query_string";     // TODO rename in "genios_query_string" later on.... (check also complex_query.json)
+    public static final String NAME = "genios_query_string";
     
     public static final MultiMatchQueryBuilder.Type DEFAULT_TYPE = MultiMatchQueryBuilder.Type.BEST_FIELDS;
     

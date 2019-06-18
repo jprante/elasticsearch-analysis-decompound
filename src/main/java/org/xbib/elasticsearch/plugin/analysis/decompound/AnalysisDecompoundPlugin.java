@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.pansoft.elasticsearch.index.query.string.DepreciatedGeniosQueryStringQueryBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.common.inject.Inject;
@@ -61,9 +62,13 @@ public class AnalysisDecompoundPlugin extends Plugin implements AnalysisPlugin, 
         				ExactPhraseQueryBuilder::new,
         				ExactPhraseQueryBuilder::fromXContent),
         		new QuerySpec<>(
-        				GeniosQueryStringQueryBuilder.NAME,
-        				GeniosQueryStringQueryBuilder::new,
-        				GeniosQueryStringQueryBuilder::fromXContent),
+						GeniosQueryStringQueryBuilder.NAME,
+						GeniosQueryStringQueryBuilder::new,
+						GeniosQueryStringQueryBuilder::fromXContent),
+				new QuerySpec<>(
+						DepreciatedGeniosQueryStringQueryBuilder.NAME,
+						DepreciatedGeniosQueryStringQueryBuilder::new,
+						DepreciatedGeniosQueryStringQueryBuilder::fromXContent),
         		new QuerySpec<>(
         				MinFrequencyTermQueryBuilder.NAME,
         				MinFrequencyTermQueryBuilder::new,
