@@ -31,7 +31,6 @@ import org.apache.lucene.queryparser.classic.FastCharStream;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.apache.lucene.queryparser.classic.Token;
-import org.apache.lucene.queryparser.classic.TokenMgrError;
 import org.apache.lucene.queryparser.flexible.standard.CommonQueryParserConfiguration;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -115,7 +114,7 @@ public abstract class QueryParserBase extends QueryBuilder implements CommonQuer
             Query res = TopLevelQuery(field);
             return res!=null ? res : newBooleanQuery().build();
         }
-        catch (org.apache.lucene.queryparser.classic.ParseException | TokenMgrError tme) {
+        catch (org.apache.lucene.queryparser.classic.ParseException | org.apache.lucene.queryparser.classic.TokenMgrError | de.pansoft.lucene.queryparser.classic.TokenMgrError tme) {
             // rethrow to include the original query:
             org.apache.lucene.queryparser.classic.ParseException e = new org.apache.lucene.queryparser.classic.ParseException("Cannot parse '" +query+ "': " + tme.getMessage());
             e.initCause(tme);
