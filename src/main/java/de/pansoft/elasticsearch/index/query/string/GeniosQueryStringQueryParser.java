@@ -55,8 +55,9 @@ public class GeniosQueryStringQueryParser extends QueryStringQueryParser {
 
 	@Override
 	protected Query transformPrefixToFrequencyPrefixQuery(Query query, int minFrequency) {
-		return CONTAINER_QUERY_TRAVERSER.add(new TransformPrefixQueryToMinFrequencyPrefixQueryHandler(minFrequency))
-				.traverse(this.context, query);
+		throw new IllegalStateException("PrefixFrequencyQueries are temporary disabled!");
+//		return CONTAINER_QUERY_TRAVERSER.add(new TransformPrefixQueryToMinFrequencyPrefixQueryHandler(minFrequency))
+//				.traverse(this.context, query);
 	}
 
 }
