@@ -210,10 +210,11 @@ PARSER_END(QueryParser)
 | <PREFIXTERM:    ("*") | ( <_TERM_START_CHAR> (<_TERM_CHAR>)* "*" ) >
 | <WILDTERM:      (<_TERM_START_CHAR> | [ "*", "?" ]) (<_TERM_CHAR> | ( [ "*", "?" ] ))* >
 | <REGEXPTERM:    "/" (~[ "/" ] | "\\/" )* "/" >
-| <FREQUENCYTERM: <_TERM_START_CHAR> (<_TERM_CHAR>)* ("*")? "#" > : Frequency
+| <FREQUENCYTERM: <_TERM_START_CHAR> (<_TERM_CHAR>)* "#" > : Frequency
 | <RANGEIN_START: "[" > : Range
 | <RANGEEX_START: "{" > : Range
 }
+// | <FREQUENCYTERM: <_TERM_START_CHAR> (<_TERM_CHAR>)* ("*")? "#" > : Frequency
 
 <Boost> TOKEN : {
   <NUMBER: (<_NUM_CHAR>)+ ( "." (<_NUM_CHAR>)+ )? > : DEFAULT
