@@ -148,7 +148,9 @@ public class MinFrequencySpans extends Spans {
 	}
 
 	private final boolean twoPhaseCurrentDocMatches() throws IOException {
-		assert positionsInCurrentDoc.isEmpty();
+		if (!positionsInCurrentDoc.isEmpty()) {
+			positionsInCurrentDoc.clear();
+		}
 		for (;;) {
 			int startPos = in.nextStartPosition();
 			if (startPos != NO_MORE_POSITIONS) {
