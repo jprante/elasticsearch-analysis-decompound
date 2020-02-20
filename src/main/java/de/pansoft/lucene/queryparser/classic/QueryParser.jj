@@ -193,9 +193,9 @@ PARSER_END(QueryParser)
 }
 
 <DEFAULT> TOKEN : {
-  <AND:           ("AND" | "UND" | "&&") >
-| <OR:            ("OR"  | "ODER"| "||") >
-| <NOT:           ("NOT" | "NICHT" | "!") >
+  <AND:           ("AND" | "&&") >
+| <OR:            ("OR" | "||") >
+| <NOT:           ("NOT" | "!") >
 | <PLUS:          "+" >
 | <MINUS:         "-" >
 | <BAREOPER:      ("+"|"-"|"!") <_WHITESPACE> >

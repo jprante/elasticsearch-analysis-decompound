@@ -341,36 +341,6 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 0L);
     }
-    
-    public void testGermanQuerySyntax() throws Exception {
-
-        List<IndexRequestBuilder> reqs = new ArrayList<>();
-        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "spiel bank"));
-        reqs.add(client().prepareIndex("test", "_doc", "2").setSource("text", "spiel gesellschaft"));
-        reqs.add(client().prepareIndex("test", "_doc", "3").setSource("text", "bank gesellschaft"));
-        indexRandom(true, false, reqs);
-
-        {
-			GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("bank UND spiel");
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, false);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
-			ElasticsearchAssertions.assertHitCount(resp, 1L);
-        }
-
-        {
-			GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("bank ODER spiel");
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, false);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
-			ElasticsearchAssertions.assertHitCount(resp, 3L);
-        }
-    	
-        {
-			GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("bank NICHT spiel");
-			ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, false);
-			SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
-			ElasticsearchAssertions.assertHitCount(resp, 1L);
-        }
-    }
 
     private void assertHits(SearchHits hits, String... ids) {
         assertThat(hits.getTotalHits(), equalTo((long) ids.length));
