@@ -16,13 +16,15 @@ public class TransformPrefixQueryToMinFrequencyPrefixQueryHandler implements Que
 	}
 
 	@Override
-	public Query handleQuery(final QueryShardContext context, final Query query, QueryTraverser queryTraverser) {
+	public Query handleQuery(final TraverserContext traverserContext, final QueryShardContext context,
+							 final Query query, QueryTraverser queryTraverser) {
 		final PrefixQuery prefixQuery = (PrefixQuery) query;
 		return new MinFrequencyPrefixQuery(prefixQuery.getPrefix(), minFrequency);
 	}
 
 	@Override
-	public boolean acceptQuery(final QueryShardContext context, Query query) {
+	public boolean acceptQuery(final TraverserContext traverserContext, final QueryShardContext context,
+							   Query query) {
 		return query != null && query instanceof PrefixQuery;
 	}
 

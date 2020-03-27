@@ -5,8 +5,9 @@ import org.elasticsearch.index.query.QueryShardContext;
 
 public interface QueryHandler {
 	
-	Query handleQuery(final QueryShardContext context, Query query, QueryTraverser queryTraverser);
+	Query handleQuery(final TraverserContext traverserContext, final QueryShardContext context,
+					  Query query, QueryTraverser queryTraverser);
 	
-	boolean acceptQuery(final QueryShardContext context, Query query);
+	boolean acceptQuery(final TraverserContext traverserContext, final QueryShardContext context, Query query);
 
 }

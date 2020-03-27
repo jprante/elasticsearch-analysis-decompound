@@ -12,7 +12,8 @@ import de.pansoft.lucene.search.spans.SpanMinFrequencyFilterQuery;
 public class ExactMinFrequencyTermQuery implements QueryHandler {
 
 	@Override
-	public Query handleQuery(QueryShardContext context, Query query, QueryTraverser queryTraverser) {
+	public Query handleQuery(final TraverserContext traverserContext, QueryShardContext context,
+							 Query query, QueryTraverser queryTraverser) {
 		final MinFrequencyTermQuery minFrequencyTermQuery = (MinFrequencyTermQuery) query;
 		MappedFieldType fieldType = context.fieldMapper(minFrequencyTermQuery.getTerm().field());
 		if (fieldType != null && fieldType.tokenized()) {
@@ -22,7 +23,8 @@ public class ExactMinFrequencyTermQuery implements QueryHandler {
 	}
 
 	@Override
-	public boolean acceptQuery(QueryShardContext context, Query query) {
+	public boolean acceptQuery(final TraverserContext traverserContext, QueryShardContext context,
+							   Query query) {
 		return query != null && query instanceof MinFrequencyTermQuery;
 	}
 

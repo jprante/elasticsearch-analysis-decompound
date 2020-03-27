@@ -19,10 +19,10 @@ public class QueryTraverser {
 		return new QueryTraverser(queryHandlers);
 	}
 	
-	public Query traverse(final QueryShardContext context, final Query query) {
+	public Query traverse(final TraverserContext traverserContext, final QueryShardContext context, final Query query) {
 		for (QueryHandler queryHandler : queryHandlers) {
-			if (queryHandler.acceptQuery(context, query)) {
-				return queryHandler.handleQuery(context, query, this);
+			if (queryHandler.acceptQuery(traverserContext, context, query)) {
+				return queryHandler.handleQuery(traverserContext, context, query, this);
 			}
 		}
 		return query;

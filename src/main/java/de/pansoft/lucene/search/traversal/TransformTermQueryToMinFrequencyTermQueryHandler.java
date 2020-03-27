@@ -19,7 +19,8 @@ public class TransformTermQueryToMinFrequencyTermQueryHandler implements QueryHa
 	}
 
 	@Override
-	public Query handleQuery(final QueryShardContext context, final Query query, QueryTraverser queryTraverser) {
+	public Query handleQuery(final TraverserContext traverserContext, final QueryShardContext context,
+							 final Query query, QueryTraverser queryTraverser) {
 		final TermQuery termQuery = (TermQuery) query;
 
 		MappedFieldType fieldType = context.fieldMapper(termQuery.getTerm().field());
@@ -30,7 +31,8 @@ public class TransformTermQueryToMinFrequencyTermQueryHandler implements QueryHa
 	}
 
 	@Override
-	public boolean acceptQuery(final QueryShardContext context, Query query) {
+	public boolean acceptQuery(final TraverserContext traverserContext, final QueryShardContext context,
+							   Query query) {
 		return query != null && query instanceof TermQuery;
 	}
 

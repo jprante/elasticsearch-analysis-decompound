@@ -21,6 +21,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 	
 	public static final String NAME = "exact_phrase";
     private static final ParseField QUERY_FIELD = new ParseField("query");
+    private static final ParseField BOOST_EXACT_TOKENS_FIELD = new ParseField("boostExactTokens");
     private static final ParseField ALL_QUERY_TYPES_FIELD = new ParseField("all_query_types");
     private static final QueryTraverser PHRASE_QUERY_TRAVERSER = new QueryTraverser(
     		new CloneOnChangeBooleanQueryHandler(),
@@ -44,16 +45,19 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 
     private final QueryBuilder query;
     private final boolean allQueryTypes;
+    private final Float boostExactTokens;
 
-    public ExactPhraseQueryBuilder(QueryBuilder query, boolean allQueryTypes) {
+    public ExactPhraseQueryBuilder(QueryBuilder query, boolean allQueryTypes, Float boostExactTokens) {
     	this.query = query;
     	this.allQueryTypes = allQueryTypes;
+    	this.boostExactTokens = boostExactTokens;
     }
 
     public ExactPhraseQueryBuilder(StreamInput in) throws IOException {
         super(in);
-        query = in.readNamedWriteable(QueryBuilder.class);
-        allQueryTypes = in.readBoolean();
+        this.query = in.readNamedWriteable(QueryBuilder.class);
+        this.allQueryTypes = in.readBoolean();
+        this.boostExactTokens = in.readOptionalFloat();
     }
 
 	@Override
@@ -63,8 +67,9 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 
 	@Override
 	protected void doWriteTo(StreamOutput out) throws IOException {
-        out.writeNamedWriteable(query);
-        out.writeBoolean(allQueryTypes);
+        out.writeNamedWriteable(this.query);
+        out.writeBoolean(this.allQueryTypes);
+        out.writeOptionalFloat(this.boostExactTokens);
 	}
 
 	@Override
@@ -72,21 +77,28 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
         builder.startObject(NAME);
         builder.field(QUERY_FIELD.getPreferredName());
         query.toXContent(builder, params);
-        builder.field(ALL_QUERY_TYPES_FIELD.getPreferredName(), allQueryTypes);
+        builder.field(ALL_QUERY_TYPES_FIELD.getPreferredName(), this.allQueryTypes);
+        if (this.boostExactTokens != null) {
+            builder.field(BOOST_EXACT_TOKENS_FIELD.getPreferredName(), this.boostExactTokens);
+        }
         printBoostAndQueryName(builder);
         builder.endObject();
 	}
 
 	@Override
 	protected Query doToQuery(QueryShardContext context) throws IOException {
-		return (allQueryTypes?FULL_QUERY_TRAVERSER:PHRASE_QUERY_TRAVERSER).traverse(context, this.query.toQuery(context));
+        TraverserContext traverserContext = TraverserContext.getContext(this.boostExactTokens);
+		return (this.allQueryTypes || this.boostExactTokens != null ?
+                FULL_QUERY_TRAVERSER:PHRASE_QUERY_TRAVERSER).traverse(traverserContext,context,
+                this.query.toQuery(context));
 	}
 	
 	@Override
     protected QueryBuilder doRewrite(QueryRewriteContext queryRewriteContext) throws IOException {
         QueryBuilder rewrittenQuery = query.rewrite(queryRewriteContext);
         if (rewrittenQuery != query) {
-        	ExactPhraseQueryBuilder exactPhraseQuery = new ExactPhraseQueryBuilder(rewrittenQuery, allQueryTypes);
+        	ExactPhraseQueryBuilder exactPhraseQuery = new ExactPhraseQueryBuilder(rewrittenQuery,
+                    this.allQueryTypes, this.boostExactTokens);
             return exactPhraseQuery;
         }
         return this;
@@ -94,6 +106,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 
     public static ExactPhraseQueryBuilder fromXContent(XContentParser parser) throws IOException {
         float boost = AbstractQueryBuilder.DEFAULT_BOOST;
+        Float boostExactTokens = null;
         String queryName = null;
         QueryBuilder query = null;
         boolean allQueryTypes = false;
@@ -114,13 +127,15 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
                 } else if (AbstractQueryBuilder.NAME_FIELD.match(currentFieldName, parser.getDeprecationHandler())) {
                     queryName = parser.text();
                 } else if (ALL_QUERY_TYPES_FIELD.match(currentFieldName, parser.getDeprecationHandler())) {
-                	allQueryTypes = parser.booleanValue();
+                    allQueryTypes = parser.booleanValue();
+                } else if (BOOST_EXACT_TOKENS_FIELD.match(currentFieldName, parser.getDeprecationHandler())) {
+                    boostExactTokens = parser.floatValue();
                 } else {
                     throw new ParsingException(parser.getTokenLocation(), "[nested] query does not support [" + currentFieldName + "]");
                 }
             }
         }
-        ExactPhraseQueryBuilder queryBuilder =  new ExactPhraseQueryBuilder(query, allQueryTypes)
+        ExactPhraseQueryBuilder queryBuilder =  new ExactPhraseQueryBuilder(query, allQueryTypes, boostExactTokens)
             .queryName(queryName)
             .boost(boost);
         return queryBuilder;
