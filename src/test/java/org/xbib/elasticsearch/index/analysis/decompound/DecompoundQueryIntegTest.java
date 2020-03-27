@@ -74,6 +74,20 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         prepareCreate("test").setSource(indexBody, XContentType.JSON).get();
         ensureGreen("test");
     }
+
+    public void testBoostedExactTokenQuery() throws Exception {
+        List<IndexRequestBuilder> reqs = new ArrayList<>();
+        reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "Spielbankgesellschaft Spielbankgesellschaft"));
+        reqs.add(client().prepareIndex("test", "_doc", "2").setSource("text", "deutsche Bank und sonstiges das nicht von Belang ist"));
+        indexRandom(true, false, reqs);
+
+        QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryStringQuery("text:bank");
+        ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(queryStringQueryBuilder, false, 2.0f);
+        SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
+        ElasticsearchAssertions.assertHitCount(resp, 2L);
+        assertHits(resp.getHits(), "2", "1");
+
+    }
    
     public void testNestedCommonPhraseQuery() throws Exception {
         List<IndexRequestBuilder> reqs = new ArrayList<>();

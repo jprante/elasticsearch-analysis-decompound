@@ -12,7 +12,8 @@ import de.pansoft.lucene.search.spans.SpanEmptyPayloadCheckQuery;
 public class ExactPhraseQueryHandler implements QueryHandler {
 	
 	@Override
-	public Query handleQuery(final QueryShardContext context, final Query query, QueryTraverser queryTraverser) {
+	public Query handleQuery(final TraverserContext traverserContext, final QueryShardContext context,
+							 final Query query, QueryTraverser queryTraverser) {
 		final PhraseQuery phraseQuery = (PhraseQuery) query;
 		SpanNearQuery.Builder builder = new SpanNearQuery.Builder(phraseQuery.getTerms()[0].field(), phraseQuery.getSlop() == 0);
 		int i = 0;
@@ -32,7 +33,7 @@ public class ExactPhraseQueryHandler implements QueryHandler {
 	}
 
 	@Override
-	public boolean acceptQuery(final QueryShardContext context, Query query) {
+	public boolean acceptQuery(final TraverserContext traverserContext, final QueryShardContext context, Query query) {
 		return query != null && query instanceof PhraseQuery;
 	}
 

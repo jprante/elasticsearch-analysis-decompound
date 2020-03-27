@@ -44,13 +44,13 @@ public class GeniosQueryStringQueryParser extends QueryStringQueryParser {
     @Override
     protected Query getFieldQuery(String field, String queryText, int slop) throws ParseException {
     	Query query = super.getFieldQuery(field, queryText, slop);
-    	return MARK_TERM_QUERY_TRAVERSER.traverse(this.context, query);
+    	return MARK_TERM_QUERY_TRAVERSER.traverse(TraverserContext.getContext(), this.context, query);
     }
 
 	@Override
 	protected Query transformTermToFrequencyQuery(Query query, int minFrequency) {
 		return CONTAINER_QUERY_TRAVERSER.add(new TransformTermQueryToMinFrequencyTermQueryHandler(minFrequency))
-				.traverse(this.context, query);
+				.traverse(TraverserContext.getContext(), this.context, query);
 	}
 
 	@Override

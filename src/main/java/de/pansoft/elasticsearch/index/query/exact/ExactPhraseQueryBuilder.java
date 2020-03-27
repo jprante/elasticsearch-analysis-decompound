@@ -47,6 +47,12 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
     private final boolean allQueryTypes;
     private final Float boostExactTokens;
 
+    public ExactPhraseQueryBuilder(QueryBuilder query, boolean allQueryTypes) {
+        this.query = query;
+        this.allQueryTypes = allQueryTypes;
+        this.boostExactTokens = null;
+    }
+
     public ExactPhraseQueryBuilder(QueryBuilder query, boolean allQueryTypes, Float boostExactTokens) {
     	this.query = query;
     	this.allQueryTypes = allQueryTypes;

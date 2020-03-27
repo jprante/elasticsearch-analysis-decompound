@@ -1,5 +1,6 @@
 package de.pansoft.lucene.search.traversal;
 
+import de.pansoft.lucene.index.query.term.MarkedTermQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.spans.SpanTermQuery;
@@ -16,7 +17,16 @@ public class ExactTermQueryHandler implements QueryHandler {
 		final TermQuery termQuery = (TermQuery) query;
 		MappedFieldType fieldType = context.fieldMapper(termQuery.getTerm().field());
 		if (fieldType != null && fieldType.tokenized()) {
-			return new SpanEmptyPayloadCheckQuery(new SpanTermQuery((termQuery).getTerm()));
+			if ((termQuery instanceof MarkedTermQuery
+						&& ((MarkedTermQuery)termQuery).getContext() == MarkedTermQuery.Context.PHRASE)
+					|| traverserContext.getBoostExactTokens() == null) {
+				return new SpanEmptyPayloadCheckQuery(new SpanTermQuery((termQuery).getTerm()));
+			} else if (traverserContext.getBoostExactTokens() != null) {
+				return ExactQueryPartBooster.query(
+						new SpanEmptyPayloadCheckQuery(new SpanTermQuery((termQuery).getTerm())),
+						termQuery,
+						traverserContext.getBoostExactTokens());
+			}
 		}
 		return termQuery;
 	}

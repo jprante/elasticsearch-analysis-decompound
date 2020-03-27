@@ -7,9 +7,11 @@ import org.elasticsearch.index.query.QueryShardContext;
 public class CloneOnChangeConstantScoreQueryHandler implements QueryHandler {
 
 	@Override
-	public Query handleQuery(final QueryShardContext context, final Query query, final QueryTraverser queryTraverser) {
+	public Query handleQuery(final TraverserContext traverserContext, final QueryShardContext context,
+							 final Query query, final QueryTraverser queryTraverser) {
 		final ConstantScoreQuery constantScoreQuery = (ConstantScoreQuery) query;
-		final Query newInnerConstantScoreQuery = queryTraverser.traverse(context, constantScoreQuery.getQuery());
+		final Query newInnerConstantScoreQuery = queryTraverser.traverse(traverserContext,
+				context, constantScoreQuery.getQuery());
 		if (newInnerConstantScoreQuery != constantScoreQuery.getQuery()) {
 			return new ConstantScoreQuery(newInnerConstantScoreQuery);
 		}
@@ -17,6 +19,6 @@ public class CloneOnChangeConstantScoreQueryHandler implements QueryHandler {
 	}
 
 	@Override
-	public boolean acceptQuery(final QueryShardContext context, Query query) {
+	public boolean acceptQuery(final TraverserContext traverserContext, final QueryShardContext context, Query query) {
 		return query != null && query instanceof ConstantScoreQuery;
 	}}

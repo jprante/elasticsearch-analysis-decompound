@@ -15,4 +15,8 @@ public class TraverserContext {
     public static TraverserContext getContext(final Float boostExactTokens) {
         return new TraverserContext(boostExactTokens);
     }
+
+    public static TraverserContext getContext() {
+        return new TraverserContext(null);
+    }
 }
