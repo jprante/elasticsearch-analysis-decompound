@@ -75,6 +75,17 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         ensureGreen("test");
     }
 
+    public void testCrossFieldsQuery() throws Exception {
+        List<IndexRequestBuilder> reqs = new ArrayList<>();
+        reqs.add(client().prepareIndex("test", "_doc", "1")
+                .setSource("text", "deutsche", "text2", "bank"));
+        indexRandom(true, false, reqs);
+
+        SearchSourceBuilder sourceBuilder = getFromSource("/crossFieldsGeniosStringQuery.json");
+        SearchResponse resp = client().prepareSearch("test").setSource(sourceBuilder).get();
+        ElasticsearchAssertions.assertHitCount(resp, 1L);
+    }
+
     public void testBoostedExactTokenQuery() throws Exception {
         List<IndexRequestBuilder> reqs = new ArrayList<>();
         reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "Spielbankgesellschaft Spielbankgesellschaft"));

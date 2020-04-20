@@ -1,6 +1,7 @@
 package de.pansoft.elasticsearch.index.query.string;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.Query;
+import org.elasticsearch.Version;
 import org.elasticsearch.common.ParseField;
 import org.elasticsearch.common.ParsingException;
 import org.elasticsearch.common.io.stream.StreamInput;
@@ -25,7 +27,6 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryShardContext;
 import org.elasticsearch.index.query.QueryShardException;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.support.QueryParsers;
 import org.elasticsearch.index.search.QueryParserHelper;
 
@@ -78,14 +79,14 @@ public class GeniosQueryStringQueryBuilder extends QueryStringQueryBuilder {
 	}
 
 	public GeniosQueryStringQueryBuilder(StreamInput in) throws IOException {
-		super(in);
-	}
+	    super(in);
+    }
 
 	@Override
     public String getWriteableName() {
         return GeniosQueryStringQueryBuilder.NAME;
     }
-	
+
    @Override
     protected void doXContent(XContentBuilder builder, Params params) throws IOException {
         builder.startObject(NAME);
@@ -98,7 +99,9 @@ public class GeniosQueryStringQueryBuilder extends QueryStringQueryBuilder {
             builder.value(fieldEntry.getKey() + "^" + fieldEntry.getValue());
         }
         builder.endArray();
-        builder.field(TYPE_FIELD.getPreferredName(), DEFAULT_TYPE.toString().toLowerCase(Locale.ENGLISH));
+        if (this.type != null) {
+            builder.field(TYPE_FIELD.getPreferredName(), this.type.toString().toLowerCase(Locale.ENGLISH));
+        }
 
         if (tieBreaker() != null) {
             builder.field(TIE_BREAKER_FIELD.getPreferredName(), this.tieBreaker());
@@ -365,7 +368,7 @@ public class GeniosQueryStringQueryBuilder extends QueryStringQueryBuilder {
         }
 
         queryParser.setDefaultOperator(defaultOperator().toQueryParserOperator());
-        queryParser.setType(DEFAULT_TYPE);
+        queryParser.setType(this.type);
         if (tieBreaker() != null) {
             queryParser.setGroupTieBreaker(tieBreaker());
         } else {
