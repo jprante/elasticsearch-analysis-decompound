@@ -42,6 +42,14 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
     		new ExactMultiTermQueryHandler(),
     		new ExactMinFrequencyTermQuery()
     );
+    private static final QueryTraverser BOOST_QUERY_TRAVERSER = new QueryTraverser(
+            new CloneOnChangeBooleanQueryHandler(),
+            new CloneOnChangeBoostQueryHandler(),
+            new CloneOnChangeDisjunctionMaxQueryHandler(),
+            new CloneOnChangeConstantScoreQueryHandler(),
+            new ExactPhraseQueryHandler(),
+            new ExactTermQueryHandler()
+    );
 
     private final QueryBuilder query;
     private final boolean allQueryTypes;
@@ -94,9 +102,11 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 	@Override
 	protected Query doToQuery(QueryShardContext context) throws IOException {
         TraverserContext traverserContext = TraverserContext.getContext(this.boostExactTokens);
-		return (this.allQueryTypes || this.boostExactTokens != null ?
-                FULL_QUERY_TRAVERSER:PHRASE_QUERY_TRAVERSER).traverse(traverserContext,context,
-                this.query.toQuery(context));
+        QueryTraverser traverser = null;
+        if (this.boostExactTokens != null) traverser = BOOST_QUERY_TRAVERSER;
+        else if (this.allQueryTypes) traverser = FULL_QUERY_TRAVERSER;
+        else traverser = PHRASE_QUERY_TRAVERSER;
+		return traverser.traverse(traverserContext, context, this.query.toQuery(context));
 	}
 	
 	@Override

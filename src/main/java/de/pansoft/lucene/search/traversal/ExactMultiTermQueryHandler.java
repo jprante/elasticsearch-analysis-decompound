@@ -2,6 +2,7 @@ package de.pansoft.lucene.search.traversal;
 
 import org.apache.lucene.search.MultiTermQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermRangeQuery;
 import org.apache.lucene.search.spans.SpanMultiTermQueryWrapper;
 import org.elasticsearch.index.mapper.MappedFieldType;
 import org.elasticsearch.index.query.QueryShardContext;
@@ -23,7 +24,7 @@ public class ExactMultiTermQueryHandler implements QueryHandler {
 
 	@Override
 	public boolean acceptQuery(final TraverserContext traverserContext, final QueryShardContext context, Query query) {
-		return query != null && query instanceof MultiTermQuery;
+		return query != null && query instanceof MultiTermQuery && !(query instanceof TermRangeQuery);
 	}
 
 }
