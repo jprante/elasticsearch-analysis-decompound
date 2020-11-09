@@ -106,8 +106,9 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
         if (this.boostExactTokens != null) traverser = BOOST_QUERY_TRAVERSER;
         else if (this.allQueryTypes) traverser = FULL_QUERY_TRAVERSER;
         else traverser = PHRASE_QUERY_TRAVERSER;
-		return traverser.traverse(traverserContext, context, this.query.toQuery(context));
-	}
+        final Query query = traverser.traverse(traverserContext, context, this.query.toQuery(context));
+        return query;
+    }
 	
 	@Override
     protected QueryBuilder doRewrite(QueryRewriteContext queryRewriteContext) throws IOException {

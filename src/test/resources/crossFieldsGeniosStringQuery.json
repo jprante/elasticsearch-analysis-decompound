@@ -12,7 +12,8 @@
           "default_operator": "and"
         }
       },
-      "all_query_types": false
+      "all_query_types": false,
+      "boostExactTokens": 1000
     }
   }
 }

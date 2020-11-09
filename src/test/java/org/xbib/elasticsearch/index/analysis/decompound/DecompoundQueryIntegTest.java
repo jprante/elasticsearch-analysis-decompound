@@ -357,12 +357,14 @@ public class DecompoundQueryIntegTest extends ESIntegTestCase {
         reqs.add(client().prepareIndex("test", "_doc", "1").setSource("text", "spielbankgesellschaft", "text2", "spielbankgesellschaft"));
         indexRandom(true, false, reqs);
 
-        GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("\"bank\"");
+        GeniosQueryStringQueryBuilder geniosQueryStringQueryBuilder = new GeniosQueryStringQueryBuilder("text:bank");
+/*
         Map<String, Float> fields = new HashMap<>();
         fields.put("text", 2.0f);
         fields.put("text2", 1.0f);
         geniosQueryStringQueryBuilder.fields(fields);
-        ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, false);
+*/
+        ExactPhraseQueryBuilder exactPhraseQueryBuilder = new ExactPhraseQueryBuilder(geniosQueryStringQueryBuilder, false, 100.0F);
         SearchResponse resp = client().prepareSearch("test").setQuery(exactPhraseQueryBuilder).get();
         ElasticsearchAssertions.assertHitCount(resp, 0L);
     }

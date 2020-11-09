@@ -25,6 +25,13 @@ public class QueryTraverser {
 				return queryHandler.handleQuery(traverserContext, context, query, this);
 			}
 		}
+		if (traverserContext.getTraversalPhase() == TraversalPhase.BUILD_PHASE) {
+			return new LazyTraverserQuery(
+					this,
+					traverserContext.inTraversalPhase(TraversalPhase.REWRITE_PHASE),
+					context,
+					query);
+		}
 		return query;
 	}
 }
