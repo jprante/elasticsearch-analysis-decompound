@@ -2,7 +2,6 @@ package de.pansoft.lucene.search.traversal;
 
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryVisitor;
 import org.elasticsearch.index.query.QueryShardContext;
 
 import java.io.IOException;
@@ -28,10 +27,6 @@ public class LazyTraverserQuery extends Query {
            rewrittenQuery = this.queryTraverser.traverse(this.traverserContext, this.queryShardContext, rewrittenQuery);
         }
         return rewrittenQuery;
-    }
-
-    public void visit(QueryVisitor visitor) {
-        visitor.visitLeaf(this.query);
     }
 
     @Override
