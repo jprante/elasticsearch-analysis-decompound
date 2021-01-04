@@ -18,7 +18,7 @@ import org.elasticsearch.index.query.QueryRewriteContext;
 import org.elasticsearch.index.query.QueryShardContext;
 
 public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQueryBuilder> {
-	
+
 	public static final String NAME = "exact_phrase";
     private static final ParseField QUERY_FIELD = new ParseField("query");
     private static final ParseField BOOST_EXACT_TOKENS_FIELD = new ParseField("boostExactTokens");
@@ -48,7 +48,10 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
             new CloneOnChangeDisjunctionMaxQueryHandler(),
             new CloneOnChangeConstantScoreQueryHandler(),
             new ExactPhraseQueryHandler(),
-            new ExactTermQueryHandler()
+            new ExactTermQueryHandler(),
+            new LayzTraverserQueryHandler(
+                    org.apache.lucene.queries.BlendedTermQuery.class
+            )
     );
 
     private final QueryBuilder query;
@@ -109,7 +112,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
         final Query query = traverser.traverse(traverserContext, context, this.query.toQuery(context));
         return query;
     }
-	
+
 	@Override
     protected QueryBuilder doRewrite(QueryRewriteContext queryRewriteContext) throws IOException {
         QueryBuilder rewrittenQuery = query.rewrite(queryRewriteContext);
@@ -167,7 +170,7 @@ public class ExactPhraseQueryBuilder extends AbstractQueryBuilder<ExactPhraseQue
 	protected int doHashCode() {
         return Objects.hash(query);
 	}
-	
+
     /**
      * Returns the nested query to execute.
      */

@@ -6,7 +6,7 @@ import org.elasticsearch.index.query.QueryShardContext;
 public class QueryTraverser {
 
 	private final QueryHandler[] queryHandlers;
-	
+
 	@SafeVarargs
 	public QueryTraverser(final QueryHandler ...queryHandlers) {
 		this.queryHandlers = queryHandlers;
@@ -18,19 +18,12 @@ public class QueryTraverser {
 		queryHandlers[this.queryHandlers.length] = queryHandler;
 		return new QueryTraverser(queryHandlers);
 	}
-	
+
 	public Query traverse(final TraverserContext traverserContext, final QueryShardContext context, final Query query) {
 		for (QueryHandler queryHandler : queryHandlers) {
 			if (queryHandler.acceptQuery(traverserContext, context, query)) {
 				return queryHandler.handleQuery(traverserContext, context, query, this);
 			}
-		}
-		if (traverserContext.getTraversalPhase() == TraversalPhase.BUILD_PHASE) {
-			return new LazyTraverserQuery(
-					this,
-					traverserContext.inTraversalPhase(TraversalPhase.REWRITE_PHASE),
-					context,
-					query);
 		}
 		return query;
 	}

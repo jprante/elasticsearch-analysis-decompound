@@ -15,5 +15,13 @@
       "all_query_types": false,
       "boostExactTokens": 1000
     }
+  },
+  "highlight": {
+    "tags_schema": "styled",
+    "encoder": "html",
+    "fields": {
+      "text": {},
+      "text2": {}
+    }
   }
 }
