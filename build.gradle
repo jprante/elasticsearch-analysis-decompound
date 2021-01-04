@@ -3,6 +3,7 @@ plugins {
     id "org.sonarqube" version "2.5"
     id "org.xbib.gradle.plugin.asciidoctor" version "1.5.4.1.0"
     id "io.codearte.nexus-staging" version "0.7.0"
+    id "com.intershop.gradle.javacc" version "3.0.3"
 }
 
 
@@ -27,6 +28,7 @@ apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 apply plugin: "jacoco"
 apply plugin: 'org.xbib.gradle.plugin.asciidoctor'
+apply plugin: "com.intershop.gradle.javacc"
 
 repositories {
     mavenCentral()
@@ -52,11 +54,15 @@ apply from: 'gradle/publish.gradle'
 apply from: 'gradle/sonarqube.gradle'
 
 dependencies {
+    def without_hamcrest = {
+    		exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
     compile "org.elasticsearch:elasticsearch:${project.property('elasticsearch.version')}"
     compile "org.apache.logging.log4j:log4j-api:${project.property('log4j.version')}"
-    testCompile "junit:junit:${project.property('junit.version')}"
+    testCompile "junit:junit:${project.property('junit.version')}", without_hamcrest
     testCompile "org.apache.logging.log4j:log4j-core:${project.property('log4j.version')}"
     testCompile "org.elasticsearch.plugin:transport-netty4-client:${project.property('elasticsearch.version')}"
+    testCompile "org.elasticsearch.test:framework:${project.property('elasticsearch.version')}"
     distJars "${project.group}:${project.name}:${project.version}"
     wagon "org.apache.maven.wagon:wagon-ssh:${project.property('wagon.version')}"
 }
@@ -69,8 +75,27 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:all" << "-profile" << "compact2"
 }
 
+javacc {
+    configs {
+        parser {
+            javaCCVersion = '5.0'
+            args = []
+            inputFile = file 'src/main/java/de/pansoft/lucene/queryparser/classic/QueryParser.jj'
+            packageName = 'de.pansoft.lucene.queryparser.classic'
+        }
+    }
+}
+
+sourceSets.main.java.srcDirs += 'build/generated/javacc/parser'
+sourceSets.main.java.exclude(
+    'de/pansoft/lucene/queryparser/classic/CharStream.java',
+    'de/pansoft/lucene/queryparser/classic/Token.java',
+    'de/pansoft/lucene/queryparser/classic/ParseException.java'
+)
+
 test {
     systemProperties['path.home'] = System.getProperty("user.dir")
+    systemProperties['tests.security.manager'] = false
     testLogging {
         showStandardStreams = false
         exceptionFormat = 'full'
@@ -82,9 +107,9 @@ task makePluginDescriptor(type: Copy) {
     into 'build/tmp/plugin'
     expand([
             'descriptor': [
-                    'name': pluginName,
-                    'classname': pluginClassname,
-                    'description': pluginDescription,
+                    'name': project.property('pluginName'),
+                    'classname': project.property('pluginClassname'),
+                    'description': project.property('pluginDescription'),
                     'version': project.property('version'),
                     'javaVersion': project.property('targetCompatibility'),
                     'elasticsearchVersion' : project.property('elasticsearch.version')
@@ -95,7 +120,7 @@ task makePluginDescriptor(type: Copy) {
 task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
     from configurations.distJars
     from 'build/tmp/plugin'
-    into 'elasticsearch'
+    //into 'elasticsearch'
     classifier = 'plugin'
 }
 

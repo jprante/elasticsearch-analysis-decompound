@@ -1,0 +1,27 @@
+{
+  "query": {
+    "exact_phrase": {
+      "query": {
+        "genios_query_string": {
+          "query": "deutsche bank",
+          "fields": [
+            "text^10",
+            "text2^5"
+          ],
+          "type": "cross_fields",
+          "default_operator": "and"
+        }
+      },
+      "all_query_types": false,
+      "boostExactTokens": 1000
+    }
+  },
+  "highlight": {
+    "tags_schema": "styled",
+    "encoder": "html",
+    "fields": {
+      "text": {},
+      "text2": {}
+    }
+  }
+}

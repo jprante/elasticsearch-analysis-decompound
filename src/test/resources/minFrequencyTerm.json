@@ -1,0 +1,15 @@
+{
+	"query": {
+		"exact_phrase": {
+			"query": {
+				"min-frequency-term": {
+					"text": {
+						"value": "{0}",
+						"min-frequency": {1} 
+					}
+				}
+			},
+			"all_query_types": {2}
+		}
+	}
+}

@@ -2,8 +2,8 @@ package org.xbib.elasticsearch.index.analysis.decompound;
 
 import org.apache.lucene.analysis.TokenStream;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.index.analysis.AbstractTokenFilterFactory;
 
@@ -17,17 +17,20 @@ public class DecompoundTokenFilterFactory extends AbstractTokenFilterFactory {
     private final Boolean respectKeywords;
 
     private final Boolean subwordsonly;
+    
+    private final long maxCacheSize;
 
-    public DecompoundTokenFilterFactory(IndexSettings indexSettings, Environment environment, String name, Settings settings) {
+    public DecompoundTokenFilterFactory(IndexSettings indexSettings, @Assisted String name, @Assisted Settings settings, long maxCacheSize) {
         super(indexSettings, name, settings);
         this.decompounder = createDecompounder(settings);
         this.respectKeywords = settings.getAsBoolean("respect_keywords", false);
         this.subwordsonly = settings.getAsBoolean("subwords_only", false);
+        this.maxCacheSize = maxCacheSize;
     }
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords, subwordsonly);
+        return new DecompoundTokenFilter(tokenStream, decompounder, respectKeywords, subwordsonly, maxCacheSize);
     }
 
     private Decompounder createDecompounder(Settings settings) {
